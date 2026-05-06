@@ -1,0 +1,202 @@
+---
+title: Tài liệu Calorie Web
+description: Tài liệu hoàn chỉnh cho dự án Calorie-Web - một ứng dụng Next.js để theo dõi và quản lý lượng calo.
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+# Tài liệu Calorie Web
+
+Chào mừng đến với tài liệu dự án **Calorie-Web**. Đây là một ứng dụng web hiện đại được xây dựng bằng Next.js, được thiết kế để giúp người dùng theo dõi và quản lý lượng calo tiêu thụ hàng ngày.
+
+## Cấu Trúc Dự Án
+
+```
+calorie-web/
+├── app/                    # Chứa các route chính (Main routes and pages)
+│   ├── layout.tsx         # Layout gốc của ứng dụng
+│   ├── page.tsx           # Trang chủ
+│   └── globals.css        # Các style toàn cục
+├── components/            # UI components tái sử dụng (Reusable React components)
+├── lib/                   # Hàm xử lý logic (Logic handling functions)
+├── store/                 # Quản lý trạng thái (State management)
+│   └── useAppStore.ts    # Trạng thái toàn cục với Zustand
+├── types/                 # Định nghĩa kiểu dữ liệu (TypeScript type definitions)
+│   └── user.ts           # Các kiểu dữ liệu người dùng
+├── public/                # Tài nguyên tĩnh (Static assets)
+└── docs/                  # Trang tài liệu Starlight
+```
+
+## Ứng Dụng Hoạt Động Như Thế Nào
+
+Ứng dụng Calorie-Web tuân theo một quy trình đơn giản và trực quan:
+
+1. **Nhập Dữ Liệu từ Người Dùng** - Người dùng nhập dữ liệu calo thông qua các biểu mẫu
+2. **Quản Lý Trạng Thái** - Dữ liệu được lưu trữ trong store Zustand
+3. **Cập Nhật UI** - Các thành phần React tự động cập nhật theo thay đổi
+4. **Trực Quan Hóa Dữ Liệu** - Biểu đồ hiển thị xu hướng và thống kê calo
+5. **Lưu Trữ** - Trạng thái có thể được lưu vào local storage hoặc backend
+
+Quy trình phản ứng này đảm bảo rằng giao diện người dùng luôn đồng bộ với dữ liệu của ứng dụng.
+
+## Quản Lý Trạng Thái
+
+### Tổng Quan Zustand Store
+
+Ứng dụng sử dụng **Zustand** để quản lý trạng thái nhẹ và hiệu quả.
+
+**Những gì được lưu trong `useAppStore.ts`:**
+- Thông tin hồ sơ người dùng (tên, tuổi, mục tiêu)
+- Bản ghi tiêu thụ calo hàng ngày
+- Tùy chọn và cài đặt người dùng
+- Mục tiêu và chỉ tiêu calo
+- Dữ liệu lịch sử để xem xu hướng
+
+**Tại sao dùng Zustand?**
+- Code ngắn gọn hơn so với Redux
+- Dễ hiểu và dễ triển khai
+- Nhẹ và không có phụ thuộc bên ngoài
+- Phù hợp cho các ứng dụng cỡ vừa
+
+**Ví dụ sử dụng:**
+```typescript
+import { useAppStore } from '@/store/useAppStore';
+
+const MyComponent = () => {
+  const { userData, addCalorie } = useAppStore();
+  
+  return (
+    <div>
+      <p>Tổng Calo: {userData.totalCalories}</p>
+      <button onClick={() => addCalorie(500)}>Thêm 500 calo</button>
+    </div>
+  );
+};
+```
+
+## Các Thành Phần (Components)
+
+Thư mục `components/` chứa các phần tử UI tái sử dụng. Dưới đây là các thành phần mẫu và vai trò của chúng:
+
+| Tên Thành Phần | Vai Trò | Mục Đích |
+|---|---|---|
+| `Button` | Điều khiển UI | Nút bấm có các biến thể (primary, secondary) |
+| `Input` | Nhập Dữ Liệu | Ô nhập văn bản cho nhập calo và dữ liệu người dùng |
+| `Card` | Container | Hiển thị thông tin nhóm (tóm tắt hàng ngày, thống kê) |
+| `Chart` | Trực Quan Hóa | Hiển thị xu hướng calo và biểu đồ bằng Recharts |
+| `Header` | Điều Hướng | Thanh điều hướng trên cùng với logo và menu |
+| `Footer` | Bố Cục | Phần footer với liên kết và bản quyền |
+
+**Cấu Trúc Thành Phần:**
+Mỗi thành phần nên:
+- Độc lập và tái sử dụng được
+- Chấp nhận props để tùy chỉnh
+- Bao gồm các kiểu TypeScript
+- Tuân theo quy ước đặt tên (PascalCase)
+
+## Quyết Định Công Nghệ
+
+### Tại Sao Chọn Những Công Nghệ Này?
+
+| Công Nghệ | Lý Do |
+|---|---|
+| **Next.js** | Framework React hiện đại với routing, SSR và tối ưu hóa sẵn có |
+| **TypeScript** | An toàn kiểu dữ liệu giảm lỗi và cải thiện khả năng bảo trì |
+| **Tailwind CSS** | CSS theo tiện ích để phát triển UI nhanh chóng và nhất quán |
+| **Zustand** | Quản lý trạng thái đơn giản, nhẹ mà không cần phức tạp như Redux |
+| **Recharts** | Các thành phần React có thể kết hợp để tạo biểu đồ đẹp |
+| **Lucide React** | Thư viện biểu tượng hiện đại, nhất quán và dễ tùy chỉnh |
+
+## Hướng Dẫn Cho Nhà Phát Triển
+
+### Bắt Đầu
+
+#### 1. Cài Đặt
+
+Cài đặt các phụ thuộc dự án:
+
+```bash
+npm install
+```
+
+#### 2. Chạy Server Phát Triển
+
+Khởi động server phát triển cục bộ:
+
+```bash
+npm run dev
+```
+
+Ứng dụng sẽ khả dụng tại `http://localhost:3000`
+
+#### 3. Xây Dựng Cho Sản Xuất
+
+Xây dựng gói sản xuất tối ưu:
+
+```bash
+npm run build
+npm start
+```
+
+### Quy Ước Mã
+
+#### Quy Ước Đặt Tên
+
+- **Thành Phần:** Sử dụng PascalCase (ví dụ: `UserProfile`, `CalorieInput`)
+- **Hàm:** Sử dụng camelCase (ví dụ: `calculateTotalCalories`, `formatDate`)
+- **Hằng Số:** Sử dụng UPPER_SNAKE_CASE (ví dụ: `MAX_DAILY_CALORIES`, `API_BASE_URL`)
+- **Tệp:** Khớp với tên thành phần (ví dụ: `UserProfile.tsx`)
+
+#### Cấu Trúc Tệp
+
+- Đặt các thành phần trong thư mục `components/`
+- Nhóm các thành phần liên quan trong thư mục con nếu cần
+- Giữ logic thành phần đơn giản; chuyển logic phức tạp đến `lib/`
+- Định nghĩa các kiểu trong thư mục `types/`
+- Lưu các hàm tái sử dụng trong thư mục `lib/`
+
+#### Các Thực Hành Tốt Nhất của TypeScript
+
+- Luôn định nghĩa các kiểu cho props và giá trị trả về
+- Sử dụng interface cho hình dạng đối tượng
+- Tránh kiểu `any`; sử dụng các kiểu cụ thể thay vào đó
+- Ví dụ:
+
+```typescript
+interface CalorieEntry {
+  id: string;
+  date: Date;
+  amount: number;
+  category: string;
+}
+
+interface CalorieInputProps {
+  onSubmit: (entry: CalorieEntry) => void;
+}
+
+const CalorieInput: React.FC<CalorieInputProps> = ({ onSubmit }) => {
+  // Triển khai thành phần
+};
+```
+
+#### Mẹo Phát Triển Thành Phần
+
+1. **Bắt đầu với interface TypeScript** cho props thành phần
+2. **Giữ các thành phần nhỏ** - mỗi thành phần nên có một trách nhiệm
+3. **Trích xuất logic** vào hàm `lib/` để kiểm tra và tái sử dụng
+4. **Sử dụng Zustand hooks** cho trạng thái toàn cục trong thành phần
+5. **Tạo kiểu với Tailwind** bằng các lớp tiện ích
+6. **Ghi chú logic phức tạp** bằng nhận xét
+
+### Các Lệnh npm Hữu Ích
+
+```bash
+npm run dev          # Khởi động server phát triển
+npm run build        # Xây dựng cho sản xuất
+npm run lint         # Chạy ESLint kiểm tra chất lượng mã
+npm run type-check   # Kiểm tra các kiểu TypeScript
+```
+
+---
+
+Để biết thêm thông tin về Next.js, hãy truy cập [tài liệu Next.js](https://nextjs.org/docs). Để tìm hiểu về các tính năng tài liệu Starlight, hãy kiểm tra [tài liệu Starlight](https://starlight.astro.build/).
