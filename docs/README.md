@@ -1,58 +1,106 @@
-# 🍽️ Calorie Web
+# 📚 Calorie Web - Tài Liệu Dự Án
 
-Ứng dụng web giúp theo dõi và quản lý lượng calo hằng ngày, được xây dựng bằng Next.js.  
-Dự án hướng đến sự đơn giản, dễ sử dụng và phù hợp với sinh viên hoặc người mới bắt đầu.
+Folder này chứa **tài liệu dự án** được xây dựng bằng **Astro Starlight**.
+
+## 📖 Nội Dung Tài Liệu
+
+Tài liệu cung cấp hướng dẫn chi tiết về:
+- **Bắt đầu nhanh** - Setup và cài đặt
+- **Kiến trúc** - Cấu trúc dự án và thiết kế
+- **Kiểu dữ liệu** - Các interface TypeScript
+- **Hướng dẫn phát triển** - Quy trình và convention
+- **State Management** - Zustand store
+- **Storage Layer** - Quản lý localStorage
+- **Tiến độ** - Tính năng hoàn thành và sắp làm
+
+## 🔗 Liên Kết Nhanh
+
+- **Tài liệu chính:** Xem `src/content/docs/index.mdx`
+- **README dự án:** Xem `../README.md`
+- **Hướng dẫn:** `src/content/docs/guides/`
+- **Tham khảo:** `src/content/docs/reference/`
+
+## 🛠️ Phát Triển Tài Liệu
+
+### Build Tài Liệu
+
+```bash
+cd docs
+npm install
+npm run dev      # Start dev server
+npm run build    # Build static site
+```
+
+### Cấu Trúc Folder
+
+```
+docs/
+├── src/
+│   ├── content/
+│   │   └── docs/
+│   │       ├── index.mdx          # Tài liệu chính
+│   │       ├── guides/            # Hướng dẫn
+│   │       └── reference/         # Tham khảo
+│   └── content.config.ts          # Cấu hình nội dung
+│
+├── astro.config.mjs               # Cấu hình Astro
+├── tsconfig.json                  # TypeScript config
+└── package.json                   # Dependencies
+```
+
+## 🛠️ Công Nghệ
+
+- **Astro** - Static site generator
+- **Starlight** - Documentation theme
+- **MDX** - Markdown + React components
+- **TypeScript** - Type safety
+
+## ✍️ Viết Tài Liệu
+
+### Template Trang
+
+```mdx
+---
+title: Tiêu Đề Trang
+description: Mô tả ngắn
+---
+
+# Tiêu Đề Trang
+
+Nội dung tại đây...
+
+## Phần
+
+Nội dung thêm...
+```
+
+### Ví Dụ Code
+
+```typescript
+// TypeScript code
+interface Example {
+  name: string
+}
+```
+
+### Bảng
+
+| Cột 1 | Cột 2 |
+|-------|-------|
+| Dữ liệu | Dữ liệu |
+
+## 🚀 Deploy
+
+Tài liệu có thể được build và deploy như static site:
+
+```bash
+npm run build   # Tạo dist/ folder
+```
 
 ---
 
-##  Giới thiệu
-
-Calorie Web là một ứng dụng hỗ trợ người dùng:
-- Ghi lại lượng calo tiêu thụ mỗi ngày
-- Theo dõi dinh dưỡng cơ bản (protein, carbs, fat)
-- Trực quan hóa dữ liệu bằng biểu đồ
-- Thiết lập mục tiêu calo cá nhân
-
-Dự án hiện đang trong giai đoạn phát triển ban đầu.
-
----
-
-##  Mục tiêu
-
-- Xây dựng ứng dụng nhẹ, nhanh, dễ dùng
-- Giúp người dùng hiểu thói quen ăn uống
-- Hỗ trợ duy trì lối sống lành mạnh
-- Tối ưu trải nghiệm cho người mới bắt đầu
-
----
-
-## 👥 Đối tượng sử dụng
-
-- Sinh viên muốn quản lý chế độ ăn
-- Người tập gym theo dõi dinh dưỡng
-- Người muốn kiểm soát cân nặng
-- Người không thích ứng dụng phức tạp
-
----
-
-## ✨ Tính năng (Planned)
-
--  Ghi lại lượng calo hằng ngày
--  Theo dõi macros (protein, carbs, fat)
--  Biểu đồ thống kê trực quan
--  Đặt mục tiêu calo cá nhân
-
----
-
-##  Công nghệ sử dụng
-
-- **Next.js (App Router)**
-- **React**
-- **TypeScript**
-- **Tailwind CSS**
-- **Zustand** (state management)
-- **Recharts** (chart visualization)
-- **Lucide React** (icons)
+**Cập nhật lần cuối:** 08/05/2026  
+**Phiên bản:** 0.1.0
 
 ---
 
