@@ -1,383 +1,500 @@
 ---
-title: Tài liệu Calorie Web
-description: Tài liệu hoàn chỉnh cho dự án Calorie-Web - một ứng dụng Next.js để theo dõi và quản lý lượng calo.
+title: Calorie Web - Tài Liệu Hoàn Chỉnh
+description: Tài liệu kỹ thuật cho dự án Calorie-Web, bao gồm kiến trúc, cấu trúc dữ liệu, hướng dẫn cài đặt và quy trình phát triển.
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
 
-# Tài liệu Calorie Web
+# 🍽️ Calorie Web - Tài Liệu Hoàn Chỉnh
 
-Chào mừng đến với tài liệu dự án **Calorie-Web**. Đây là một ứng dụng web hiện đại được xây dựng bằng Next.js, được thiết kế để giúp người dùng theo dõi và quản lý lượng calo tiêu thụ hàng ngày.
+**Cập nhật lần cuối:** 08/05/2026  
+**Version:** 0.1.0
 
-## Cấu Trúc Dự Án
+Chào mừng đến với tài liệu dự án **Calorie Web**. Đây là ứng dụng web hiện đại được xây dựng bằng **Next.js 16** và **React 19**, được thiết kế để giúp người dùng theo dõi và quản lý lượng calo tiêu thụ hàng ngày.
+
+---
+
+## 📚 Điều Hướng Nhanh
+
+<CardGrid>
+  <Card title="🚀 Bắt Đầu Nhanh" description="Hướng dẫn cài đặt và chạy dự án" />
+  <Card title="📁 Cấu Trúc Dự Án" description="Giải thích từng folder và file" />
+  <Card title="📝 Kiểu Dữ Liệu" description="Các interface TypeScript chính" />
+  <Card title="💾 Storage Layer" description="Quản lý localStorage an toàn" />
+  <Card title="📦 State Management" description="Sử dụng Zustand" />
+  <Card title="📊 Tiến Độ" description="Tính năng hoàn thành và sắp làm" />
+</CardGrid>
+
+---
+
+## 🎯 Tổng Quan Dự Án
+
+**Calorie Web** là ứng dụng nhẹ để theo dõi calo với các mục tiêu:
+- ✅ **Đơn giản** - Giao diện dễ sử dụng
+- ✅ **Nhanh** - Hiệu suất tối ưu
+- ✅ **Type-safe** - Full TypeScript support
+- ✅ **Hiện đại** - Next.js & React mới nhất
+
+**Trạng thái:** v0.1.0 (Early Stage Development)  
+**Đối tượng sử dụng:** Sinh viên, người tập gym, người quan tâm sức khỏe
+
+### Thống Kê Chính
+
+| Nội Dung | Chi Tiết |
+|----------|----------|
+| **Framework** | Next.js 16.2.4 |
+| **React Version** | 19.2.4 |
+| **TypeScript** | Version 5 (strict mode) |
+| **State Management** | Zustand 5.0.13 |
+| **Styling** | Tailwind CSS v4 |
+| **Charts** | Recharts 3.8.1 |
+| **Icons** | Lucide React 1.14.0 |
+
+---
+
+## 📁 Cấu Trúc Dự Án Chi Tiết
 
 ```
 calorie-web/
-├── app/                    # Chứa các route chính (Main routes and pages)
-│   ├── layout.tsx         # Layout gốc của ứng dụng
-│   ├── page.tsx           # Trang chủ
-│   └── globals.css        # Các style toàn cục
-├── components/            # UI components tái sử dụng (Reusable React components)
-├── lib/                   # Hàm xử lý logic (Logic handling functions)
-│   └── storage.ts        # Quản lý localStorage (Storage management)
-├── store/                 # Quản lý trạng thái (State management)
-│   └── useAppStore.ts    # Trạng thái toàn cục với Zustand
-├── types/                 # Định nghĩa kiểu dữ liệu (TypeScript type definitions)
-│   ├── index.ts          # Các interface chính (MacroTarget, UserProfile, ...)
-│   └── user.ts           # Các kiểu dữ liệu người dùng cơ bản
-├── public/                # Tài nguyên tĩnh (Static assets)
-└── docs/                  # Trang tài liệu Starlight
-```
-
-## Ứng Dụng Hoạt Động Như Thế Nào
-
-Ứng dụng Calorie-Web tuân theo một quy trình đơn giản và trực quan:
-
-1. **Nhập Dữ Liệu từ Người Dùng** - Người dùng nhập dữ liệu calo thông qua các biểu mẫu
-2. **Quản Lý Trạng Thái** - Dữ liệu được lưu trữ trong store Zustand
-3. **Cập Nhật UI** - Các thành phần React tự động cập nhật theo thay đổi
-4. **Trực Quan Hóa Dữ Liệu** - Biểu đồ hiển thị xu hướng và thống kê calo
-5. **Lưu Trữ** - Trạng thái có thể được lưu vào local storage hoặc backend
-
-Quy trình phản ứng này đảm bảo rằng giao diện người dùng luôn đồng bộ với dữ liệu của ứng dụng.
-
-## Quản Lý Trạng Thái
-
-### Tổng Quan Zustand Store
-
-Ứng dụng sử dụng **Zustand** để quản lý trạng thái nhẹ và hiệu quả.
-
-**Những gì được lưu trong `useAppStore.ts`:**
-- Thông tin hồ sơ người dùng (tên, tuổi, mục tiêu)
-- Bản ghi tiêu thụ calo hàng ngày
-- Tùy chọn và cài đặt người dùng
-- Mục tiêu và chỉ tiêu calo
-- Dữ liệu lịch sử để xem xu hướng
-
-**Tại sao dùng Zustand?**
-- Code ngắn gọn hơn so với Redux
-- Dễ hiểu và dễ triển khai
-- Nhẹ và không có phụ thuộc bên ngoài
-- Phù hợp cho các ứng dụng cỡ vừa
-
-**Ví dụ sử dụng:**
-```typescript
-import { useAppStore } from '@/store/useAppStore';
-
-const MyComponent = () => {
-  const { userData, addCalorie } = useAppStore();
-  
-  return (
-    <div>
-      <p>Tổng Calo: {userData.totalCalories}</p>
-      <button onClick={() => addCalorie(500)}>Thêm 500 calo</button>
-    </div>
-  );
-};
-```
-
-## Định Nghĩa Kiểu Dữ Liệu (Type Definitions)
-
-### Tổng Quan
-
-TypeScript là một phần quan trọng của dự án. Tất cả các interface chính được định nghĩa trong `types/index.ts`. Các interface này mô tả cấu trúc dữ liệu và đảm bảo an toàn kiểu dữ liệu (type safety) trong toàn bộ ứng dụng.
-
-### Cấu Trúc Dữ Liệu Chính
-
-| Interface | Mô Tả | Quan Hệ |
-|-----------|-------|---------|
-| **MacroTarget** | Mục tiêu dinh dưỡng hàng ngày (calo, protein, carbs, fat) | Được sử dụng trong `UserProfile` |
-| **UserProfile** | Thông tin cá nhân người dùng và mục tiêu dinh dưỡng | Chứa `MacroTarget` |
-| **Ingredient** | Nguyên liệu cơ bản (tên, calo, macros, số lượng) | Được sử dụng trong `MealEntry` |
-| **MealEntry** | Một bữa ăn cụ thể (loại, nguyên liệu, thời gian) | Chứa `Ingredient[]`, được sử dụng trong `DailyLog` |
-| **DailyLog** | Nhật ký calo toàn bộ một ngày | Chứa `MealEntry[]` |
-
-### Sơ Đồ Mối Quan Hệ (Dependency Diagram)
-
-```
-MacroTarget
-    ↓
-UserProfile
-
-Ingredient
-    ↓
-MealEntry
-    ↓
-DailyLog
-```
-
-### Ví dụ Sử Dụng
-
-```typescript
-import { UserProfile, DailyLog, MealEntry, Ingredient, MacroTarget } from '@/types'
-
-// 1. Tạo MacroTarget
-const macroTarget: MacroTarget = {
-  calories: 2000,
-  protein: 150,
-  carbs: 200,
-  fat: 65,
-}
-
-// 2. Tạo UserProfile
-const userProfile: UserProfile = {
-  name: 'Nguyễn Văn A',
-  age: 25,
-  weight: 70,
-  height: 175,
-  goal: 'lose',
-  macroTarget,
-}
-
-// 3. Tạo Ingredient
-const ingredient: Ingredient = {
-  name: 'Gạo trắng',
-  calories: 130,
-  protein: 2.7,
-  carbs: 28,
-  fat: 0.3,
-  amount: 100,
-}
-
-// 4. Tạo MealEntry
-const breakfast: MealEntry = {
-  id: 'meal-1',
-  mealType: 'breakfast',
-  time: '08:00',
-  ingredients: [ingredient],
-  totalCalories: 130,
-}
-
-// 5. Tạo DailyLog
-const dailyLog: DailyLog = {
-  date: '2024-05-08',
-  meals: [breakfast],
-  totalCalories: 130,
-}
-```
-
-### Quy Tắc Đặt Tên & Format
-
-- **ID**: Sử dụng string (UUID hoặc custom string)
-- **Ngày**: Format `YYYY-MM-DD` (ví dụ: `2024-05-08`)
-- **Thời gian**: Format `HH:mm` (ví dụ: `08:00` hoặc `14:30`)
-- **Giá trị số**: Calo và macros lưu dưới dạng số (`number`)
-- **Goal**: Chỉ chấp nhận 3 giá trị: `lose`, `maintain`, `gain`
-- **MealType**: Chỉ chấp nhận 4 loại: `breakfast`, `lunch`, `dinner`, `snack`
-
-## Storage Layer (lib/storage.ts)
-
-### Tổng Quan
-
-Storage Layer (`lib/storage.ts`) cung cấp các hàm an toàn để quản lý localStorage. Nó hoạt động như một lớp trung gian giữa ứng dụng và trình duyệt, đảm bảo:
-- ✅ Xử lý lỗi tự động (try-catch)
-- ✅ Type-safe với TypeScript
-- ✅ Client-only (không chạy trên server)
-- ✅ Dữ liệu được validate trước khi lưu/đọc
-
-### Quy Tắc Bắt Buộc
-
-- ❌ **KHÔNG** truy cập `localStorage` trực tiếp từ component
-- ✅ **LUÔN** import và sử dụng hàm từ `@/lib/storage`
-- ✅ Tất cả lỗi được xử lý tự động
-
-### Các Hàm Chính
-
-| Hàm | Tham số | Trả về | Mô tả |
-|-----|---------|--------|-------|
-| `getProfile()` | - | `UserProfile \| null` | Đọc thông tin hồ sơ người dùng |
-| `saveProfile(profile)` | `profile: UserProfile` | `void` | Lưu thông tin hồ sơ người dùng |
-| `getLog(date)` | `date: string (YYYY-MM-DD)` | `DailyLog \| null` | Đọc nhật ký calo theo ngày |
-| `saveLog(date, log)` | `date: string, log: DailyLog` | `void` | Lưu nhật ký calo theo ngày |
-| `getLogs(startDate, endDate)` | `startDate, endDate: string` | `DailyLog[]` | Lấy logs trong khoảng thời gian |
-
-### Ví dụ Sử Dụng
-
-```typescript
-import { 
-  getProfile, 
-  saveProfile, 
-  getLog, 
-  saveLog, 
-  getLogs 
-} from '@/lib/storage'
-
-// 1. Lấy profile hiện tại
-const profile = getProfile()
-
-// 2. Lưu profile
-saveProfile({
-  name: 'Nguyễn Văn A',
-  age: 25,
-  weight: 70,
-  height: 175,
-  goal: 'lose',
-  macroTarget: {
-    calories: 2000,
-    protein: 150,
-    carbs: 200,
-    fat: 65,
-  },
-})
-
-// 3. Lấy log của một ngày
-const todayLog = getLog('2024-05-08')
-
-// 4. Lưu log mới
-saveLog('2024-05-08', {
-  date: '2024-05-08',
-  meals: [],
-  totalCalories: 0,
-})
-
-// 5. Lấy logs từ khoảng thời gian (7 ngày)
-const weekLogs = getLogs('2024-05-01', '2024-05-08')
-weekLogs.forEach(log => {
-  console.log(`${log.date}: ${log.totalCalories} kcal`)
-})
-```
-
-### Cơ Chế Lưu Trữ
-
-```
-localStorage
-├── "calorie_profile"              # Lưu UserProfile
-└── "calorie_log_YYYY-MM-DD"       # Lưu DailyLog theo ngày
-    ├── "calorie_log_2024-05-08"
-    ├── "calorie_log_2024-05-07"
-    └── ...
-```
-
-### Lưu Ý Quan Trọng
-
-- **Format ngày**: Luôn `YYYY-MM-DD` (ví dụ: `2024-05-08`)
-- **Xử lý lỗi**: Hàm trả về `null` hoặc `[]` nếu lỗi, không bao giờ throw
-- **Client-only**: Storage chỉ hoạt động trên browser
-- **LocalStorage limit**: ~5-10MB, cần quản lý dữ liệu cũ để tránh vượt quá
-
-## Các Thành Phần (Components)
-
-Thư mục `components/` chứa các phần tử UI tái sử dụng. Dưới đây là các thành phần mẫu và vai trò của chúng:
-
-| Tên Thành Phần | Vai Trò | Mục Đích |
-|---|---|---|
-| `Button` | Điều khiển UI | Nút bấm có các biến thể (primary, secondary) |
-| `Input` | Nhập Dữ Liệu | Ô nhập văn bản cho nhập calo và dữ liệu người dùng |
-| `Card` | Container | Hiển thị thông tin nhóm (tóm tắt hàng ngày, thống kê) |
-| `Chart` | Trực Quan Hóa | Hiển thị xu hướng calo và biểu đồ bằng Recharts |
-| `Header` | Điều Hướng | Thanh điều hướng trên cùng với logo và menu |
-| `Footer` | Bố Cục | Phần footer với liên kết và bản quyền |
-
-**Cấu Trúc Thành Phần:**
-Mỗi thành phần nên:
-- Độc lập và tái sử dụng được
-- Chấp nhận props để tùy chỉnh
-- Bao gồm các kiểu TypeScript
-- Tuân theo quy ước đặt tên (PascalCase)
-
-## Quyết Định Công Nghệ
-
-### Tại Sao Chọn Những Công Nghệ Này?
-
-| Công Nghệ | Lý Do |
-|---|---|
-| **Next.js** | Framework React hiện đại với routing, SSR và tối ưu hóa sẵn có |
-| **TypeScript** | An toàn kiểu dữ liệu giảm lỗi và cải thiện khả năng bảo trì |
-| **Tailwind CSS** | CSS theo tiện ích để phát triển UI nhanh chóng và nhất quán |
-| **Zustand** | Quản lý trạng thái đơn giản, nhẹ mà không cần phức tạp như Redux |
-| **Recharts** | Các thành phần React có thể kết hợp để tạo biểu đồ đẹp |
-| **Lucide React** | Thư viện biểu tượng hiện đại, nhất quán và dễ tùy chỉnh |
-
-## Hướng Dẫn Cho Nhà Phát Triển
-
-### Bắt Đầu
-
-#### 1. Cài Đặt
-
-Cài đặt các phụ thuộc dự án:
-
-```bash
-npm install
-```
-
-#### 2. Chạy Server Phát Triển
-
-Khởi động server phát triển cục bộ:
-
-```bash
-npm run dev
-```
-
-Ứng dụng sẽ khả dụng tại `http://localhost:3000`
-
-#### 3. Xây Dựng Cho Sản Xuất
-
-Xây dựng gói sản xuất tối ưu:
-
-```bash
-npm run build
-npm start
-```
-
-### Quy Ước Mã
-
-#### Quy Ước Đặt Tên
-
-- **Thành Phần:** Sử dụng PascalCase (ví dụ: `UserProfile`, `CalorieInput`)
-- **Hàm:** Sử dụng camelCase (ví dụ: `calculateTotalCalories`, `formatDate`)
-- **Hằng Số:** Sử dụng UPPER_SNAKE_CASE (ví dụ: `MAX_DAILY_CALORIES`, `API_BASE_URL`)
-- **Tệp:** Khớp với tên thành phần (ví dụ: `UserProfile.tsx`)
-
-#### Cấu Trúc Tệp
-
-- Đặt các thành phần trong thư mục `components/`
-- Nhóm các thành phần liên quan trong thư mục con nếu cần
-- Giữ logic thành phần đơn giản; chuyển logic phức tạp đến `lib/`
-- Định nghĩa các kiểu trong thư mục `types/`
-- Lưu các hàm tái sử dụng trong thư mục `lib/`
-
-#### Các Thực Hành Tốt Nhất của TypeScript
-
-- Luôn định nghĩa các kiểu cho props và giá trị trả về
-- Sử dụng interface cho hình dạng đối tượng
-- Tránh kiểu `any`; sử dụng các kiểu cụ thể thay vào đó
-- Ví dụ:
-
-```typescript
-interface CalorieEntry {
-  id: string;
-  date: Date;
-  amount: number;
-  category: string;
-}
-
-interface CalorieInputProps {
-  onSubmit: (entry: CalorieEntry) => void;
-}
-
-const CalorieInput: React.FC<CalorieInputProps> = ({ onSubmit }) => {
-  // Triển khai thành phần
-};
-```
-
-#### Mẹo Phát Triển Thành Phần
-
-1. **Bắt đầu với interface TypeScript** cho props thành phần
-2. **Giữ các thành phần nhỏ** - mỗi thành phần nên có một trách nhiệm
-3. **Trích xuất logic** vào hàm `lib/` để kiểm tra và tái sử dụng
-4. **Sử dụng Zustand hooks** cho trạng thái toàn cục trong thành phần
-5. **Tạo kiểu với Tailwind** bằng các lớp tiện ích
-6. **Ghi chú logic phức tạp** bằng nhận xét
-
-### Các Lệnh npm Hữu Ích
-
-```bash
-npm run dev          # Khởi động server phát triển
-npm run build        # Xây dựng cho sản xuất
-npm run lint         # Chạy ESLint kiểm tra chất lượng mã
-npm run type-check   # Kiểm tra các kiểu TypeScript
+│
+├── 📂 app/                          # Next.js App Router
+│   ├── 📄 layout.tsx               # Root layout (Geist fonts setup)
+│   ├── 📄 page.tsx                 # Home page (hiện tại: "App Ready")
+│   ├── 📄 globals.css              # Global styles với Tailwind
+│   └── favicon.ico
+│
+├── 📂 components/                  # UI Components (tái sử dụng)
+│   └── 📄 button.tsx               # Button component cơ bản
+│
+├── 📂 lib/                         # Utilities & Logic Functions
+│   └── 📄 storage.ts              # localStorage abstraction layer
+│       ├── getProfile() / saveProfile()
+│       ├── getLog() / saveLog()
+│       └── getLogs(startDate, endDate)
+│
+├── 📂 store/                       # State Management (Zustand)
+│   └── 📄 useAppStore.ts          # Global store
+│       ├── test: string
+│       └── setTest(value): void
+│
+├── 📂 types/                       # TypeScript Type Definitions
+│   ├── 📄 index.ts                # Main interfaces:
+│   │   ├── MacroTarget
+│   │   ├── UserProfile
+│   │   ├── Ingredient
+│   │   ├── MealEntry
+│   │   └── DailyLog
+│   └── 📄 user.ts                 # User interface
+│
+├── 📂 public/                      # Static assets (images, icons...)
+│
+├── 📂 docs/                        # Documentation (Astro Starlight)
+│   ├── astro.config.mjs
+│   ├── package.json
+│   └── src/
+│       ├── content/
+│       │   └── docs/
+│       │       ├── index.mdx       # Tài liệu chính
+│       │       ├── guides/
+│       │       └── reference/
+│       └── content.config.ts
+│
+└── ⚙️ Configuration Files
+    ├── eslint.config.mjs           # ESLint rules
+    ├── next.config.ts              # Next.js config
+    ├── tsconfig.json               # TypeScript config
+    ├── tailwind.config.js          # Tailwind config
+    ├── postcss.config.mjs          # PostCSS config
+    └── package.json                # Dependencies & scripts
 ```
 
 ---
 
-Để biết thêm thông tin về Next.js, hãy truy cập [tài liệu Next.js](https://nextjs.org/docs). Để tìm hiểu về các tính năng tài liệu Starlight, hãy kiểm tra [tài liệu Starlight](https://starlight.astro.build/).
+## 🔗 Cấu Trúc Dữ Liệu
+
+### Hệ Thống Kiểu (Type System)
+
+Tất cả interface được định nghĩa trong `types/index.ts`:
+
+```
+MacroTarget (Mục tiêu dinh dưỡng)
+    ├── calories: number
+    ├── protein: number
+    ├── carbs: number
+    └── fat: number
+         ↓ (contained in)
+    
+UserProfile (Thông tin người dùng)
+    ├── name: string
+    ├── age: number
+    ├── weight: number
+    ├── height: number
+    ├── goal: 'lose' | 'maintain' | 'gain'
+    └── macroTarget: MacroTarget
+
+Ingredient (Nguyên liệu)
+    ├── name: string
+    ├── calories: number
+    ├── protein: number
+    ├── carbs: number
+    ├── fat: number
+    └── amount: number
+         ↓ (multiple in)
+    
+MealEntry (Một bữa ăn)
+    ├── id: string
+    ├── mealType: 'breakfast' | 'lunch' | 'dinner' | 'snack'
+    ├── ingredients: Ingredient[]
+    ├── totalCalories: number
+    └── time: string (HH:mm)
+         ↓ (multiple per day)
+    
+DailyLog (Nhật ký hàng ngày)
+    ├── date: string (YYYY-MM-DD)
+    ├── meals: MealEntry[]
+    └── totalCalories: number
+```
+
+### Bảng Quan Hệ Dữ Liệu
+
+| Interface | Mục Đích | Chứa | Được Chứa Trong | Số Lượng |
+|-----------|----------|------|-----------------|----------|
+| **MacroTarget** | Mục tiêu dinh dưỡng | (không) | UserProfile | 1:1 |
+| **UserProfile** | Thông tin người dùng | MacroTarget | Zustand Store | 1:1 |
+| **Ingredient** | Dữ liệu thực phẩm | (không) | MealEntry | 1:N |
+| **MealEntry** | Một bữa ăn | Ingredient[] | DailyLog | 1:N |
+| **DailyLog** | Dữ liệu ngày | MealEntry[] | localStorage | 1:N |
+
+---
+
+## 🏗️ Kiến Trúc & Luồng Dữ Liệu
+
+### Luồng Dữ Liệu Ứng Dụng
+
+```
+┌──────────────────────────────────┐
+│   User Interaction               │
+│   (Forms, Buttons, Input)        │
+└──────────────┬───────────────────┘
+               │
+       ┌───────▼────────┐
+       │  Zustand Store │
+       │  useAppStore   │
+       │                │
+       │  - Profile     │
+       │  - Logs        │
+       │  - Settings    │
+       └───────┬────────┘
+               │
+    ┌──────────┴──────────┐
+    │                     │
+┌───▼────────┐      ┌────▼─────┐
+│localStorage│      │React State│
+│(Persistence)      │(Rendering)
+└───────┬────────┘      └────┬─────┘
+        │                     │
+        └──────────┬──────────┘
+                   │
+         ┌─────────▼────────┐
+         │ UI Components    │
+         │(Tailwind Styles) │
+         └──────────────────┘
+```
+
+### Quy Trình Làm Việc Điển Hình
+
+```
+1. NGƯỜI DÙNG MỞ ỨNG DỤNG
+   └─ Load dữ liệu từ localStorage
+   └─ Populate Zustand store
+   
+2. NGƯỜI DÙNG ĐIỀU HƯỚNG
+   └─ Click navigation (Next.js routing)
+   └─ Load page component
+   
+3. NGƯỜI DÙNG NHẬP DỮ LIỆU
+   └─ Điền form (meal, ingredients...)
+   └─ Component update local state
+   
+4. NGƯỜI DÙNG GỬI
+   └─ Validate dữ liệu
+   └─ Update Zustand store
+   └─ Persist vào localStorage
+   └─ UI components re-render
+   
+5. NGƯỜI DÙNG XEM PHÂN TÍCH
+   └─ Charts fetch dữ liệu từ Zustand
+   └─ Recharts render visualization
+   
+6. SESSION KẾT THÚC
+   └─ Dữ liệu vẫn lưu trong localStorage
+```
+
+---
+
+## 💾 Storage Layer
+
+### Chiến Lược Lưu Trữ
+
+Module `lib/storage.ts` cung cấp abstraction layer an toàn cho localStorage:
+
+```typescript
+// Đọc dữ liệu
+const profile = getProfile()              // UserProfile | null
+const dailyLog = getLog("2024-05-08")    // DailyLog | null
+const weekLogs = getLogs("2024-05-01", "2024-05-08")  // DailyLog[]
+
+// Lưu dữ liệu
+saveProfile(userProfile)                  
+saveLog("2024-05-08", dailyLog)
+```
+
+### Khóa Storage
+
+```
+calorie_profile          → UserProfile
+calorie_log_2024-05-08   → DailyLog cho ngày cụ thể
+calorie_log_2024-05-07   → DailyLog cho ngày khác
+...
+```
+
+### Lợi Ích
+
+- ✅ Safe JSON parsing (không crash nếu dữ liệu hỏng)
+- ✅ Browser-safe (kiểm tra window/localStorage existence)
+- ✅ Centralized (một chỗ quản lý storage logic)
+- ✅ Type-safe (trả về typed objects)
+- ✅ Dễ migrate (có thể swap sang backend API sau)
+
+---
+
+## 📦 State Management với Zustand
+
+### Cấu Hình Store Hiện Tại
+
+```typescript
+import { create } from 'zustand'
+
+type AppState = {
+  test: string
+  setTest: (value: string) => void
+}
+
+export const useAppStore = create<AppState>((set) => ({
+  test: '',
+  setTest: (value) => set({ test: value })
+}))
+```
+
+### Tại Sao Zustand?
+
+| Tiêu Chí | Zustand | Redux | Context |
+|----------|---------|-------|---------|
+| Bundle Size | ~1KB | ~40KB | ~0KB |
+| Học Tập | Rất dễ | Khó | Trung bình |
+| Boilerplate | Tối thiểu | Nhiều | Vừa |
+| Hiệu Năng | Tuyệt vời | Tốt | Có thể chậm |
+
+### Cấu Trúc Store Khuyến Nghị (Giai Đoạn Tiếp)
+
+```typescript
+type AppState = {
+  // User Profile
+  userProfile: UserProfile | null
+  setUserProfile: (profile: UserProfile) => void
+  
+  // Daily Logs
+  dailyLogs: Map<string, DailyLog>
+  addMeal: (date: string, meal: MealEntry) => void
+  
+  // UI State
+  isLoading: boolean
+  error: string | null
+}
+```
+
+---
+
+## 🚀 Bắt Đầu Nhanh
+
+### Yêu Cầu
+- Node.js 18+ (khuyến nghị 20+)
+- npm 9+ hoặc yarn 3+
+- Git
+
+### Cài Đặt
+
+1. **Clone dự án**
+   ```bash
+   git clone <repository-url>
+   cd calorie-web
+   ```
+
+2. **Cài đặt dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Chạy development server**
+   ```bash
+   npm run dev
+   ```
+
+4. **Mở browser**
+   - Truy cập `http://localhost:3000`
+   - Bạn sẽ thấy "App Ready"
+
+### Các Lệnh Có Sẵn
+
+| Lệnh | Command | Mục Đích |
+|------|---------|---------|
+| **dev** | `next dev` | Start development server |
+| **build** | `next build` | Production build |
+| **start** | `next start` | Run production build |
+| **lint** | `eslint` | Code quality check |
+| **docs** | `documentation build ...` | Generate docs |
+
+---
+
+## ✨ Trạng Thái Hiện Tại
+
+### ✅ Hoàn Thành
+- [x] Next.js 16 setup với App Router
+- [x] TypeScript strict mode
+- [x] Tailwind CSS v4 integration
+- [x] Type definitions (MacroTarget, UserProfile, MealEntry, DailyLog, Ingredient)
+- [x] Storage layer (localStorage abstraction)
+- [x] Zustand store initialization
+- [x] Button component
+- [x] ESLint configuration
+- [x] Global styles
+- [x] Font setup (Geist Sans/Mono)
+
+### 🔄 Đang Phát Triển
+- [ ] Main dashboard page
+- [ ] User profile page
+- [ ] Daily log page
+- [ ] Form components
+- [ ] Ingredient selector
+
+### 📋 Planned (Sắp Làm)
+- [ ] Calorie tracking interface
+- [ ] Recharts integration
+- [ ] Analytics page
+- [ ] Settings page
+- [ ] Backend integration (future)
+
+---
+
+## 📋 Tiến Độ Team
+
+### Phase 1: Foundation ✅ (Hoàn thành)
+- Project setup
+- Type definitions
+- Storage layer
+- Zustand store
+
+### Phase 2: Core UI 🔄 (Đang làm)
+- Main pages
+- Form components
+- UI components
+
+### Phase 3: Features 📋 (Sắp làm)
+- Meal logging
+- Data visualization
+- Analytics
+
+### Phase 4: Polish 📋 (Sắp làm)
+- Testing
+- Optimization
+- Documentation
+
+---
+
+## 🛠️ Quy Trình Phát Triển
+
+### Standard Development Process
+
+```
+1. Tạo Branch
+   └─ feature/* hoặc bugfix/* từ main
+   
+2. Phát Triển
+   └─ Code theo conventions
+   └─ Test ở development server
+   
+3. Kiểm Tra Chất Lượng
+   └─ npm run lint
+   └─ Sửa lỗi ESLint
+   
+4. Commit & Push
+   └─ Conventional commits
+   └─ git push origin branch-name
+   
+5. Pull Request
+   └─ Tạo PR trên GitHub
+   └─ Request review
+   
+6. Merge
+   └─ Sau khi approved
+   └─ Xóa feature branch
+```
+
+### Commit Convention
+
+```
+feat: Thêm tính năng mới
+fix: Sửa lỗi
+docs: Cập nhật tài liệu
+refactor: Tái cấu trúc code
+style: Format code
+chore: Maintenance
+```
+
+---
+
+## 📝 Code Standards
+
+### TypeScript
+- Luôn define return types
+- Dùng interfaces cho object types
+- Strict mode bắt buộc
+- Import types với `import type`
+
+### Components
+- Functional components + hooks
+- PascalCase filenames (Button.tsx)
+- Một component per file
+- JSDoc comments cho public APIs
+
+### State Management
+- Zustand cho global state
+- Keep slices focused
+- TypeScript cho store types
+
+### Styling
+- Tailwind CSS utilities
+- Không inline styles
+- CSS variables cho custom values
+
+---
+
+## 🔗 Tài Liệu Tham Khảo
+
+- **Next.js Docs:** https://nextjs.org/docs
+- **React 19:** https://react.dev
+- **Tailwind CSS:** https://tailwindcss.com
+- **Zustand:** https://github.com/pmndrs/zustand
+- **Recharts:** https://recharts.org
+- **TypeScript:** https://www.typescriptlang.org
+
+---
+
+## 📞 Liên Hệ & Đóng Góp
+
+Xem [Hướng Dẫn Đóng Góp](../README.md#git-workflow) trong README chính.
+
+---
+
+**Documentation Version:** 0.1.0  
+**Last Updated:** 08/05/2026

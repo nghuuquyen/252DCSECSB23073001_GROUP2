@@ -1,33 +1,36 @@
 # 🍽️ Calorie Web
 
-Ứng dụng web giúp theo dõi và quản lý lượng calo hằng ngày, được xây dựng bằng Next.js.  
-Dự án hướng đến sự đơn giản, dễ sử dụng và phù hợp với sinh viên hoặc người mới bắt đầu.
+**Ứng dụng web quản lý calo hàng ngày** - Được xây dựng bằng Next.js 16, React 19, TypeScript
+
+Dự án tập trung vào tính đơn giản, dễ sử dụng và phù hợp với sinh viên hoặc người mới bắt đầu.
+
+> **Trạng thái:** v0.1.0 (Early Stage Development)
 
 ---
 
-##  Giới thiệu
+## 📋 Mục lục
 
-Calorie Web là một ứng dụng hỗ trợ người dùng:
+- [Giới thiệu](#giới-thiệu)
+- [Tech Stack](#tech-stack)
+- [Cấu trúc Thư Mục](#cấu-trúc-thư-mục)
+- [Hướng Dẫn Cài Đặt](#hướng-dẫn-cài-đặt)
+- [Chạy Dự Án](#chạy-dự-án)
+- [Tính Năng Hiện Tại](#tính-năng-hiện-tại)
+- [Git Workflow](#git-workflow)
+- [Tiến Độ Hiện Tại](#tiến-độ-hiện-tại)
+- [Công Việc Sắp Tới](#công-việc-sắp-tới)
+
+---
+
+## 🎯 Giới thiệu
+
+**Calorie Web** là ứng dụng giúp người dùng:
 - Ghi lại lượng calo tiêu thụ mỗi ngày
 - Theo dõi dinh dưỡng cơ bản (protein, carbs, fat)
 - Trực quan hóa dữ liệu bằng biểu đồ
 - Thiết lập mục tiêu calo cá nhân
 
-Dự án hiện đang trong giai đoạn phát triển ban đầu.
-
----
-
-##  Mục tiêu
-
-- Xây dựng ứng dụng nhẹ, nhanh, dễ dùng
-- Giúp người dùng hiểu thói quen ăn uống
-- Hỗ trợ duy trì lối sống lành mạnh
-- Tối ưu trải nghiệm cho người mới bắt đầu
-
----
-
-## 👥 Đối tượng sử dụng
-
+**Đối tượng sử dụng:**
 - Sinh viên muốn quản lý chế độ ăn
 - Người tập gym theo dõi dinh dưỡng
 - Người muốn kiểm soát cân nặng
@@ -35,205 +38,264 @@ Dự án hiện đang trong giai đoạn phát triển ban đầu.
 
 ---
 
-## ✨ Tính năng (Planned)
+## 🛠️ Tech Stack
 
--  Ghi lại lượng calo hằng ngày
--  Theo dõi macros (protein, carbs, fat)
--  Biểu đồ thống kê trực quan
--  Đặt mục tiêu calo cá nhân
-
----
-
-##  Công nghệ sử dụng
-
-- **Next.js (App Router)**
-- **React**
-- **TypeScript**
-- **Tailwind CSS**
-- **Zustand** (state management)
-- **Recharts** (chart visualization)
-- **Lucide React** (icons)
+| Công Nghệ | Phiên Bản | Mục Đích |
+|-----------|----------|---------|
+| **Next.js** | 16.2.4 | Full-stack framework với App Router |
+| **React** | 19.2.4 | UI component library |
+| **TypeScript** | 5 | Type safety |
+| **Tailwind CSS** | 4 | Styling framework |
+| **Zustand** | 5.0.13 | State management |
+| **Recharts** | 3.8.1 | Data visualization |
+| **Lucide React** | 1.14.0 | Icon library |
+| **ESLint** | 9 | Code quality |
 
 ---
 
-##  Cấu trúc thư mục (Project Structure)
+## 📁 Cấu Trúc Thư Mục
+
+```
+calorie-web/
+├── app/                 # Next.js App Router
+│   ├── layout.tsx      # Root layout
+│   ├── page.tsx        # Home page
+│   ├── globals.css     # Global styles
+│   └── favicon.ico
+│
+├── components/          # UI Components
+│   └── button.tsx      # Button component
+│
+├── lib/                 # Utilities & Logic
+│   └── storage.ts      # localStorage abstraction layer
+│
+├── store/              # State Management
+│   └── useAppStore.ts  # Zustand store
+│
+├── types/              # TypeScript Definitions
+│   ├── index.ts        # Main interfaces
+│   └── user.ts         # User types
+│
+├── public/             # Static assets
+│
+├── docs/               # Documentation (Astro Starlight)
+│   └── src/content/docs/
+│
+└── Config Files
+    ├── package.json
+    ├── tsconfig.json
+    ├── next.config.ts
+    ├── tailwind.config.js
+    └── eslint.config.mjs
+```
+
+---
+
+## 📦 Hướng Dẫn Cài Đặt
+
+### Yêu Cầu
+- Node.js 18+ (khuyến nghị 20+)
+- npm 9+ hoặc yarn 3+
+
+### Các Bước
+
+1. **Clone dự án**
+   ```bash
+   git clone <repository-url>
+   cd calorie-web
+   ```
+
+2. **Cài đặt dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Kiểm tra TypeScript**
+   ```bash
+   npm run build
+   ```
+
+---
+
+## 🚀 Chạy Dự Án
+
+### Development Server
+```bash
+npm run dev
+```
+Truy cập: **http://localhost:3000**
+
+### Production Build
+```bash
+npm run build
+npm run start
+```
+
+### Lint Code
+```bash
+npm run lint
+```
+
+### Available Scripts
+```bash
+npm run dev       # Start development server
+npm run build     # Create production build
+npm run start     # Start production server
+npm run lint      # Run ESLint checks
+npm run docs      # Generate documentation
+```
+
+---
+
+## ✨ Tính Năng Hiện Tại
+
+### ✅ Đã Hoàn Thành
+
+| Tính Năng | Mô Tả |
+|-----------|-------|
+| **TypeScript Setup** | Strict mode, full type safety |
+| **Tailwind CSS v4** | CSS framework + PostCSS |
+| **Zustand Store** | Global state management |
+| **Storage Layer** | localStorage abstraction (getProfile, saveProfile, getLog, saveLog, getLogs) |
+| **Type Definitions** | MacroTarget, UserProfile, Ingredient, MealEntry, DailyLog |
+| **Components** | Button component |
+| **ESLint** | Code quality checking |
+| **Next.js Layout** | Root layout with global styles |
+
+### 🔄 Đang Phát Triển
+
+- Giao diện UI chính
+- Form components
+- Dashboard
+
+### 📋 Planned (Sắp Làm)
+
+- Tính năng theo dõi calo
+- Biểu đồ trực quan
+- Quản lý profile người dùng
+- Settings page
+- Data persistence improvements
+
+---
+
+## 📌 Git Workflow
+
+### Branch Naming Convention
+
+```
+feature/<tên-tính-năng>
+  Ví dụ: feature/calorie-tracker
+
+bugfix/<mô-tả-lỗi>
+  Ví dụ: bugfix/storage-error
+
+docs/<chủ-đề>
+  Ví dụ: docs/setup-guide
+
+refactor/<component-name>
+  Ví dụ: refactor/storage-layer
+```
+
+### Commit Naming Convention
+
+```
+feat: Thêm tính năng mới
+  Ví dụ: feat: Thêm form ghi calo
+
+fix: Sửa lỗi
+  Ví dụ: fix: Sửa lỗi parse localStorage
+
+docs: Cập nhật documentation
+  Ví dụ: docs: Cập nhật README
+
+refactor: Tái cấu trúc code
+  Ví dụ: refactor: Tách storage logic
+
+style: Thay đổi format code
+  Ví dụ: style: Format với eslint
+
+chore: Maintenance
+  Ví dụ: chore: Cập nhật dependencies
+```
+
+### Quy Trình
 
 ```bash
-app/          # Routing và layout chính (Next.js App Router)
-components/   # UI components (Button, Card, Chart,...)
-lib/          # Xử lý logic, helper functions
-store/        # Quản lý state (Zustand)
-types/        # Định nghĩa TypeScript types
+# 1. Tạo branch feature
+git checkout -b feature/feature-name
+
+# 2. Commit thay đổi
+git add .
+git commit -m "feat: Mô tả tính năng"
+
+# 3. Push lên remote
+git push origin feature/feature-name
+
+# 4. Tạo Pull Request
+
+# 5. Merge sau khi approved
 ```
 
 ---
 
-## 📝 Type Definitions
+## 📊 Tiến Độ Hiện Tại
 
-### Tổng Quan
+### ✅ Hoàn Thành (v0.1.0)
+- [x] Project structure
+- [x] TypeScript + strict mode
+- [x] Tailwind CSS v4
+- [x] Next.js App Router
+- [x] Type definitions (MacroTarget, UserProfile, MealEntry, DailyLog, Ingredient)
+- [x] Storage layer (localStorage management)
+- [x] Zustand store setup
+- [x] Button component
+- [x] ESLint configuration
 
-Dự án sử dụng TypeScript với các interface được định nghĩa trong `types/index.ts`. Các interface này mô tả cấu trúc dữ liệu chính của ứng dụng.
+### 🔄 Đang Làm
+- [ ] UI/UX design
+- [ ] Form components
+- [ ] Main pages
 
-### Cấu Trúc Dữ Liệu
-
-| Interface | Mô tả | Quan hệ |
-|-----------|-------|---------|
-| **MacroTarget** | Mục tiêu dinh dưỡng hàng ngày (calo, protein, carbs, fat) | Được sử dụng trong `UserProfile` |
-| **UserProfile** | Thông tin cá nhân người dùng và mục tiêu dinh dưỡng | Chứa `MacroTarget` |
-| **Ingredient** | Nguyên liệu cơ bản (tên, calo, macros, số lượng) | Được sử dụng trong `MealEntry` |
-| **MealEntry** | Một bữa ăn cụ thể (loại, nguyên liệu, thời gian) | Chứa `Ingredient[]`, được sử dụng trong `DailyLog` |
-| **DailyLog** | Nhật ký calo toàn bộ một ngày | Chứa `MealEntry[]` |
-
-### Ví dụ sử dụng
-
-```typescript
-import { UserProfile, DailyLog, MealEntry, Ingredient } from '@/types'
-
-// Tạo UserProfile
-const userProfile: UserProfile = {
-  name: 'Nguyễn Văn A',
-  age: 25,
-  weight: 70,
-  height: 175,
-  goal: 'lose',
-  macroTarget: {
-    calories: 2000,
-    protein: 150,
-    carbs: 200,
-    fat: 65,
-  },
-}
-
-// Tạo một bữa ăn với nguyên liệu
-const breakfast: MealEntry = {
-  id: 'meal-1',
-  mealType: 'breakfast',
-  time: '08:00',
-  ingredients: [
-    {
-      name: 'Gạo trắng',
-      calories: 130,
-      protein: 2.7,
-      carbs: 28,
-      fat: 0.3,
-      amount: 100,
-    },
-  ],
-  totalCalories: 130,
-}
-
-// Tạo DailyLog
-const dailyLog: DailyLog = {
-  date: '2024-05-08',
-  meals: [breakfast],
-  totalCalories: 130,
-}
-```
-
-### Quy tắc đặt tên & format
-
-- **ID**: Sử dụng string (UUID hoặc custom string)
-- **Ngày**: Format `YYYY-MM-DD` (ví dụ: `2024-05-08`)
-- **Thời gian**: Format `HH:mm` (ví dụ: `08:00` hoặc `14:30`)
-- **Giá trị số**: Calo và macros lưu dưới dạng số (`number`)
-- **Goal**: Chỉ chấp nhận 3 giá trị: `lose`, `maintain`, `gain`
-- **MealType**: Chỉ chấp nhận 4 loại: `breakfast`, `lunch`, `dinner`, `snack`
+### 📋 Planned
+- [ ] Calorie tracking interface
+- [ ] Charts & visualization
+- [ ] User profile page
+- [ ] Settings
+- [ ] Backend integration (future)
 
 ---
 
-## 💾 Storage Layer
+## 📌 Công Việc Sắp Tới
 
-### Tổng Quan
+### Priority 1: Core Pages
+- [ ] Dashboard/Home page
+- [ ] User profile page
+- [ ] Daily log page
 
-Storage Layer (`lib/storage.ts`) cung cấp các hàm an toàn để quản lý localStorage. Tất cả dữ liệu người dùng và nhật ký calo được lưu trữ thông qua các hàm này.
+### Priority 2: Components
+- [ ] Form inputs
+- [ ] Card component
+- [ ] Meal entry component
 
-### Quy tắc bắt buộc
+### Priority 3: Features
+- [ ] Meal logging form
+- [ ] Ingredient selector
+- [ ] Data calculation
 
-- ❌ **KHÔNG** truy cập `localStorage` trực tiếp từ component
-- ✅ **LUÔN** import và sử dụng các hàm từ `@/lib/storage`
-- ✅ Tất cả lỗi được xử lý tự động (try-catch)
-
-### Các Hàm Chính
-
-| Hàm | Tham số | Trả về | Mô tả |
-|-----|---------|--------|-------|
-| `getProfile()` | - | `UserProfile \| null` | Đọc thông tin hồ sơ người dùng |
-| `saveProfile(profile)` | `profile: UserProfile` | `void` | Lưu thông tin hồ sơ người dùng |
-| `getLog(date)` | `date: string (YYYY-MM-DD)` | `DailyLog \| null` | Đọc nhật ký calo theo ngày |
-| `saveLog(date, log)` | `date: string, log: DailyLog` | `void` | Lưu nhật ký calo theo ngày |
-| `getLogs(startDate, endDate)` | `startDate, endDate: string (YYYY-MM-DD)` | `DailyLog[]` | Lấy logs trong khoảng thời gian |
-
-### Ví dụ Sử Dụng
-
-```typescript
-import { 
-  getProfile, 
-  saveProfile, 
-  getLog, 
-  saveLog, 
-  getLogs 
-} from '@/lib/storage'
-
-// Lấy profile hiện tại
-const profile = getProfile()
-if (!profile) {
-  console.log('Chưa có profile, tạo mới')
-}
-
-// Lưu profile
-saveProfile({
-  name: 'Nguyễn Văn A',
-  age: 25,
-  weight: 70,
-  height: 175,
-  goal: 'lose',
-  macroTarget: {
-    calories: 2000,
-    protein: 150,
-    carbs: 200,
-    fat: 65,
-  },
-})
-
-// Lấy log của một ngày
-const todayLog = getLog('2024-05-08')
-
-// Lưu log
-saveLog('2024-05-08', {
-  date: '2024-05-08',
-  meals: [],
-  totalCalories: 0,
-})
-
-// Lấy logs từ 7 ngày trước
-const weekLogs = getLogs('2024-05-01', '2024-05-08')
-console.log(`Tổng logs: ${weekLogs.length}`)
-```
-
-### Lưu Ý Quan Trọng
-
-- **Format ngày**: Luôn sử dụng `YYYY-MM-DD` (ví dụ: `2024-05-08`)
-- **Xử lý lỗi**: Tất cả các hàm đều có try-catch, trả về `null` hoặc `[]` nếu lỗi
-- **Client-only**: Storage chỉ hoạt động ở browser, server sẽ bỏ qua
-- **LocalStorage limits**: Mỗi trình duyệt có giới hạn ~5-10MB, cần quản lý dữ liệu cũ
-
-##  Công nghệ sử dụng
-
-- **Next.js (App Router)**
-- **React**
-- **TypeScript**
-- **Tailwind CSS**
-- **Zustand** (state management)
-- **Recharts** (chart visualization)
-- **Lucide React** (icons)
+### Priority 4: Visualization
+- [ ] Integrate Recharts
+- [ ] Charts display
+- [ ] Analytics page
 
 ---
 
-##  Cấu trúc thư mục (Project Structure)
+## 📝 Ghi Chú Khác
 
-```bash
-app/          # Routing và layout chính (Next.js App Router)
-components/   # UI components (Button, Card, Chart,...)
-lib/          # Xử lý logic, helper functions
-store/        # Quản lý state (Zustand)
-types/        # Định nghĩa TypeScript types
+- Code được viết bằng **TypeScript strict mode** - đảm bảo type safety
+- Storage layer được thiết kế để dễ dàng migrate sang backend sau
+- Sử dụng **Zustand** thay vì Redux để code gọn gàng và dễ hiểu
+
+---
+
+**Cập nhật lần cuối:** 08/05/2026  
+**Version:** 0.1.0
