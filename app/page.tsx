@@ -1,4 +1,4 @@
-import { Home } from "lucide-react"
+import { Home } from "lucide-react";
 
 export default function Page() {
   return (
@@ -6,6 +6,5 @@ export default function Page() {
       <Home />
       App Ready
     </div>
-  )
+  );
 }
-
