@@ -1,112 +1,114 @@
 "use client";
 
-import { useState } from "react";
-import { 
-  TrendingDown, Scale, TrendingUp, ArrowRight, 
-  ChevronDown, CheckCircle2, User, AlertCircle 
-} from "lucide-react";
+import { useState, useEffect } from "react";
+import { ArrowRight, TrendingDown, Scale, TrendingUp, ChevronDown } from "lucide-react";
 import { useProfileStore } from "@/store/profileStore"; 
 import type { UserProfile } from "@/types";
 
 const activityLevels = [
   { value: 1.2, label: 'Ít vận động (ngồi nhiều)' },
-  { value: 1.375, label: 'Nhẹ (1-3 ngày/tuần)' },
-  { value: 1.55, label: 'Vừa (3-5 ngày/tuần)' },
-  { value: 1.725, label: 'Nhiều (6-7 ngày/tuần)' },
-  { value: 1.9, label: 'Rất nhiều (2 lần/ngày)' },
+  { value: 1.375, label: 'Vận động nhẹ (1-3 buổi/tuần)' },
+  { value: 1.55, label: 'Vận động vừa (3-5 buổi/tuần)' },
+  { value: 1.725, label: 'Vận động nhiều (6-7 buổi/tuần)' },
+  { value: 1.9, label: 'Vận động rất nhiều' },
 ];
 
 export default function ProfileForm() {
   const { setProfile } = useProfileStore();
   
   const [form, setForm] = useState({
-    name: "",
     gender: "male",
     age: "25",
     weight: "70",
     height: "175",
     activityLevel: 1.55,
-    goal: "lose",
+    goal: "maintain" as "lose" | "maintain" | "gain",
   });
 
-  const [isSaved, setIsSaved] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [results, setResults] = useState({
+    calories: 1850,
+    protein: 116,
+    carbs: 231,
+    fat: 51
+  });
 
-  const validate = () => {
-    const e: Record<string, string> = {};
-    if (!form.name.trim()) e.name = "Vui lòng nhập tên của bạn";
-    if (!form.age || +form.age < 10 || +form.age > 100) e.age = "Tuổi phải từ 10-100";
-    if (!form.weight || +form.weight < 30 || +form.weight > 300) e.weight = "Cân nặng từ 30-300kg";
-    if (!form.height || +form.height < 100 || +form.height > 250) e.height = "Chiều cao từ 100-250cm";
-    return e;
-  };
+  // Tính TDEE Real-time
+  useEffect(() => {
+    const w = +form.weight;
+    const h = +form.height;
+    const a = +form.age;
+
+    if (!w || !h || !a) return;
+
+    let bmr = (10 * w) + (6.25 * h) - (5 * a);
+    bmr = form.gender === "male" ? bmr + 5 : bmr - 161;
+
+    let tdee = bmr * form.activityLevel;
+
+    if (form.goal === "lose") tdee -= 500;
+    if (form.goal === "gain") tdee += 500;
+
+    const finalCal = Math.round(tdee);
+    const protein = Math.round((finalCal * 0.3) / 4);
+    const fat = Math.round((finalCal * 0.25) / 9);
+    const carbs = Math.round((finalCal * 0.45) / 4);
+
+    setResults({ calories: finalCal, protein, carbs, fat });
+  }, [form]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const validationErrors = validate();
     
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
-
-    setErrors({});
-    
-    // Gửi dữ liệu chuẩn cho Zustand (đã làm sạch để khớp với TypeScript của nhóm)
     const profile: UserProfile = {
-      name: form.name,
+      name: "Người dùng",
       age: +form.age,
       weight: +form.weight,
       height: +form.height,
-      goal: form.goal as "lose" | "maintain" | "gain",
-      macroTarget: { calories: 1850, protein: 116, carbs: 231, fat: 51 }, 
+      goal: form.goal,
+      macroTarget: { 
+        calories: results.calories, 
+        protein: results.protein, 
+        carbs: results.carbs, 
+        fat: results.fat 
+      }, 
     };
 
     setProfile(profile); 
-    setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 3000);
+    alert("Hồ sơ đã được đồng bộ thành công!");
   };
 
   return (
-    <div className="min-h-screen bg-[#F4FAF7] flex items-center justify-center p-4 font-sans text-[#1A2F24]">
-      <div className="max-w-md w-full bg-[#F4FAF7] rounded-3xl p-6 sm:p-8">
+    <div className="min-h-screen bg-[#F7FDF9] flex items-center justify-center p-4 font-sans text-[#1A2F24]">
+      <div className="max-w-[480px] w-full pt-8 pb-12 px-6 sm:px-10">
         
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-2 mb-4 text-[#084C3A]">
-            <span className="text-2xl font-bold">🔥 CaloMate</span>
+        <div className="text-center mb-10">
+          <div className="flex items-center justify-center gap-2 mb-6">
+            <div className="w-8 h-8 rounded-full border-[3px] border-[#084C3A] flex items-center justify-center">
+              <div className="w-3 h-4 bg-[#084C3A] rounded-t-full rounded-b-sm"></div>
+            </div>
+            <span className="text-xl font-bold text-[#084C3A]">CaloMate</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#084C3A] mb-2">Hồ Sơ Cá Nhân</h1>
-          <p className="text-sm text-gray-600">Thiết lập mục tiêu để CaloMate đồng hành cùng bạn</p>
+          <h1 className="text-3xl font-bold text-[#084C3A] leading-tight mb-3">Hãy bắt đầu hành trình của<br/>bạn</h1>
+          <p className="text-sm text-[#1A2F24] font-medium">Chúng tôi sẽ tính lượng calo phù hợp với<br/>cơ thể bạn</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Tên */}
-          <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase mb-2">Tên của bạn</label>
-            <div className="relative">
-              <input
-                type="text"
-                value={form.name}
-                onChange={(e) => setForm({...form, name: e.target.value})}
-                className={`w-full bg-white px-4 py-3 rounded-2xl focus:outline-none border-2 transition-all ${errors.name ? 'border-red-400' : 'border-transparent focus:border-[#084C3A]'}`}
-                placeholder="Nhập tên..."
-              />
-              <User className="absolute right-4 top-3.5 w-5 h-5 text-gray-300" />
-            </div>
-            {errors.name && <p className="text-red-500 text-[10px] mt-1 ml-2 font-bold flex items-center gap-1"><AlertCircle className="w-3 h-3"/> {errors.name}</p>}
-          </div>
-
+        <form onSubmit={handleSubmit} className="space-y-6">
+          
           {/* Giới tính */}
           <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase mb-2">Giới tính</label>
-            <div className="flex bg-gray-200/60 p-1 rounded-2xl">
+            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Giới tính</label>
+            <div className="flex bg-[#EAEFEA] p-1 rounded-xl">
               {['male', 'female'].map((g) => (
                 <button
                   key={g}
                   type="button"
                   onClick={() => setForm({...form, gender: g})}
-                  className={`flex-1 py-3 text-sm font-semibold rounded-xl transition-all ${form.gender === g ? "bg-white text-[#084C3A] shadow-sm" : "text-gray-500"}`}
+                  className={`flex-1 py-3.5 text-sm font-semibold rounded-lg transition-all ${
+                    form.gender === g 
+                    ? "bg-white text-[#084C3A] shadow-sm" 
+                    : "text-gray-500 hover:text-[#084C3A]"
+                  }`}
                 >
                   {g === 'male' ? 'Nam' : 'Nữ'}
                 </button>
@@ -115,19 +117,19 @@ export default function ProfileForm() {
           </div>
 
           {/* Tuổi, Cao, Nặng */}
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-4">
             {[
-              { key: 'age', label: 'Tuổi', unit: '' },
-              { key: 'height', label: 'Cao', unit: 'cm' },
-              { key: 'weight', label: 'Nặng', unit: 'kg' },
+              { key: 'age', label: 'TUỔI' },
+              { key: 'height', label: 'CAO (CM)' },
+              { key: 'weight', label: 'NẶNG (KG)' },
             ].map((item) => (
               <div key={item.key}>
-                <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1 text-center">{item.label} {item.unit && `(${item.unit})`}</label>
+                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">{item.label}</label>
                 <input
                   type="number"
                   value={form[item.key as keyof typeof form]}
                   onChange={(e) => setForm({...form, [item.key]: e.target.value})}
-                  className={`w-full bg-white text-center text-lg font-bold py-3 rounded-2xl focus:outline-none border-2 transition-all ${errors[item.key] ? 'border-red-400' : 'border-transparent focus:border-[#084C3A]'}`}
+                  className="w-full bg-white text-[#1A2F24] text-base font-semibold px-4 py-3.5 rounded-xl focus:outline-none border border-transparent focus:border-[#084C3A] shadow-sm transition-all"
                 />
               </div>
             ))}
@@ -135,23 +137,23 @@ export default function ProfileForm() {
 
           {/* Mức độ hoạt động */}
           <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase mb-2">Mức độ vận động</label>
+            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">MỨC ĐỘ HOẠT ĐỘNG</label>
             <div className="relative">
               <select
                 value={form.activityLevel}
                 onChange={(e) => setForm({...form, activityLevel: +e.target.value})}
-                className="w-full bg-white text-sm font-semibold py-4 pl-4 pr-10 rounded-2xl appearance-none focus:outline-none border-2 border-transparent focus:border-[#084C3A]"
+                className="w-full bg-white text-[#1A2F24] text-sm font-semibold py-4 pl-4 pr-10 rounded-xl appearance-none focus:outline-none border border-transparent focus:border-[#084C3A] shadow-sm transition-all"
               >
                 {activityLevels.map((a) => <option key={a.value} value={a.value}>{a.label}</option>)}
               </select>
-              <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
+              <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5 pointer-events-none" />
             </div>
           </div>
 
           {/* Mục tiêu */}
           <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase mb-2">Mục tiêu</label>
-            <div className="grid grid-cols-3 gap-2">
+            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">MỤC TIÊU CỦA BẠN</label>
+            <div className="grid grid-cols-3 gap-3">
               {[
                 { v: 'lose', l: 'Giảm cân', icon: TrendingDown },
                 { v: 'maintain', l: 'Duy trì', icon: Scale },
@@ -160,45 +162,61 @@ export default function ProfileForm() {
                 <button
                   key={g.v}
                   type="button"
-                  onClick={() => setForm({...form, goal: g.v})}
-                  className={`flex flex-col items-center p-3 rounded-2xl border-2 transition-all ${form.goal === g.v ? "bg-[#E6F4EA] border-[#084C3A] text-[#084C3A]" : "bg-white border-transparent text-gray-400"}`}
+                  onClick={() => setForm({...form, goal: g.v as any})}
+                  className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all ${
+                    form.goal === g.v 
+                    ? "bg-[#E6F4EA] border-[#084C3A] text-[#084C3A]" 
+                    : "bg-white border-transparent text-[#1A2F24] shadow-sm hover:border-[#E0E7E3]"
+                  }`}
                 >
-                  <g.icon className="w-5 h-5 mb-1" />
-                  <span className="text-[10px] font-bold">{g.l}</span>
+                  <g.icon className={`w-5 h-5 mb-2 ${form.goal === g.v ? 'text-[#084C3A]' : 'text-gray-500'}`} />
+                  <span className="text-[11px] font-bold">{g.l}</span>
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Preview Box - Đặc sản */}
-          <div className="bg-[#EAF3EE] p-4 rounded-2xl border border-[#D5E6DC]">
-            <div className="flex items-end gap-1 mb-3">
-              <span className="text-2xl font-extrabold text-[#084C3A]">1.850</span>
-              <span className="text-xs font-semibold text-[#084C3A] mb-1">kcal / ngày</span>
+          {/* Nhu cầu dinh dưỡng dự tính */}
+          <div className="bg-[#EAF3EE] p-5 rounded-2xl border border-[#D5E6DC] transition-all">
+            <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1">NHU CẦU DINH DƯỠNG DỰ TÍNH</p>
+            <div className="flex items-baseline gap-1 mb-5">
+              <span className="text-2xl font-bold text-[#084C3A]">{results.calories.toLocaleString()}</span>
+              <span className="text-sm font-semibold text-[#084C3A]">kcal / ngày</span>
             </div>
-            <div className="border-t border-[#D5E6DC] pt-3 grid grid-cols-3 gap-2 text-center">
-              <div><p className="text-[9px] uppercase text-gray-400 font-bold">Carbs</p><p className="text-sm font-bold text-[#1A2F24]">231g</p></div>
-              <div><p className="text-[9px] uppercase text-gray-400 font-bold">Protein</p><p className="text-sm font-bold text-[#1A2F24]">116g</p></div>
-              <div><p className="text-[9px] uppercase text-gray-400 font-bold">Fat</p><p className="text-sm font-bold text-[#1A2F24]">51g</p></div>
+            
+            <div className="border-t border-[#D5E6DC]/60 pt-4 flex justify-between">
+              <div>
+                <p className="text-[11px] font-semibold text-gray-500 mb-1">Tinh bột</p>
+                <p className="text-sm font-bold text-[#1A2F24]">{results.carbs}g</p>
+              </div>
+              <div>
+                <p className="text-[11px] font-semibold text-gray-500 mb-1">Đạm</p>
+                <p className="text-sm font-bold text-[#1A2F24]">{results.protein}g</p>
+              </div>
+              <div>
+                <p className="text-[11px] font-semibold text-gray-500 mb-1">Chất béo</p>
+                <p className="text-sm font-bold text-[#1A2F24]">{results.fat}g</p>
+              </div>
             </div>
           </div>
 
-          {/* Nút Submit & Success */}
+          {/* Button Bắt đầu ngay */}
           <div className="pt-2">
             <button
               type="submit"
-              className="w-full py-4 bg-[#084C3A] text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-2 hover:bg-[#063B2D] shadow-lg transition-all active:scale-95"
+              className="w-full py-4 bg-[#084C3A] text-white rounded-xl font-bold text-base flex items-center justify-center gap-2 hover:bg-[#063B2D] transition-all shadow-md active:scale-[0.98]"
             >
-              Lưu hồ sơ ngay <ArrowRight className="w-5 h-5" />
+              Bắt đầu ngay <ArrowRight className="w-5 h-5" />
             </button>
-            
-            {isSaved && (
-              <div className="flex items-center justify-center gap-2 text-[#084C3A] font-bold mt-4 animate-bounce">
-                <CheckCircle2 className="w-5 h-5" />
-                <span>Lưu thành công! Check Zustand thôi!</span>
-              </div>
-            )}
           </div>
+          
+          {/* Login Link */}
+          <div className="text-center mt-6">
+            <p className="text-sm text-gray-600 font-medium">
+              Bạn đã có tài khoản? <a href="#" className="text-[#084C3A] font-bold underline underline-offset-2">Đăng nhập</a>
+            </p>
+          </div>
+
         </form>
       </div>
     </div>
