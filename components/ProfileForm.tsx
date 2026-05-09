@@ -1,206 +1,164 @@
 "use client";
 
-import { useState } from "react";
-import { 
-  TrendingDown, Scale, TrendingUp, ArrowRight, 
-  ChevronDown, CheckCircle2, User, AlertCircle 
-} from "lucide-react";
-import { useProfileStore } from "@/store/profileStore"; 
-import type { UserProfile } from "@/types";
+import { useState, useMemo } from "react";
+import { useProfileStore } from "@/store/profileStore";
 
 const activityLevels = [
-  { value: 1.2, label: 'Ít vận động (ngồi nhiều)' },
-  { value: 1.375, label: 'Nhẹ (1-3 ngày/tuần)' },
-  { value: 1.55, label: 'Vừa (3-5 ngày/tuần)' },
-  { value: 1.725, label: 'Nhiều (6-7 ngày/tuần)' },
-  { value: 1.9, label: 'Rất nhiều (2 lần/ngày)' },
+  { value: 1.2, label: 'Ít vận động (Văn phòng)' },
+  { value: 1.375, label: 'Vận động nhẹ (1-2 buổi/tuần)' },
+  { value: 1.55, label: 'Vận động vừa (3-5 buổi/tuần)' },
+  { value: 1.725, label: 'Vận động nhiều (6-7 buổi/tuần)' },
+  { value: 1.9, label: 'Vận động rất nhiều (Chuyên nghiệp)' },
 ];
 
 export default function ProfileForm() {
-  const { setProfile } = useProfileStore();
-  
+  const setProfile = useProfileStore((state) => state.setProfile);
+
   const [form, setForm] = useState({
-    name: "",
+    name: "Người dùng mới", // Đặt tên mặc định để pass qua check rỗng
     gender: "male",
-    age: "25",
-    weight: "70",
-    height: "175",
+    age: 25,
+    weight: 70,
+    height: 175,
     activityLevel: 1.55,
-    goal: "lose",
+    goal: "lose" as "lose" | "maintain" | "gain",
   });
 
-  const [isSaved, setIsSaved] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
-
-  const validate = () => {
-    const e: Record<string, string> = {};
-    if (!form.name.trim()) e.name = "Vui lòng nhập tên của bạn";
-    if (!form.age || +form.age < 10 || +form.age > 100) e.age = "Tuổi phải từ 10-100";
-    if (!form.weight || +form.weight < 30 || +form.weight > 300) e.weight = "Cân nặng từ 30-300kg";
-    if (!form.height || +form.height < 100 || +form.height > 250) e.height = "Chiều cao từ 100-250cm";
-    return e;
-  };
+  const calories = useMemo(() => {
+    const bmr = form.gender === "male" 
+      ? 10 * form.weight + 6.25 * form.height - 5 * form.age + 5
+      : 10 * form.weight + 6.25 * form.height - 5 * form.age - 161;
+    const tdee = bmr * form.activityLevel;
+    const target = form.goal === "lose" ? tdee - 500 : form.goal === "gain" ? tdee + 500 : tdee;
+    return Math.round(target);
+  }, [form]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const validationErrors = validate();
     
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
-
-    setErrors({});
-    
-    // Gửi dữ liệu chuẩn cho Zustand (đã làm sạch để khớp với TypeScript của nhóm)
-    const profile: UserProfile = {
+    // Cập nhật Store - Khi Store thay đổi, app/page.tsx sẽ tự đổi sang Dashboard
+    setProfile({
       name: form.name,
-      age: +form.age,
-      weight: +form.weight,
-      height: +form.height,
-      goal: form.goal as "lose" | "maintain" | "gain",
-      macroTarget: { calories: 1850, protein: 116, carbs: 231, fat: 51 }, 
-    };
-
-    setProfile(profile); 
-    setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 3000);
+      age: form.age,
+      weight: form.weight,
+      height: form.height,
+      goal: form.goal,
+      macroTarget: { 
+        calories, 
+        protein: Math.round(calories * 0.25 / 4), 
+        carbs: Math.round(calories * 0.5 / 4), 
+        fat: Math.round(calories * 0.25 / 9) 
+      }
+    });
   };
 
   return (
-    <div className="min-h-screen bg-[#F4FAF7] flex items-center justify-center p-4 font-sans text-[#1A2F24]">
-      <div className="max-w-md w-full bg-[#F4FAF7] rounded-3xl p-6 sm:p-8">
-        
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-2 mb-4 text-[#084C3A]">
-            <span className="text-2xl font-bold">🔥 CaloMate</span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#084C3A] mb-2">Hồ Sơ Cá Nhân</h1>
-          <p className="text-sm text-gray-600">Thiết lập mục tiêu để CaloMate đồng hành cùng bạn</p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Tên */}
-          <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase mb-2">Tên của bạn</label>
-            <div className="relative">
-              <input
-                type="text"
-                value={form.name}
-                onChange={(e) => setForm({...form, name: e.target.value})}
-                className={`w-full bg-white px-4 py-3 rounded-2xl focus:outline-none border-2 transition-all ${errors.name ? 'border-red-400' : 'border-transparent focus:border-[#084C3A]'}`}
-                placeholder="Nhập tên..."
-              />
-              <User className="absolute right-4 top-3.5 w-5 h-5 text-gray-300" />
+    <>
+      <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+      
+      <div className="min-h-screen w-full flex flex-col items-center py-10 bg-[#f4fbf6] font-['Be_Vietnam_Pro'] text-[#161d1a]">
+        <form onSubmit={handleSubmit} className="w-full max-w-[480px] px-5 flex flex-col gap-8">
+          
+          <header className="flex flex-col items-center text-center gap-1">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="material-symbols-outlined text-[#005239] text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>local_fire_department</span>
+              <span className="text-[#005239] text-2xl font-black tracking-tight">CaloMate</span>
             </div>
-            {errors.name && <p className="text-red-500 text-[10px] mt-1 ml-2 font-bold flex items-center gap-1"><AlertCircle className="w-3 h-3"/> {errors.name}</p>}
-          </div>
+            <h1 className="text-3xl font-bold text-[#005239] tracking-tight leading-tight">Chào mừng bạn đến với CaloMate</h1>
+            <p className="text-[#3f4943] text-sm mt-2 font-medium">Thiết lập mục tiêu dinh dưỡng cá nhân</p>
+          </header>
 
-          {/* Giới tính */}
-          <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase mb-2">Giới tính</label>
-            <div className="flex bg-gray-200/60 p-1 rounded-2xl">
-              {['male', 'female'].map((g) => (
-                <button
-                  key={g}
-                  type="button"
-                  onClick={() => setForm({...form, gender: g})}
-                  className={`flex-1 py-3 text-sm font-semibold rounded-xl transition-all ${form.gender === g ? "bg-white text-[#084C3A] shadow-sm" : "text-gray-500"}`}
-                >
-                  {g === 'male' ? 'Nam' : 'Nữ'}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Tuổi, Cao, Nặng */}
-          <div className="grid grid-cols-3 gap-3">
-            {[
-              { key: 'age', label: 'Tuổi', unit: '' },
-              { key: 'height', label: 'Cao', unit: 'cm' },
-              { key: 'weight', label: 'Nặng', unit: 'kg' },
-            ].map((item) => (
-              <div key={item.key}>
-                <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1 text-center">{item.label} {item.unit && `(${item.unit})`}</label>
-                <input
-                  type="number"
-                  value={form[item.key as keyof typeof form]}
-                  onChange={(e) => setForm({...form, [item.key]: e.target.value})}
-                  className={`w-full bg-white text-center text-lg font-bold py-3 rounded-2xl focus:outline-none border-2 transition-all ${errors[item.key] ? 'border-red-400' : 'border-transparent focus:border-[#084C3A]'}`}
-                />
+          <div className="flex flex-col gap-6">
+            {/* Giới tính */}
+            <div className="flex flex-col gap-2">
+              <span className="font-['Space_Grotesk'] text-[12px] font-bold text-[#3f4943] uppercase tracking-widest">Giới tính</span>
+              <div className="grid grid-cols-2 p-1.5 bg-[#e8f0eb] rounded-2xl border border-[#bec9c1]/30">
+                <button type="button" onClick={() => setForm({...form, gender: 'male'})}
+                  className={`py-2.5 rounded-xl font-bold text-sm transition-all ${form.gender === 'male' ? 'bg-white text-[#005239] shadow-md' : 'text-[#3f4948]'}`}>NAM</button>
+                <button type="button" onClick={() => setForm({...form, gender: 'female'})}
+                  className={`py-2.5 rounded-xl font-bold text-sm transition-all ${form.gender === 'female' ? 'bg-white text-[#005239] shadow-md' : 'text-[#3f4948]'}`}>NỮ</button>
               </div>
-            ))}
-          </div>
-
-          {/* Mức độ hoạt động */}
-          <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase mb-2">Mức độ vận động</label>
-            <div className="relative">
-              <select
-                value={form.activityLevel}
-                onChange={(e) => setForm({...form, activityLevel: +e.target.value})}
-                className="w-full bg-white text-sm font-semibold py-4 pl-4 pr-10 rounded-2xl appearance-none focus:outline-none border-2 border-transparent focus:border-[#084C3A]"
-              >
-                {activityLevels.map((a) => <option key={a.value} value={a.value}>{a.label}</option>)}
-              </select>
-              <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
             </div>
-          </div>
 
-          {/* Mục tiêu */}
-          <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase mb-2">Mục tiêu</label>
-            <div className="grid grid-cols-3 gap-2">
+            {/* Chỉ số cơ thể */}
+            <div className="grid grid-cols-3 gap-4">
               {[
-                { v: 'lose', l: 'Giảm cân', icon: TrendingDown },
-                { v: 'maintain', l: 'Duy trì', icon: Scale },
-                { v: 'gain', l: 'Tăng cân', icon: TrendingUp },
-              ].map((g) => (
-                <button
-                  key={g.v}
-                  type="button"
-                  onClick={() => setForm({...form, goal: g.v})}
-                  className={`flex flex-col items-center p-3 rounded-2xl border-2 transition-all ${form.goal === g.v ? "bg-[#E6F4EA] border-[#084C3A] text-[#084C3A]" : "bg-white border-transparent text-gray-400"}`}
-                >
-                  <g.icon className="w-5 h-5 mb-1" />
-                  <span className="text-[10px] font-bold">{g.l}</span>
-                </button>
+                { l: 'Tuổi', k: 'age' },
+                { l: 'Cao (cm)', k: 'height' },
+                { l: 'Nặng (kg)', k: 'weight' }
+              ].map((item) => (
+                <div key={item.k} className="flex flex-col gap-2">
+                  <label className="font-['Space_Grotesk'] text-[11px] font-bold text-[#3f4943] uppercase text-center">{item.l}</label>
+                  <input required type="number" value={(form as any)[item.k]}
+                    onChange={(e) => setForm({...form, [item.k]: Number(e.target.value)})}
+                    className="w-full h-14 bg-white rounded-2xl text-center font-['Space_Grotesk'] font-bold text-xl text-[#005239] border border-[#bec9c1] focus:ring-4 focus:ring-[#005239]/10 outline-none transition-all" />
+                </div>
               ))}
             </div>
-          </div>
 
-          {/* Preview Box - Đặc sản */}
-          <div className="bg-[#EAF3EE] p-4 rounded-2xl border border-[#D5E6DC]">
-            <div className="flex items-end gap-1 mb-3">
-              <span className="text-2xl font-extrabold text-[#084C3A]">1.850</span>
-              <span className="text-xs font-semibold text-[#084C3A] mb-1">kcal / ngày</span>
-            </div>
-            <div className="border-t border-[#D5E6DC] pt-3 grid grid-cols-3 gap-2 text-center">
-              <div><p className="text-[9px] uppercase text-gray-400 font-bold">Carbs</p><p className="text-sm font-bold text-[#1A2F24]">231g</p></div>
-              <div><p className="text-[9px] uppercase text-gray-400 font-bold">Protein</p><p className="text-sm font-bold text-[#1A2F24]">116g</p></div>
-              <div><p className="text-[9px] uppercase text-gray-400 font-bold">Fat</p><p className="text-sm font-bold text-[#1A2F24]">51g</p></div>
-            </div>
-          </div>
-
-          {/* Nút Submit & Success */}
-          <div className="pt-2">
-            <button
-              type="submit"
-              className="w-full py-4 bg-[#084C3A] text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-2 hover:bg-[#063B2D] shadow-lg transition-all active:scale-95"
-            >
-              Lưu hồ sơ ngay <ArrowRight className="w-5 h-5" />
-            </button>
-            
-            {isSaved && (
-              <div className="flex items-center justify-center gap-2 text-[#084C3A] font-bold mt-4 animate-bounce">
-                <CheckCircle2 className="w-5 h-5" />
-                <span>Lưu thành công! Check Zustand thôi!</span>
+            {/* Vận động */}
+            <div className="flex flex-col gap-2">
+              <label className="font-['Space_Grotesk'] text-[11px] font-bold text-[#3f4943] uppercase">Mức độ hoạt động hằng ngày</label>
+              <div className="relative">
+                <select value={form.activityLevel} onChange={(e) => setForm({...form, activityLevel: Number(e.target.value)})}
+                  className="w-full h-14 appearance-none bg-white rounded-2xl px-5 border border-[#bec9c1] outline-none font-bold text-[#161d1a] focus:ring-4 focus:ring-[#005239]/10">
+                  {activityLevels.map(l => <option key={l.value} value={l.value}>{l.label}</option>)}
+                </select>
+                <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#005239]">unfold_more</span>
               </div>
-            )}
+            </div>
+
+            {/* Mục tiêu */}
+            <div className="flex flex-col gap-2">
+              <label className="font-['Space_Grotesk'] text-[11px] font-bold text-[#3f4943] uppercase">Mục tiêu sức khỏe</label>
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { v: 'lose', l: 'GIẢM CÂN', i: 'trending_down' },
+                  { v: 'maintain', l: 'DUY TRÌ', i: 'balance' },
+                  { v: 'gain', l: 'TĂNG CÂN', i: 'trending_up' }
+                ].map((goal) => (
+                  <button key={goal.v} type="button" onClick={() => setForm({...form, goal: goal.v as any})}
+                    className={`flex flex-col items-center justify-center py-4 rounded-2xl gap-2 border-2 transition-all ${
+                      form.goal === goal.v 
+                      ? 'bg-[#a5f3cd]/40 border-[#005239] shadow-inner' 
+                      : 'bg-white border-transparent shadow-sm'
+                    }`}>
+                    <span className={`material-symbols-outlined ${form.goal === goal.v ? 'text-[#005239]' : 'text-[#3f4943]'}`}>{goal.i}</span>
+                    <span className={`font-['Space_Grotesk'] text-[10px] font-black ${form.goal === goal.v ? 'text-[#005239]' : 'text-[#3f4943]'}`}>{goal.l}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Card kết quả */}
+            <div className="bg-[#005239] p-6 rounded-[32px] flex flex-col items-center shadow-2xl shadow-[#005239]/20 relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-4 opacity-10">
+                <span className="material-symbols-outlined text-white text-6xl">bolt</span>
+              </div>
+              <span className="font-['Space_Grotesk'] text-[#a5f3cd] uppercase text-[11px] font-black tracking-[0.2em] mb-1">Target Calories</span>
+              <div className="flex items-baseline gap-2">
+                <span className="font-['Space_Grotesk'] text-5xl font-bold text-white tracking-tighter">{calories.toLocaleString()}</span>
+                <span className="text-[#a5f3cd] font-bold italic text-sm">kcal/day</span>
+              </div>
+            </div>
+
+            <button 
+              type="submit" 
+              className="w-full bg-[#005239] text-white py-5 rounded-[24px] font-black text-lg flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] shadow-xl transition-all uppercase tracking-widest"
+            >
+              Bắt đầu hành trình
+              <span className="material-symbols-outlined">rocket_launch</span>
+            </button>
           </div>
         </form>
+
+        {/* Nền hiệu ứng */}
+        <div className="fixed top-0 left-0 w-full h-full pointer-events-none -z-10 bg-[#f4fbf6]">
+          <div className="absolute -top-[10%] -right-[10%] w-[500px] h-[500px] bg-[#a5f3cd]/30 blur-[120px] rounded-full"></div>
+          <div className="absolute bottom-[0%] -left-[10%] w-[400px] h-[400px] bg-[#caeadd]/40 blur-[100px] rounded-full"></div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
