@@ -29,13 +29,15 @@ Chào mừng đến với tài liệu dự án **Calorie Web**. Đây là ứng 
 
 ## 🎯 Tổng Quan Dự Án
 
-**Calorie Web** là ứng dụng nhẹ để theo dõi calo với các mục tiêu:
-- ✅ **Đơn giản** - Giao diện dễ sử dụng
-- ✅ **Nhanh** - Hiệu suất tối ưu
-- ✅ **Type-safe** - Full TypeScript support
-- ✅ **Hiện đại** - Next.js & React mới nhất
+**Calorie Web** là ứng dụng web hiện đại giúp người dùng:
+- Ghi nhật ký calo từng ngày với 4 bữa ăn (Breakfast, Lunch, Dinner, Snack)
+- Thêm/xóa nguyên liệu cho từng bữa, nhập số gram, tự động tính calories, protein, carbs, fat
+- Tìm kiếm nhanh món ăn Việt Nam phổ biến (15+ món)
+- Tính tổng calories từng bữa và cả ngày, hiển thị rõ ràng
+- Lưu trữ tự động qua localStorage (Zustand), không mất dữ liệu khi reload
+- Giao diện mobile-first, tối ưu cho sinh viên/người mới bắt đầu
 
-**Trạng thái:** v0.1.0 (Early Stage Development)  
+**Trạng thái:** v0.1.0 (Early Stage Development)
 **Đối tượng sử dụng:** Sinh viên, người tập gym, người quan tâm sức khỏe
 
 ### Thống Kê Chính
@@ -52,60 +54,108 @@ Chào mừng đến với tài liệu dự án **Calorie Web**. Đây là ứng 
 
 ---
 
+## 🚀 Tính Năng Đã Hoàn Thiện
+
+- [x] **Diary UI**: Giao diện nhập nhật ký calo, 4 section bữa ăn, modal thêm nguyên liệu, xóa nguyên liệu, tổng calories từng bữa và cả ngày
+- [x] **Tìm kiếm món ăn**: Modal tìm kiếm 15+ món Việt, nhập gram, tự động tính calories
+- [x] **Lưu trữ tự động**: Dùng Zustand + localStorage, không mất dữ liệu khi reload
+- [x] **Responsive**: Mobile-first, tối ưu cho điện thoại
+- [x] **Sửa toàn bộ lỗi**: Đã fix lỗi typescript, props, import/export, duplicate export, v.v.
+
+## 📈 Tiến Độ & Kế Hoạch
+
+### Đã xong
+- Diary UI (4 bữa, modal thêm/xóa món, tổng calo)
+- State management với Zustand, auto-persist
+- Sửa toàn bộ lỗi typescript, props, import/export
+
+### Đang phát triển
+- Dashboard tổng hợp, biểu đồ thống kê
+- Trang profile người dùng
+
+### Sắp làm
+- Biểu đồ calories, protein, carbs, fat theo ngày/tuần
+- Tối ưu UX cho mobile/tablet
+- Thêm hướng dẫn sử dụng chi tiết
+
+## 📝 Hướng Dẫn Sử Dụng Diary UI
+
+1. Vào trang **/diary** để nhập nhật ký calo từng ngày
+2. Chọn bữa ăn, nhấn nút **+** để mở modal thêm món
+3. Tìm kiếm món ăn, nhập số gram, xác nhận để lưu
+4. Có thể xóa từng nguyên liệu đã thêm
+5. Xem tổng calories từng bữa và tổng cả ngày ở đầu trang
+
+## 🛠️ Lưu Ý Kỹ Thuật
+
+- Dùng Next.js 16 + React 19 + TypeScript strict mode
+- State quản lý qua Zustand, persist tự động
+- UI thuần Tailwind CSS v4, không dùng inline style
+- Tất cả lỗi typescript, props, import/export đã được fix sạch
+
 ## 📁 Cấu Trúc Dự Án Chi Tiết
 
 ```
 calorie-web/
+├── app/
+│   ├── globals.css
+│   ├── layout.tsx
+│   ├── page.tsx
+│   └── diary/
+│       └── page.tsx
 │
-├── 📂 app/                          # Next.js App Router
-│   ├── 📄 layout.tsx               # Root layout (Geist fonts setup)
-│   ├── 📄 page.tsx                 # Home page (hiện tại: "App Ready")
-│   ├── 📄 globals.css              # Global styles với Tailwind
-│   └── favicon.ico
-│
-├── 📂 components/                  # UI Components (tái sử dụng)
-│   └── 📄 button.tsx               # Button component cơ bản
-│
-├── 📂 lib/                         # Utilities & Logic Functions
-│   └── 📄 storage.ts              # localStorage abstraction layer
-│       ├── getProfile() / saveProfile()
-│       ├── getLog() / saveLog()
-│       └── getLogs(startDate, endDate)
-│
-├── 📂 store/                       # State Management (Zustand)
-│   └── 📄 useAppStore.ts          # Global store
-│       ├── test: string
-│       └── setTest(value): void
-│
-├── 📂 types/                       # TypeScript Type Definitions
-│   ├── 📄 index.ts                # Main interfaces:
-│   │   ├── MacroTarget
-│   │   ├── UserProfile
-│   │   ├── Ingredient
-│   │   ├── MealEntry
-│   │   └── DailyLog
-│   └── 📄 user.ts                 # User interface
-│
-├── 📂 public/                      # Static assets (images, icons...)
-│
-├── 📂 docs/                        # Documentation (Astro Starlight)
+├── components/
+│   ├── button.tsx
+│   ├── CalorieCard.tsx
+│   ├── MacroBar.tsx
+│   ├── ProfileForm.tsx
+│   ├── dashboard/
+│   │   └── DashboardPage.tsx
+│   ├── nav/
+│   │   └── BottomNav.tsx
+│   └── ui/
+│       ├── Badge.tsx
+│       ├── BottomNav.tsx
+│       ├── Button.tsx
+│       ├── Card.tsx
+│       ├── Input.tsx
+│       ├── Modal.tsx
+│       ├── ProgressBar.tsx
+│       └── index.ts
+
+├── lib/
+│   ├── calc.ts
+│   ├── ingredients.json
+│   ├── search.ts
+│   └── storage.ts
+
+├── hooks/
+
+├── store/
+│   ├── diaryStore.ts
+│   ├── profileStore.ts
+│   └── useAppStore.ts
+
+├── types/
+│   ├── index.ts
+│   └── user.ts
+
+├── public/
+
+├── docs/
 │   ├── astro.config.mjs
-│   ├── package.json
-│   └── src/
-│       ├── content/
-│       │   └── docs/
-│       │       ├── index.mdx       # Tài liệu chính
-│       │       ├── guides/
-│       │       └── reference/
-│       └── content.config.ts
-│
-└── ⚙️ Configuration Files
-    ├── eslint.config.mjs           # ESLint rules
-    ├── next.config.ts              # Next.js config
-    ├── tsconfig.json               # TypeScript config
-    ├── tailwind.config.js          # Tailwind config
-    ├── postcss.config.mjs          # PostCSS config
-    └── package.json                # Dependencies & scripts
+   ├── package.json
+   └── src/
+      └── content/
+         └── docs/
+            └── index.mdx
+
+├── README.md
+├── package.json
+├── next.config.ts
+├── tsconfig.json
+├── tailwind.config.mjs
+└── eslint.config.mjs
 ```
 
 ---
