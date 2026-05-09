@@ -149,10 +149,15 @@ npm run docs      # Generate documentation
 
 ## ✨ Tính Năng Hiện Tại
 
+
 ### ✅ Đã Hoàn Thành
 
 | Tính Năng | Mô Tả |
 |-----------|-------|
+| **Diary UI** | Giao diện nhập nhật ký calo, 4 section bữa ăn, modal thêm/xóa nguyên liệu, tổng calories từng bữa và cả ngày |
+| **Tìm kiếm món ăn** | Modal tìm kiếm 15+ món Việt, nhập gram, tự động tính calories |
+| **Lưu trữ tự động** | Dùng Zustand + localStorage, không mất dữ liệu khi reload |
+| **Responsive** | Mobile-first, tối ưu cho điện thoại |
 | **TypeScript Setup** | Strict mode, full type safety |
 | **Tailwind CSS v4** | CSS framework + PostCSS |
 | **Zustand Store** | Global state management |
@@ -161,20 +166,18 @@ npm run docs      # Generate documentation
 | **Components** | Button component |
 | **ESLint** | Code quality checking |
 | **Next.js Layout** | Root layout with global styles |
+| **Sửa toàn bộ lỗi** | Đã fix lỗi typescript, props, import/export, duplicate export, v.v. |
 
 ### 🔄 Đang Phát Triển
 
-- Giao diện UI chính
-- Form components
-- Dashboard
+- Dashboard tổng hợp, biểu đồ thống kê
+- Trang profile người dùng
 
 ### 📋 Planned (Sắp Làm)
 
-- Tính năng theo dõi calo
-- Biểu đồ trực quan
-- Quản lý profile người dùng
-- Settings page
-- Data persistence improvements
+- Biểu đồ calories, protein, carbs, fat theo ngày/tuần
+- Tối ưu UX cho mobile/tablet
+- Thêm hướng dẫn sử dụng chi tiết
 
 ---
 
@@ -240,28 +243,16 @@ git push origin feature/feature-name
 
 ## 📊 Tiến Độ Hiện Tại
 
-### ✅ Hoàn Thành (v0.1.0)
-- [x] Project structure
-- [x] TypeScript + strict mode
-- [x] Tailwind CSS v4
-- [x] Next.js App Router
-- [x] Type definitions (MacroTarget, UserProfile, MealEntry, DailyLog, Ingredient)
-- [x] Storage layer (localStorage management)
-- [x] Zustand store setup
-- [x] Button component
-- [x] ESLint configuration
 
-### 🔄 Đang Làm
-- [ ] UI/UX design
-- [ ] Form components
-- [ ] Main pages
+---
 
-### 📋 Planned
-- [ ] Calorie tracking interface
-- [ ] Charts & visualization
-- [ ] User profile page
-- [ ] Settings
-- [ ] Backend integration (future)
+## 📝 Hướng Dẫn Sử Dụng Diary UI
+
+1. Vào trang **/diary** để nhập nhật ký calo từng ngày
+2. Chọn bữa ăn, nhấn nút **+** để mở modal thêm món
+3. Tìm kiếm món ăn, nhập số gram, xác nhận để lưu
+4. Có thể xóa từng nguyên liệu đã thêm
+5. Xem tổng calories từng bữa và tổng cả ngày ở đầu trang
 
 ---
 
