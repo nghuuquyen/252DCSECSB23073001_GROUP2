@@ -2,60 +2,32 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-
-/**
- * BottomNav Component
- * 
- * Navigation component cho mobile view
- * Hiển thị các tab chính: Home, Diary, Stats
- */
+import { Home, BookOpen, BarChart2 } from 'lucide-react';
 
 export function BottomNav() {
   const pathname = usePathname();
 
-  const isActive = (path: string) => {
-    if (path === '/' && pathname === '/') return true;
-    if (path !== '/' && pathname?.startsWith(path)) return true;
-    return false;
-  };
-
   const navItems = [
-    { href: '/', label: 'Trang chủ', icon: 'home' },
-    { href: '/diary', label: 'Nhật ký', icon: 'restaurant' },
-    { href: '/stats', label: 'Thống kê', icon: 'analytics' },
+    { href: '/',      label: 'Tổng quan', Icon: Home      },
+    { href: '/diary', label: 'Nhật ký',   Icon: BookOpen  },
+    { href: '/stats', label: 'Thống kê',  Icon: BarChart2 },
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-[#005239]/10 max-w-[700px] mx-auto">
-      <div className="flex justify-around items-center h-20">
-        {navItems.map((item) => {
-          const active = isActive(item.href);
-
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="flex-1 flex flex-col items-center justify-center gap-1 h-full transition-colors hover:bg-[#f4fbf6]"
-            >
-              <span
-                className="material-symbols-outlined text-2xl"
-                style={{
-                  color: active ? '#005239' : '#9db5ab',
-                  fontVariationSettings: active ? "'FILL' 1" : "'FILL' 0",
-                }}
-              >
-                {item.icon}
-              </span>
-              <span
-                className="text-[11px] font-medium"
-                style={{ color: active ? '#005239' : '#9db5ab' }}
-              >
-                {item.label}
-              </span>
-            </Link>
-          );
-        })}
-      </div>
+    <nav style={{ position: 'fixed', bottom: 0, left: 0, width: '100%', zIndex: 50, background: 'rgba(255,255,255,0.88)', backdropFilter: 'blur(20px)', borderTop: '1px solid rgba(26,107,78,0.1)', boxShadow: '0 -10px 30px rgba(26,107,78,0.06)', display: 'flex', justifyContent: 'space-around', alignItems: 'center', padding: '16px 24px 32px' }}>
+      {navItems.map(({ href, label, Icon }) => {
+        const active = href === '/' ? pathname === '/' : pathname?.startsWith(href);
+        return (
+          <Link key={href} href={href} style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+            <div style={{ padding: 12, borderRadius: 9999, background: active ? 'rgba(26,107,78,0.12)' : 'transparent', transform: active ? 'scale(1.1)' : 'scale(1)', transition: 'all 0.2s' }}>
+              <Icon size={22} color={active ? '#005239' : 'rgba(26,58,42,0.4)'} />
+            </div>
+            <span style={{ fontFamily: 'var(--font-space-grotesk)', fontSize: 10, letterSpacing: '0.08em', textTransform: 'uppercase', color: active ? '#005239' : 'rgba(26,58,42,0.4)', fontWeight: active ? 700 : 400 }}>
+              {label}
+            </span>
+          </Link>
+        );
+      })}
     </nav>
   );
 }

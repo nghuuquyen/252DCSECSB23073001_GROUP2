@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import {
   Flame, Settings, CalendarDays,
@@ -8,6 +9,7 @@ import {
   BookOpen, Home, BarChart2,
 } from 'lucide-react';
 import { useDiaryStore } from '@/store/diaryStore';
+import { useProfileStore } from '@/store/profileStore'; // ← THÊM
 import type { Ingredient, MealEntry } from '@/types';
 
 // ── Dữ liệu nguyên liệu ───────────────────────────────────────────────────────
@@ -30,7 +32,7 @@ const INGREDIENTS_DB = [
 ];
 
 const MEAL_CONFIG = [
-  { type: 'breakfast' as const, label: 'Bữa sáng', Icon: Sun,            activeBg: '#caeadd' },
+  { type: 'breakfast' as const, label: 'Bữa sáng', Icon: Sun,             activeBg: '#caeadd' },
   { type: 'lunch'     as const, label: 'Bữa trưa', Icon: UtensilsCrossed, activeBg: '#e8f0eb' },
   { type: 'dinner'    as const, label: 'Bữa tối',  Icon: Moon,            activeBg: '#e8f0eb' },
   { type: 'snack'     as const, label: 'Ăn vặt',   Icon: Cookie,          activeBg: '#e8f0eb' },
@@ -194,7 +196,6 @@ function MealSection({ config, meal, onOpenModal, onRemove }: {
 
   return (
     <section style={{ borderRadius: 12, overflow: 'hidden', background: 'rgba(255,255,255,0.88)', backdropFilter: 'blur(12px)', border: '1px solid rgba(26,107,78,0.12)', boxShadow: '0 10px 30px rgba(26,107,78,0.06)' }}>
-      {/* Header */}
       <div
         onClick={() => hasItems && setExpanded((v) => !v)}
         style={{ padding: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: hasItems ? 'pointer' : 'default', borderBottom: hasItems && expanded ? '1px solid rgba(26,107,78,0.05)' : undefined }}
@@ -220,7 +221,6 @@ function MealSection({ config, meal, onOpenModal, onRemove }: {
         </button>
       </div>
 
-      {/* Ingredients list */}
       {expanded && hasItems && (
         <div style={{ padding: '16px 20px', background: 'rgba(238,245,240,0.5)', display: 'flex', flexDirection: 'column', gap: 12 }}>
           {meal!.ingredients.map((ing, idx) => (
@@ -254,6 +254,7 @@ function MealSection({ config, meal, onOpenModal, onRemove }: {
 // ── Page ──────────────────────────────────────────────────────────────────────
 export default function DiaryPage() {
   const { currentLog, loadLog, addMeal, updateMeal, removeMeal } = useDiaryStore();
+  const profile = useProfileStore((state) => state.profile); // ← THÊM
   const [openModal, setOpenModal] = useState<MealEntry['mealType'] | null>(null);
 
   useEffect(() => {
@@ -262,7 +263,8 @@ export default function DiaryPage() {
   }, []);
 
   const totalCalories = currentLog?.totalCalories ?? 0;
-  const TARGET = 2000;
+  const TARGET = profile?.macroTarget.calories ?? 2000; // ← SỬA: dùng TDEE thật
+
   const remaining = TARGET - totalCalories;
 
   function getMeal(type: MealEntry['mealType']) {
@@ -322,10 +324,12 @@ export default function DiaryPage() {
           <div style={{ background: 'rgba(255,255,255,0.88)', backdropFilter: 'blur(12px)', border: '1px solid rgba(26,107,78,0.12)', boxShadow: '0 10px 30px rgba(26,107,78,0.06)', borderRadius: 12, padding: 24, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: 120 }}>
             <span style={{ fontFamily: 'var(--font-space-grotesk)', fontSize: 12, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#3f4943' }}>Còn lại</span>
             <div style={{ marginTop: 8 }}>
-              <span style={{ fontFamily: 'var(--font-space-grotesk)', fontWeight: 700, fontSize: 40, letterSpacing: '-0.03em', color: '#005239', lineHeight: 1 }}>
-                {remaining.toLocaleString()}
+              <span style={{ fontFamily: 'var(--font-space-grotesk)', fontWeight: 700, fontSize: 40, letterSpacing: '-0.03em', color: remaining < 0 ? '#ba1a1a' : '#005239', lineHeight: 1 }}>
+                {Math.abs(remaining).toLocaleString()}
               </span>
-              <span style={{ fontFamily: 'var(--font-space-grotesk)', fontSize: 12, color: '#3f4943', marginLeft: 4 }}>kcal</span>
+              <span style={{ fontFamily: 'var(--font-space-grotesk)', fontSize: 12, color: '#3f4943', marginLeft: 4 }}>
+                kcal {remaining < 0 ? '⚠️ vượt' : ''}
+              </span>
             </div>
           </div>
           <div style={{ display: 'grid', gridTemplateRows: '1fr 1fr', gap: 16 }}>
@@ -366,18 +370,18 @@ export default function DiaryPage() {
       {/* BottomNav */}
       <nav style={{ position: 'fixed', bottom: 0, left: 0, width: '100%', zIndex: 50, background: 'rgba(255,255,255,0.88)', backdropFilter: 'blur(20px)', borderTop: '1px solid rgba(26,107,78,0.1)', boxShadow: '0 -10px 30px rgba(26,107,78,0.06)', display: 'flex', justifyContent: 'space-around', alignItems: 'center', padding: '16px 24px 32px' }}>
         {[
-          { Icon: Home,      label: 'Tổng quan', active: false },
-          { Icon: BookOpen,  label: 'Nhật ký',   active: true  },
-          { Icon: BarChart2, label: 'Thống kê',  active: false },
-        ].map(({ Icon: NavIcon, label, active }) => (
-          <div key={label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, cursor: 'pointer' }}>
+          { Icon: Home,      label: 'Tổng quan', href: '/',      active: false },
+          { Icon: BookOpen,  label: 'Nhật ký',   href: '/diary', active: true  },
+          { Icon: BarChart2, label: 'Thống kê',  href: '/stats', active: false },
+        ].map(({ Icon: NavIcon, label, href, active }) => (
+          <Link key={label} href={href} style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
             <div style={{ padding: 12, borderRadius: 9999, background: active ? 'rgba(26,107,78,0.12)' : 'transparent', transform: active ? 'scale(1.1)' : 'scale(1)', transition: 'all 0.2s' }}>
               <NavIcon size={22} color={active ? '#005239' : 'rgba(26,58,42,0.4)'} />
             </div>
             <span style={{ fontFamily: 'var(--font-space-grotesk)', fontSize: 10, letterSpacing: '0.08em', textTransform: 'uppercase', color: active ? '#005239' : 'rgba(26,58,42,0.4)', fontWeight: active ? 700 : 400 }}>
               {label}
             </span>
-          </div>
+          </Link>
         ))}
       </nav>
 
