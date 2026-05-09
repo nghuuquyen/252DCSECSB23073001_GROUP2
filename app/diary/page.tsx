@@ -27,15 +27,7 @@ function getGreeting() {
   return       { text: 'Chào buổi tối 🌆', sub: 'Tổng kết một ngày nào' };
 }
 
-// Water: persisted per day in localStorage
 const WATER_TARGET = 8;
-function waterKey(date: string) { return `calomate_water_${date}`; }
-function loadWater(date: string): number {
-  try { return parseInt(localStorage.getItem(waterKey(date)) ?? '0', 10); } catch { return 0; }
-}
-function saveWater(date: string, val: number) {
-  try { localStorage.setItem(waterKey(date), String(val)); } catch {}
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Calorie Ring
@@ -259,37 +251,28 @@ function WaterTracker({ glasses, onAdd, onRemove }: {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function HomePage() {
-  const { currentLog, loadLog }  = useDiaryStore();
+  const { currentLog, loadLog, updateWater } = useDiaryStore();
   const { profile, loadProfile } = useProfileStore();
   const today                    = getToday();
-  const [water, setWater]        = useState(0);
   const [mounted, setMounted]    = useState(false);
+
+  const water = currentLog?.water ?? 0;
 
   // ── Load everything from storage on mount ──
   useEffect(() => {
     loadProfile();
     loadLog(today);
-    setWater(loadWater(today));
     setMounted(true);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ── Water handlers (persisted) ──
   const addWater = useCallback(() => {
-    setWater((prev) => {
-      const next = Math.min(prev + 1, WATER_TARGET);
-      saveWater(today, next);
-      return next;
-    });
-  }, [today]);
+    updateWater(Math.min(water + 1, WATER_TARGET));
+  }, [water, updateWater]);
 
   const removeWater = useCallback(() => {
-    setWater((prev) => {
-      const next = Math.max(prev - 1, 0);
-      saveWater(today, next);
-      return next;
-    });
-  }, [today]);
+    updateWater(Math.max(water - 1, 0));
+  }, [water, updateWater]);
 
   // ── Derived calorie data ──
   const target    = profile?.macroTarget?.calories ?? 2000;
