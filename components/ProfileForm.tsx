@@ -210,12 +210,7 @@ export default function ProfileForm() {
             </button>
           </div>
           
-          {/* Login Link */}
-          <div className="text-center mt-6">
-            <p className="text-sm text-gray-600 font-medium">
-              Bạn đã có tài khoản? <a href="#" className="text-[#084C3A] font-bold underline underline-offset-2">Đăng nhập</a>
-            </p>
-          </div>
+          
 
         </form>
       </div>
