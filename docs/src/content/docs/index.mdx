@@ -3,7 +3,7 @@ title: Calorie Web - Tài Liệu Hoàn Chỉnh
 description: Tài liệu kỹ thuật cho dự án Calorie-Web, bao gồm kiến trúc, cấu trúc dữ liệu, hướng dẫn cài đặt và quy trình phát triển.
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Card, CardGrid } from "@astrojs/starlight/components";
 
 # 🍽️ Calorie Web - Tài Liệu Hoàn Chỉnh
 
@@ -17,8 +17,14 @@ Chào mừng đến với tài liệu dự án **Calorie Web**. Đây là ứng 
 ## 📚 Điều Hướng Nhanh
 
 <CardGrid>
-  <Card title="🚀 Bắt Đầu Nhanh" description="Hướng dẫn cài đặt và chạy dự án" />
-  <Card title="📁 Cấu Trúc Dự Án" description="Giải thích từng folder và file" />
+  <Card
+    title="🚀 Bắt Đầu Nhanh"
+    description="Hướng dẫn cài đặt và chạy dự án"
+  />
+  <Card
+    title="📁 Cấu Trúc Dự Án"
+    description="Giải thích từng folder và file"
+  />
   <Card title="📝 Kiểu Dữ Liệu" description="Các interface TypeScript chính" />
   <Card title="💾 Storage Layer" description="Quản lý localStorage an toàn" />
   <Card title="📦 State Management" description="Sử dụng Zustand" />
@@ -42,15 +48,15 @@ Chào mừng đến với tài liệu dự án **Calorie Web**. Đây là ứng 
 
 ### Thống Kê Chính
 
-| Nội Dung | Chi Tiết |
-|----------|----------|
-| **Framework** | Next.js 16.2.4 |
-| **React Version** | 19.2.4 |
-| **TypeScript** | Version 5 (strict mode) |
-| **State Management** | Zustand 5.0.13 |
-| **Styling** | Tailwind CSS v4 |
-| **Charts** | Recharts 3.8.1 |
-| **Icons** | Lucide React 1.14.0 |
+| Nội Dung             | Chi Tiết                |
+| -------------------- | ----------------------- |
+| **Framework**        | Next.js 16.2.4          |
+| **React Version**    | 19.2.4                  |
+| **TypeScript**       | Version 5 (strict mode) |
+| **State Management** | Zustand 5.0.13          |
+| **Styling**          | Tailwind CSS v4         |
+| **Charts**           | Recharts 3.8.1          |
+| **Icons**            | Lucide React 1.14.0     |
 
 ---
 
@@ -267,108 +273,128 @@ Chào mừng đến với tài liệu dự án **Calorie Web**. Đây là ứng 
 ## 📁 Cấu Trúc Dự Án Chi Tiết
 
 ```
-calorie-web/
+calorie-web/                                        # Root project
 │
-├── 📂 app/                              # Next.js App Router
-│   ├── globals.css                     # Global styles
-│   ├── layout.tsx                      # Root layout
-│   ├── page.tsx                        # Home/Dashboard page
-│   ├── 📂 diary/
-│   │   └── page.tsx                   # Daily food logging page
-│   ├── 📂 settings/
-│   │   └── page.tsx                   # Settings page
-│   └── 📂 stats/
-│       └── page.tsx                   # Statistics/Analytics page
+├── 📂 app/                                         # Next.js 16 App Router
+│   ├── 📄 layout.tsx                              # Root layout (Geist fonts setup)
+│   ├── 📄 page.tsx                                # Home page
+│   ├── 📄 globals.css                             # Global styles với Tailwind
+│   └── favicon.ico                                # App favicon
 │
-├── 📂 components/                       # Reusable UI Components
-│   ├── button.tsx                      # Button component
-│   ├── CalorieCard.tsx                 # Calorie display card
-│   ├── MacroBar.tsx                    # Macro nutrients bar
-│   ├── ProfileForm.tsx                 # User profile form
-│   ├── 📂 dashboard/
-│   │   └── DashboardPage.tsx          # Main dashboard layout
-│   ├── 📂 nav/
-│   │   └── BottomNav.tsx              # Bottom navigation
-│   ├── 📂 stats/                       # Statistics display components
-│   │   ├── index.ts                   # Exports
-│   │   ├── MacroSection.tsx           # Macro nutrients section
-│   │   ├── StatCard.tsx               # Single stat display
-│   │   ├── StreakCard.tsx             # Streak counter
-│   │   └── WeeklyChart.tsx            # Weekly calorie/macro chart
-│   └── 📂 ui/                          # Base UI components
-│       ├── Badge.tsx
-│       ├── BottomNav.tsx
-│       ├── Button.tsx
-│       ├── Card.tsx
-│       ├── Input.tsx
-│       ├── Modal.tsx
-│       ├── ProgressBar.tsx
-│       └── index.ts                   # Barrel exports
+├── 📂 components/                                 # React Components (tái sử dụng)
+│   ├── 📄 button.tsx                             # Button component (empty)
+│   │
+│   ├── 📂 ui/                                    # UI Component Library
+│   │   ├── 📄 index.ts                          # Export all UI components
+│   │   ├── 📄 Button.tsx                        # Styled button component
+│   │   ├── 📄 Card.tsx                          # Card container component
+│   │   ├── 📄 Input.tsx                         # Form input component
+│   │   ├── 📄 Modal.tsx                         # Modal dialog component
+│   │   ├── 📄 ProgressBar.tsx                   # Progress indicator
+│   │   ├── 📄 Badge.tsx                         # Badge/tag component
+│   │   └── 📄 BottomNav.tsx                     # Bottom navigation bar
+│   │
+│   └── 📂 nav/                                  # Navigation Components
+│       └── 📄 BottomNav.tsx                    # Bottom nav with Home/Diary/Stats routes
 │
-├── 📂 lib/                              # Utilities & Helpers
-│   ├── calc.ts                         # Calculation logic (BMR, TDEE, macros)
-│   ├── ingredients.json                # Food database (15+ Vietnamese dishes)
-│   ├── search.ts                       # Food search logic
-│   └── storage.ts                      # localStorage abstraction layer
+├── 📂 lib/                                       # Utilities & Logic Functions
+│   ├── 📄 storage.ts                           # localStorage abstraction layer
+│   │   ├── getProfile() / saveProfile()
+│   │   ├── getLog(date) / saveLog(date, log)
+│   │   └── getLogs(startDate, endDate)
+│   │
+│   ├── 📄 calc.ts                              # Calorie & Macro Calculations
+│   │   ├── calcBMR()          # Basal Metabolic Rate (Mifflin-St Jeor)
+│   │   ├── calcTDEE()         # Total Daily Energy Expenditure
+│   │   └── Activity levels, goal adjustments, macro ratios
+│   │
+│   ├── 📄 search.ts                            # Ingredient Search Function
+│   │   ├── normalize()         # Normalize Vietnamese text (remove accents, diacritics)
+│   │   ├── getMatchScore()     # Score-based search matching
+│   │   └── searchIngredient()  # Main search function with filtering
+│   │
+│   └── 📄 ingredients.json                     # Vietnamese Food Database
+│       └── 16 ingredients with nutritional data (calories, protein, carbs, fat)
 │
-├── 📂 store/                            # Zustand State Management
-│   ├── diaryStore.ts                   # Daily food log state + actions
-│   ├── profileStore.ts                 # User profile state + actions
-│   └── useAppStore.ts                  # Global app state
+├── 📂 store/                                    # Zustand State Management
+│   ├── 📄 useAppStore.ts                      # Global app store
+│   │   ├── test: string
+│   │   └── setTest(value): void
+│   │
+│   ├── 📄 profileStore.ts                     # User Profile Management
+│   │   ├── profile: UserProfile | null
+│   │   ├── setProfile(profile)     # Set new profile
+│   │   ├── updateProfile(partial)  # Update partial profile
+│   │   └── loadProfile()           # Load from localStorage
+│   │
+│   └── 📄 diaryStore.ts                       # Daily Meal Logging
+│       ├── currentLog: DailyLog | null
+│       ├── currentDate: string
+│       ├── loadLog(date)      # Load daily log
+│       ├── addMeal(meal)      # Add meal entry
+│       ├── removeMeal(id)     # Remove meal entry
+│       └── updateMeal(id, updated)  # Update meal entry
 │
-├── 📂 types/                            # TypeScript Type Definitions
-│   ├── index.ts                        # Main interfaces:
-│   │                                   #   - MacroTarget
-│   │                                   #   - UserProfile
-│   │                                   #   - Ingredient
-│   │                                   #   - MealEntry
-│   │                                   #   - DailyLog
-│   └── user.ts                         # User type definitions
+├── 📂 types/                                   # TypeScript Type Definitions
+│   ├── 📄 index.ts                            # Main Data Interfaces
+│   │   ├── MacroTarget        # Nutritional goals (calories, protein, carbs, fat)
+│   │   ├── UserProfile        # User info (name, age, weight, height, goal, macroTarget)
+│   │   ├── Ingredient         # Food item (name, macros, amount)
+│   │   ├── MealEntry          # Single meal (id, type, ingredients, totalCalories, time)
+│   │   └── DailyLog           # Daily record (date, meals, totalCalories)
+│   │
+│   └── 📄 user.ts                             # User Type Definition
+│       └── User interface (id, name)
 │
-├── 📂 public/                           # Static assets
-│   └── (favicon, images, etc.)
+├── 📂 public/                                  # Static Assets
+│   └── (images, icons, fonts, etc.)
 │
-├── 📂 docs/                             # Documentation (Astro Starlight)
-│   ├── astro.config.mjs
-│   ├── package.json
-│   ├── tsconfig.json
-│   ├── 📂 src/
-│   │   ├── content.config.ts
-│   │   ├── 📂 assets/
-│   │   ├── 📂 content/
-│   │   │   └── 📂 docs/
-│   │   │       ├── index.mdx          # Main documentation
-│   │   │       ├── 📂 guides/         # How-to guides
-│   │   │       │   └── example.md
-│   │   │       └── 📂 reference/      # Technical reference
-│   │   │           └── example.md
-│   │   └── styles/
-│   └── 📂 public/
+├── 📂 docs/                                    # Documentation (Astro Starlight)
+│   ├── 📄 astro.config.mjs                    # Astro configuration
+│   ├── 📄 tsconfig.json                       # TypeScript config for docs
+│   ├── 📄 package.json                        # Docs dependencies
+│   ├── 📄 README.md                           # Docs project README
+│   │
+│   ├── 📂 public/                             # Static docs assets
+│   │   └── (images, icons, etc.)
+│   │
+│   └── 📂 src/                                # Documentation Source
+│       ├── 📄 content.config.ts              # Content collection config
+│       │
+│       ├── 📂 assets/                        # Documentation assets
+│       │   └── (diagrams, screenshots, etc.)
+│       │
+│       └── 📂 content/                       # Documentation Content
+│           └── 📂 docs/                      # Main documentation
+│               ├── 📄 index.mdx              # Main documentation file
+│               ├── 📂 guides/                # Setup & implementation guides
+│               │   └── 📄 example.md        # Guide examples
+│               └── 📂 reference/             # API & type references
+│                   └── 📄 example.md        # Reference examples
 │
-├── 📋 Config Files
-│   ├── package.json                    # Dependencies, scripts
-│   ├── tsconfig.json                   # TypeScript config
-│   ├── next.config.ts                  # Next.js config
-│   ├── tailwind.config.mjs             # Tailwind CSS config
-│   ├── postcss.config.mjs              # PostCSS config
-│   ├── eslint.config.mjs               # ESLint rules
-│   ├── next-env.d.ts                   # Next.js type definitions
-│   ├── AGENTS.md                       # AI coding guidelines
-│   ├── CLAUDE.md                       # Claude-specific instructions
-│   └── README.md                       # Project documentation
+├── 📄 AGENTS.md                              # Next.js Agent Rules & Breaking Changes Warning
+├── 📄 CLAUDE.md                              # Claude Assistant Configuration
+├── 📄 README.md                              # Main Project README (Vietnamese)
+├── 📄 next-env.d.ts                          # Next.js TypeScript declarations (auto-generated)
+│
+└── ⚙️ Configuration Files (Root Level)
+    ├── 📄 eslint.config.mjs                  # ESLint rules (Next.js + TypeScript)
+    ├── 📄 next.config.ts                     # Next.js configuration
+    ├── 📄 tsconfig.json                      # TypeScript compiler options (strict mode)
+    ├── 📄 tailwind.config.js                 # Tailwind CSS config (v4)
+    ├── 📄 postcss.config.mjs                 # PostCSS plugins
+    └── 📄 package.json                       # Dependencies & npm scripts
 ```
 
-### File Quan Trọng
+### 📊 File Count by Folder
 
-| File | Mục Đích | Ghi Chú |
-|------|----------|--------|
-| `app/layout.tsx` | Root layout với global CSS | Áp dụng cho tất cả pages |
-| `store/diaryStore.ts` | Quản lý nhật ký calo | Persist tự động |
-| `store/profileStore.ts` | Quản lý hồ sơ người dùng | Persist tự động |
-| `lib/storage.ts` | Abstraction localStorage | Type-safe, safe JSON parsing |
-| `lib/calc.ts` | Công thức tính toán dinh dưỡng | BMR, TDEE, macros |
-| `types/index.ts` | Tất cả TypeScript interfaces | Source of truth cho types |
-| `components/dashboard/DashboardPage.tsx` | Main dashboard | Phức tạp nhất |
+- **app/** - 4 files (layout, page, globals.css, favicon)
+- **components/** - 10+ files (ui components + nav)
+- **lib/** - 4 files (storage, calc, search, ingredients)
+- **store/** - 3 files (useAppStore, profileStore, diaryStore)
+- **types/** - 2 files (index, user)
+- **docs/** - Full Astro project structure with guides & references
+- **Root config** - 8 configuration files
 
 ---
 
@@ -385,7 +411,7 @@ MacroTarget (Mục tiêu dinh dưỡng)
     ├── carbs: number
     └── fat: number
          ↓ (contained in)
-    
+
 UserProfile (Thông tin người dùng)
     ├── name: string
     ├── age: number
@@ -402,7 +428,7 @@ Ingredient (Nguyên liệu)
     ├── fat: number
     └── amount: number
          ↓ (multiple in)
-    
+
 MealEntry (Một bữa ăn)
     ├── id: string
     ├── mealType: 'breakfast' | 'lunch' | 'dinner' | 'snack'
@@ -410,7 +436,7 @@ MealEntry (Một bữa ăn)
     ├── totalCalories: number
     └── time: string (HH:mm)
          ↓ (multiple per day)
-    
+
 DailyLog (Nhật ký hàng ngày)
     ├── date: string (YYYY-MM-DD)
     ├── meals: MealEntry[]
@@ -419,13 +445,13 @@ DailyLog (Nhật ký hàng ngày)
 
 ### Bảng Quan Hệ Dữ Liệu
 
-| Interface | Mục Đích | Chứa | Được Chứa Trong | Số Lượng |
-|-----------|----------|------|-----------------|----------|
-| **MacroTarget** | Mục tiêu dinh dưỡng | (không) | UserProfile | 1:1 |
-| **UserProfile** | Thông tin người dùng | MacroTarget | Zustand Store | 1:1 |
-| **Ingredient** | Dữ liệu thực phẩm | (không) | MealEntry | 1:N |
-| **MealEntry** | Một bữa ăn | Ingredient[] | DailyLog | 1:N |
-| **DailyLog** | Dữ liệu ngày | MealEntry[] | localStorage | 1:N |
+| Interface       | Mục Đích             | Chứa         | Được Chứa Trong | Số Lượng |
+| --------------- | -------------------- | ------------ | --------------- | -------- |
+| **MacroTarget** | Mục tiêu dinh dưỡng  | (không)      | UserProfile     | 1:1      |
+| **UserProfile** | Thông tin người dùng | MacroTarget  | Zustand Store   | 1:1      |
+| **Ingredient**  | Dữ liệu thực phẩm    | (không)      | MealEntry       | 1:N      |
+| **MealEntry**   | Một bữa ăn           | Ingredient[] | DailyLog        | 1:N      |
+| **DailyLog**    | Dữ liệu ngày         | MealEntry[]  | localStorage    | 1:N      |
 
 ---
 
@@ -469,25 +495,25 @@ DailyLog (Nhật ký hàng ngày)
 1. NGƯỜI DÙNG MỞ ỨNG DỤNG
    └─ Load dữ liệu từ localStorage
    └─ Populate Zustand store
-   
+
 2. NGƯỜI DÙNG ĐIỀU HƯỚNG
    └─ Click navigation (Next.js routing)
    └─ Load page component
-   
+
 3. NGƯỜI DÙNG NHẬP DỮ LIỆU
    └─ Điền form (meal, ingredients...)
    └─ Component update local state
-   
+
 4. NGƯỜI DÙNG GỬI
    └─ Validate dữ liệu
    └─ Update Zustand store
    └─ Persist vào localStorage
    └─ UI components re-render
-   
+
 5. NGƯỜI DÙNG XEM PHÂN TÍCH
    └─ Charts fetch dữ liệu từ Zustand
    └─ Recharts render visualization
-   
+
 6. SESSION KẾT THÚC
    └─ Dữ liệu vẫn lưu trong localStorage
 ```
@@ -502,13 +528,13 @@ Module `lib/storage.ts` cung cấp abstraction layer an toàn cho localStorage:
 
 ```typescript
 // Đọc dữ liệu
-const profile = getProfile()              // UserProfile | null
-const dailyLog = getLog("2024-05-08")    // DailyLog | null
-const weekLogs = getLogs("2024-05-01", "2024-05-08")  // DailyLog[]
+const profile = getProfile(); // UserProfile | null
+const dailyLog = getLog("2024-05-08"); // DailyLog | null
+const weekLogs = getLogs("2024-05-01", "2024-05-08"); // DailyLog[]
 
 // Lưu dữ liệu
-saveProfile(userProfile)                  
-saveLog("2024-05-08", dailyLog)
+saveProfile(userProfile);
+saveLog("2024-05-08", dailyLog);
 ```
 
 ### Khóa Storage
@@ -535,44 +561,44 @@ calorie_log_2024-05-07   → DailyLog cho ngày khác
 ### Cấu Hình Store Hiện Tại
 
 ```typescript
-import { create } from 'zustand'
+import { create } from "zustand";
 
 type AppState = {
-  test: string
-  setTest: (value: string) => void
-}
+  test: string;
+  setTest: (value: string) => void;
+};
 
 export const useAppStore = create<AppState>((set) => ({
-  test: '',
-  setTest: (value) => set({ test: value })
-}))
+  test: "",
+  setTest: (value) => set({ test: value }),
+}));
 ```
 
 ### Tại Sao Zustand?
 
-| Tiêu Chí | Zustand | Redux | Context |
-|----------|---------|-------|---------|
-| Bundle Size | ~1KB | ~40KB | ~0KB |
-| Học Tập | Rất dễ | Khó | Trung bình |
-| Boilerplate | Tối thiểu | Nhiều | Vừa |
-| Hiệu Năng | Tuyệt vời | Tốt | Có thể chậm |
+| Tiêu Chí    | Zustand   | Redux | Context     |
+| ----------- | --------- | ----- | ----------- |
+| Bundle Size | ~1KB      | ~40KB | ~0KB        |
+| Học Tập     | Rất dễ    | Khó   | Trung bình  |
+| Boilerplate | Tối thiểu | Nhiều | Vừa         |
+| Hiệu Năng   | Tuyệt vời | Tốt   | Có thể chậm |
 
 ### Cấu Trúc Store Khuyến Nghị (Giai Đoạn Tiếp)
 
 ```typescript
 type AppState = {
   // User Profile
-  userProfile: UserProfile | null
-  setUserProfile: (profile: UserProfile) => void
-  
+  userProfile: UserProfile | null;
+  setUserProfile: (profile: UserProfile) => void;
+
   // Daily Logs
-  dailyLogs: Map<string, DailyLog>
-  addMeal: (date: string, meal: MealEntry) => void
-  
+  dailyLogs: Map<string, DailyLog>;
+  addMeal: (date: string, meal: MealEntry) => void;
+
   // UI State
-  isLoading: boolean
-  error: string | null
-}
+  isLoading: boolean;
+  error: string | null;
+};
 ```
 
 ---
@@ -580,6 +606,7 @@ type AppState = {
 ## 🚀 Bắt Đầu Nhanh
 
 ### Yêu Cầu
+
 - Node.js 18+ (khuyến nghị 20+)
 - npm 9+ hoặc yarn 3+
 - Git
@@ -587,17 +614,20 @@ type AppState = {
 ### Cài Đặt
 
 1. **Clone dự án**
+
    ```bash
    git clone <repository-url>
    cd calorie-web
    ```
 
 2. **Cài đặt dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Chạy development server**
+
    ```bash
    npm run dev
    ```
@@ -608,19 +638,20 @@ type AppState = {
 
 ### Các Lệnh Có Sẵn
 
-| Lệnh | Command | Mục Đích |
-|------|---------|---------|
-| **dev** | `next dev` | Start development server |
-| **build** | `next build` | Production build |
-| **start** | `next start` | Run production build |
-| **lint** | `eslint` | Code quality check |
-| **docs** | `documentation build ...` | Generate docs |
+| Lệnh      | Command                   | Mục Đích                 |
+| --------- | ------------------------- | ------------------------ |
+| **dev**   | `next dev`                | Start development server |
+| **build** | `next build`              | Production build         |
+| **start** | `next start`              | Run production build     |
+| **lint**  | `eslint`                  | Code quality check       |
+| **docs**  | `documentation build ...` | Generate docs            |
 
 ---
 
 ## ✨ Trạng Thái Hiện Tại
 
 ### ✅ Hoàn Thành
+
 - [x] Next.js 16 setup với App Router
 - [x] TypeScript strict mode
 - [x] Tailwind CSS v4 integration
@@ -659,6 +690,7 @@ type AppState = {
 ## 📊 Tiến Độ Team
 
 ### Phase 1: Foundation ✅ (Hoàn thành)
+
 - Project setup
 - Type definitions
 - Storage layer
@@ -697,23 +729,23 @@ type AppState = {
 ```
 1. Tạo Branch
    └─ feature/* hoặc bugfix/* từ main
-   
+
 2. Phát Triển
    └─ Code theo conventions
    └─ Test ở development server
-   
+
 3. Kiểm Tra Chất Lượng
    └─ npm run lint
    └─ Sửa lỗi ESLint
-   
+
 4. Commit & Push
    └─ Conventional commits
    └─ git push origin branch-name
-   
+
 5. Pull Request
    └─ Tạo PR trên GitHub
    └─ Request review
-   
+
 6. Merge
    └─ Sau khi approved
    └─ Xóa feature branch
@@ -735,23 +767,27 @@ chore: Maintenance
 ## 📝 Code Standards
 
 ### TypeScript
+
 - Luôn define return types
 - Dùng interfaces cho object types
 - Strict mode bắt buộc
 - Import types với `import type`
 
 ### Components
+
 - Functional components + hooks
 - PascalCase filenames (Button.tsx)
 - Một component per file
 - JSDoc comments cho public APIs
 
 ### State Management
+
 - Zustand cho global state
 - Keep slices focused
 - TypeScript cho store types
 
 ### Styling
+
 - Tailwind CSS utilities
 - Không inline styles
 - CSS variables cho custom values
