@@ -3,54 +3,56 @@
 import React from 'react';
 
 interface StatCardProps {
-  icon: string;
   label: string;
   value: string | number;
-  subtext?: string;
-  color?: 'emerald' | 'blue' | 'orange' | 'pink';
+  unit?: string;
+  isNegative?: boolean;
+  isStreak?: boolean;
 }
 
 export default function StatCard({
-  icon,
   label,
   value,
-  subtext,
-  color = 'emerald',
+  unit,
+  isNegative = false,
+  isStreak = false,
 }: StatCardProps) {
-  const colorMap = {
-    emerald: '#005239',
-    blue: '#0066cc',
-    orange: '#ff6b35',
-    pink: '#ff006e',
-  };
-
-  const bgColorMap = {
-    emerald: '#e8f0eb',
-    blue: '#e8f2ff',
-    orange: '#ffe8d9',
-    pink: '#ffe8f5',
-  };
-
   return (
-    <div className="bg-white/88 backdrop-blur-md border border-[#005239]/10 shadow-sm rounded-[20px] p-5 flex items-start gap-4">
-      <div
-        className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0"
-        style={{ backgroundColor: bgColorMap[color] }}
-      >
-        <span
-          className="material-symbols-outlined text-2xl"
-          style={{ color: colorMap[color], fontVariationSettings: "'FILL' 1" }}
-        >
-          {icon}
-        </span>
-      </div>
+    <div
+      className="bg-white/88 backdrop-blur-md border border-[#005239]/10 shadow-sm rounded-3xl p-4 flex flex-col gap-2"
+      style={isStreak ? { borderLeft: '4px solid #005239' } : {}}
+    >
+      {/* Label */}
+      <span className="text-[10px] font-bold uppercase tracking-widest text-[#48645a] font-['Space_Grotesk']">
+        {label}
+      </span>
 
-      <div className="flex-1 min-w-0">
-        <p className="text-sm text-[#6f7973] font-medium">{label}</p>
-        <p className="text-[22px] font-bold text-[#005239] font-['Space_Grotesk']">
+      {/* Value + unit */}
+      <div className="flex items-baseline gap-1">
+        <span
+          className="text-2xl font-bold font-['Space_Grotesk']"
+          style={{ color: isNegative ? '#ba1a1a' : '#005239' }}
+        >
           {value}
-        </p>
-        {subtext && <p className="text-xs text-[#9db5ab] mt-1">{subtext}</p>}
+        </span>
+        {unit && (
+          <span
+            className="text-sm font-['Be_Vietnam_Pro'] font-normal"
+            style={{ color: isNegative ? '#ba1a1a' : '#48645a' }}
+          >
+            {unit}
+          </span>
+        )}
+
+        {/* Flame icon cho streak */}
+        {isStreak && (
+          <span
+            className="material-symbols-outlined text-orange-500 text-xl ml-1"
+            style={{ fontVariationSettings: "'FILL' 1" }}
+          >
+            local_fire_department
+          </span>
+        )}
       </div>
     </div>
   );
