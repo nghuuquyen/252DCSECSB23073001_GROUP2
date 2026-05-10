@@ -6,6 +6,7 @@ import { useDiaryStore } from '@/store/diaryStore';
 import { useProfileStore } from '@/store/profileStore';
 import type { MealEntry, Ingredient } from '@/types';
 import FOOD_DB from '@/lib/ingredients.json';
+import { BottomNav } from '@/components/nav/BottomNav';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -514,23 +515,7 @@ export default function DiaryPage() {
         <span className="material-symbols-outlined text-3xl">add</span>
       </button>
 
-      {/* ── BOTTOM NAV — đồng bộ Dashboard ───────────────────────── */}
-      <footer className="fixed bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-t border-primary/10 h-16 flex justify-center items-center">
-        <nav className="w-full max-w-[1100px] flex justify-around items-center px-8">
-          <Link href="/" className="flex flex-col items-center gap-1 text-outline hover:text-primary transition-colors py-2 px-8">
-            <span className="material-symbols-outlined text-2xl">home</span>
-            <span className="font-label-caps text-[10px] font-bold uppercase tracking-[0.1em]">Tổng quan</span>
-          </Link>
-          <Link href="/diary" className="flex flex-col items-center gap-1 py-2 px-8 rounded-2xl bg-secondary-container text-primary transition-all">
-            <span className="material-symbols-outlined filled-icon text-2xl">menu_book</span>
-            <span className="font-label-caps text-[10px] font-bold uppercase tracking-[0.1em]">Nhật ký</span>
-          </Link>
-          <Link href="/stats" className="flex flex-col items-center gap-1 text-outline hover:text-primary transition-colors py-2 px-8">
-            <span className="material-symbols-outlined text-2xl">bar_chart</span>
-            <span className="font-label-caps text-[10px] font-bold uppercase tracking-[0.1em]">Thống kê</span>
-          </Link>
-        </nav>
-      </footer>
+      <BottomNav />
 
       {/* ── MODAL ─────────────────────────────────────────────────── */}
       {modalMeal && (

@@ -8,8 +8,8 @@ import {
   WeeklyChart,
   StatCard,
   MacroSection,
-  StreakCard,
 } from '@/components/stats';
+import { BottomNav } from '@/components/nav/BottomNav';
 import Link from 'next/link';
 
 // ============================================
@@ -18,91 +18,88 @@ import Link from 'next/link';
 
 function getLast7Days(): string[] {
   return Array.from({ length: 7 }, (_, i) => {
-    const d = new Date()
-    d.setDate(d.getDate() - (6 - i))
-    return d.toISOString().split('T')[0]
-  })
+    const d = new Date();
+    d.setDate(d.getDate() - (6 - i));
+    return d.toISOString().split('T')[0];
+  });
 }
 
-function formatDateLabel(dateStr: string): string {
-  const d = new Date(dateStr)
-  return d.toLocaleDateString('vi-VN', {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'numeric',
-  })
+function getWeekRange(): string {
+  const days = getLast7Days();
+  const start = new Date(days[0]);
+  const end = new Date(days[6]);
+  const fmt = (d: Date) =>
+    d.toLocaleDateString('vi-VN', { day: 'numeric', month: 'long' });
+  return `${fmt(start)} - ${fmt(end)}, ${end.getFullYear()}`;
 }
 
-function calcStreak(logs: DailyLog[], target: number) {
-  const logMap = new Map(logs.map((l) => [l.date, l]))
-  let currentStreak = 0
-  let bestStreak = 0
-  let tempStreak = 0
-  let lastActive = 'Chưa có'
+function getDayLabel(dateStr: string): string {
+  const d = new Date(dateStr);
+  const labels = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+  return labels[d.getDay()];
+}
 
-  // Current streak — đếm ngược từ hôm nay
+function calcStreak(logs: DailyLog[], target: number): { currentStreak: number } {
+  const logMap = new Map(logs.map((l) => [l.date, l]));
+  let currentStreak = 0;
+
   for (let i = 0; i <= 30; i++) {
-    const d = new Date()
-    d.setDate(d.getDate() - i)
-    const dateStr = d.toISOString().split('T')[0]
-    const log = logMap.get(dateStr)
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const dateStr = d.toISOString().split('T')[0];
+    const log = logMap.get(dateStr);
     if (log && log.totalCalories >= target * 0.8) {
-      currentStreak++
-      if (lastActive === 'Chưa có') lastActive = formatDateLabel(dateStr)
+      currentStreak++;
     } else {
-      break
+      break;
     }
   }
 
-  // Best streak — toàn bộ lịch sử
-  const sorted = [...logs].sort((a, b) => a.date.localeCompare(b.date))
-  for (const log of sorted) {
-    if (log.totalCalories >= target * 0.8) {
-      tempStreak++
-      bestStreak = Math.max(bestStreak, tempStreak)
-    } else {
-      tempStreak = 0
-    }
-  }
-
-  return { currentStreak, bestStreak, lastActive }
+  return { currentStreak };
 }
 
-function calcAvgMacros(logs: DailyLog[]) {
-  if (logs.length === 0) return { protein: 0, carbs: 0, fat: 0 }
+function calcAvgMacros(logs: DailyLog[]): {
+  protein: number;
+  carbs: number;
+  fat: number;
+} {
+  if (logs.length === 0) return { protein: 0, carbs: 0, fat: 0 };
 
   const total = logs.reduce(
     (acc, log) => {
       const protein = log.meals.reduce(
-        (s, m) => s + m.ingredients.reduce(
-          (si, i) => si + ((i.protein * (i.amount ?? 100)) / 100), 0
-        ), 0
-      )
+        (s, m) =>
+          s + m.ingredients.reduce(
+            (si, i) => si + (i.protein * (i.amount ?? 100)) / 100, 0
+          ), 0
+      );
       const carbs = log.meals.reduce(
-        (s, m) => s + m.ingredients.reduce(
-          (si, i) => si + ((i.carbs * (i.amount ?? 100)) / 100), 0
-        ), 0
-      )
+        (s, m) =>
+          s + m.ingredients.reduce(
+            (si, i) => si + (i.carbs * (i.amount ?? 100)) / 100, 0
+          ), 0
+      );
       const fat = log.meals.reduce(
-        (s, m) => s + m.ingredients.reduce(
-          (si, i) => si + ((i.fat * (i.amount ?? 100)) / 100), 0
-        ), 0
-      )
+        (s, m) =>
+          s + m.ingredients.reduce(
+            (si, i) => si + (i.fat * (i.amount ?? 100)) / 100, 0
+          ), 0
+      );
       return {
         protein: acc.protein + protein,
         carbs: acc.carbs + carbs,
         fat: acc.fat + fat,
-      }
+      };
     },
     { protein: 0, carbs: 0, fat: 0 }
-  )
+  );
 
-  const count = logs.filter((l) => l.totalCalories > 0).length || 1
+  const count = logs.filter((l) => l.totalCalories > 0).length || 1;
   return {
     protein: Math.round(total.protein / count),
     carbs: Math.round(total.carbs / count),
     fat: Math.round(total.fat / count),
-  }
+  };
 }
 
 // ============================================
@@ -110,172 +107,202 @@ function calcAvgMacros(logs: DailyLog[]) {
 // ============================================
 
 export default function StatsPage() {
-  const [mounted, setMounted] = useState(false)
-  const [logs, setLogs] = useState<DailyLog[]>([])
-  const { profile, loadProfile } = useProfileStore()
+  const [mounted, setMounted] = useState<boolean>(false);
+  const [logs, setLogs] = useState<DailyLog[]>([]);
+  const { profile, loadProfile } = useProfileStore();
 
   useEffect(() => {
-    loadProfile()
-    const days = getLast7Days()
-    const data = getLogs(days[0], days[days.length - 1])
-    setLogs(data)
-    setMounted(true)
-  }, [])
+    loadProfile();
+    const days = getLast7Days();
+    const data = getLogs(days[0], days[days.length - 1]);
+    setLogs(data);
+    setMounted(true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  if (!mounted) return null
+  if (!mounted) return null;
 
-  const target = profile?.macroTarget?.calories ?? 2000
-  const days = getLast7Days()
-  const daysLogged = logs.filter((l) => l.totalCalories > 0).length
-  const avgCalories = daysLogged > 0
-    ? Math.round(logs.reduce((s, l) => s + l.totalCalories, 0) / daysLogged)
-    : 0
-  const totalCal = logs.reduce((s, l) => s + l.totalCalories, 0)
-  const daysMetTarget = logs.filter((l) => l.totalCalories >= target * 0.8).length
-  const avgMacros = calcAvgMacros(logs)
-  const { currentStreak, bestStreak, lastActive } = calcStreak(logs, target)
+  const target: number = profile?.macroTarget?.calories ?? 2000;
+  const days: string[] = getLast7Days();
+  const today: string = new Date().toISOString().split('T')[0];
 
-  // Chart data
+  const daysLogged: number = logs.filter((l) => l.totalCalories > 0).length;
+
+  const avgCalories: number =
+    daysLogged > 0
+      ? Math.round(logs.reduce((s, l) => s + l.totalCalories, 0) / daysLogged)
+      : 0;
+
+  const daysMetTarget: number = logs.filter(
+    (l) => l.totalCalories >= target * 0.8
+  ).length;
+
+  const totalDeficit: number = logs
+    .filter((l) => l.totalCalories > 0)
+    .reduce((s, l) => s + (l.totalCalories - target), 0);
+
+  const { currentStreak } = calcStreak(logs, target);
+  const avgMacros = calcAvgMacros(logs);
+
+  const proteinKcal: number = avgMacros.protein * 4;
+  const carbsKcal: number = avgMacros.carbs * 4;
+  const fatKcal: number = avgMacros.fat * 9;
+  const totalMacroKcal: number = proteinKcal + carbsKcal + fatKcal || 1;
+
+  const macroPercents = {
+    carbs: Math.round((carbsKcal / totalMacroKcal) * 100),
+    protein: Math.round((proteinKcal / totalMacroKcal) * 100),
+    fat: Math.round((fatKcal / totalMacroKcal) * 100),
+  };
+
   const weeklyData = days.map((date) => {
-    const log = logs.find((l) => l.date === date)
+    const log = logs.find((l) => l.date === date);
     return {
-      date: formatDateLabel(date),
+      date: getDayLabel(date),
       calories: log?.totalCalories ?? 0,
       target,
-    }
-  })
+      isToday: date === today,
+    };
+  });
 
-  // Macro section data
   const macroStats = [
     {
-      label: 'Protein',
-      current: avgMacros.protein,
-      target: profile?.macroTarget?.protein ?? 120,
-      icon: 'egg',
-      color: '#ff6b35',
+      label: 'TINH BỘT',
+      percent: macroPercents.carbs,
+      kcal: carbsKcal,
+      color: 'primary' as const,
     },
     {
-      label: 'Carbs',
-      current: avgMacros.carbs,
-      target: profile?.macroTarget?.carbs ?? 310,
-      icon: 'breakfast_dining',
-      color: '#0066cc',
+      label: 'ĐẠM',
+      percent: macroPercents.protein,
+      kcal: proteinKcal,
+      color: 'primary-container' as const,
     },
     {
-      label: 'Fat',
-      current: avgMacros.fat,
-      target: profile?.macroTarget?.fat ?? 65,
-      icon: 'oil',
-      color: '#ff006e',
+      label: 'CHẤT BÉO',
+      percent: macroPercents.fat,
+      kcal: fatKcal,
+      color: 'outline-variant' as const,
     },
-  ]
+  ];
 
   return (
-    <div className="bg-[#f4fbf6] text-[#161d1a] font-['Be_Vietnam_Pro'] min-h-screen">
-      <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-        rel="stylesheet"
-      />
+    <div className="bg-background text-on-background font-body-md min-h-screen">
 
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-emerald-900/10 h-16 flex justify-between items-center px-5 max-w-[700px] mx-auto">
-        <div className="flex items-center gap-2">
-          <Link href="/">
-            <button className="p-2 hover:bg-[#e8f0eb] rounded-full transition-colors">
-              <span className="material-symbols-outlined text-[#005239]">
-                chevron_left
+      {/* ── HEADER — đồng bộ Diary ──────────────────────────────── */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-emerald-900/10 h-14 flex justify-center items-center px-6">
+        <div className="w-full max-w-[1100px] flex justify-between items-center">
+
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined filled-icon text-primary text-2xl">
+              local_fire_department
+            </span>
+            <h1 className="font-h1 text-2xl text-primary font-black tracking-tight">
+              CaloMate
+            </h1>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 bg-primary-fixed-dim/30 px-4 py-1.5 rounded-full">
+              <span className="material-symbols-outlined filled-icon text-primary text-base">
+                local_fire_department
               </span>
-            </button>
-          </Link>
-          <h1 className="text-[24px] font-bold text-[#005239] tracking-tight">
-            Thống kê
-          </h1>
+              <span className="font-label-caps text-xs font-bold uppercase tracking-wider text-primary">
+                Chuỗi{' '}
+                <span className="font-numbers">{currentStreak}</span>{' '}
+                ngày
+              </span>
+            </div>
+            <Link href="/settings">
+              <button className="hover:bg-surface-container transition-all active:scale-95 p-2 rounded-full">
+                <span className="material-symbols-outlined text-primary text-xl">
+                  settings
+                </span>
+              </button>
+            </Link>
+          </div>
+
         </div>
       </header>
 
-      <main className="pt-24 pb-32 px-5 max-w-[700px] mx-auto space-y-6">
+      {/* ── MAIN ────────────────────────────────────────────────── */}
+      <main className="pt-20 pb-24 px-6 max-w-[1100px] mx-auto space-y-5">
 
-        {/* Quick Stats */}
-        <section className="grid grid-cols-2 gap-4">
-          <StatCard
-            icon="local_fire_department"
-            label="Trung bình/ngày"
-            value={avgCalories}
-            subtext="kcal"
-            color="emerald"
-          />
-          <StatCard
-            icon="calendar_today"
-            label="Ngày ghi nhật ký"
-            value={daysLogged}
-            subtext="ngày trong tuần"
-            color="blue"
-          />
+        {/* Page title + date range */}
+        <section className="space-y-1 text-center">
+          <h2 className="font-h1 text-2xl text-primary font-bold">
+            Thống kê tuần này
+          </h2>
+          <p className="font-body-md text-base text-secondary font-semibold">
+            {getWeekRange()}
+          </p>
         </section>
 
-        {/* Weekly Chart */}
-        <WeeklyChart data={weeklyData} />
+        {/* Main grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
 
-        {/* Macro trung bình */}
-        <MacroSection title="Macro trung bình 7 ngày" macros={macroStats} />
+          {/* Left column */}
+          <div className="lg:col-span-7 space-y-5">
 
-        {/* Streak */}
-        <StreakCard
-          currentStreak={currentStreak}
-          bestStreak={bestStreak}
-          lastActive={lastActive}
-        />
+            <WeeklyChart data={weeklyData} />
 
-        {/* Additional Stats */}
-        <section className="bg-white/88 backdrop-blur-md border border-[#005239]/10 shadow-lg rounded-[24px] p-6">
-          <h3 className="text-[18px] font-bold text-[#005239] mb-6">
-            Các chỉ số khác
-          </h3>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between py-3 border-b border-[#caeadd]">
-              <span className="text-[#6f7973] font-medium">Tổng calo tuần này</span>
-              <span className="text-lg font-bold text-[#005239] font-['Space_Grotesk']">
-                {totalCal.toLocaleString()} kcal
-              </span>
-            </div>
-            <div className="flex items-center justify-between py-3 border-b border-[#caeadd]">
-              <span className="text-[#6f7973] font-medium">Ngày đạt mục tiêu</span>
-              <span className="text-lg font-bold text-[#005239] font-['Space_Grotesk']">
-                {daysMetTarget}/7 ngày
-              </span>
-            </div>
-            <div className="flex items-center justify-between py-3">
-              <span className="text-[#6f7973] font-medium">Mục tiêu calo/ngày</span>
-              <span className="text-lg font-bold text-[#005239] font-['Space_Grotesk']">
-                {target.toLocaleString()} kcal
-              </span>
-            </div>
+            <section className="grid grid-cols-2 gap-5">
+              <StatCard
+                label="TB MỖI NGÀY"
+                value={avgCalories.toLocaleString()}
+                unit="kcal"
+              />
+              <StatCard
+                label="ĐẠT MỤC TIÊU"
+                value={`${daysMetTarget}/7`}
+                unit="ngày"
+              />
+              <StatCard
+                label="THÂM HỤT"
+                value={
+                  totalDeficit >= 0
+                    ? `+${totalDeficit.toLocaleString()}`
+                    : totalDeficit.toLocaleString()
+                }
+                unit="kcal"
+                isNegative={totalDeficit < 0}
+              />
+              <StatCard
+                label="CHUỖI STREAK"
+                value={currentStreak}
+                unit="ngày"
+                isStreak
+              />
+            </section>
           </div>
-        </section>
+
+          {/* Right column */}
+          <div className="lg:col-span-5 h-full">
+            <MacroSection macros={macroStats} />
+          </div>
+
+        </div>
 
         {/* Empty state */}
         {logs.length === 0 && (
-          <div className="text-center py-10 bg-white/88 rounded-[24px] border border-[#005239]/10">
-            <span className="material-symbols-outlined text-4xl text-[#9db5ab]">
+          <div className="text-center py-10 glass-card rounded-3xl">
+            <span className="material-symbols-outlined text-4xl text-outline">
               bar_chart
             </span>
-            <p className="text-[#6f7973] text-sm mt-2">Chưa có dữ liệu tuần này</p>
-            <p className="text-[#9db5ab] text-xs mt-1">
+            <p className="text-outline text-sm mt-2">
+              Chưa có dữ liệu tuần này
+            </p>
+            <p className="text-outline/60 text-xs mt-1">
               Hãy ghi nhật ký bữa ăn đầu tiên!
             </p>
           </div>
         )}
 
-        {/* Action Button */}
-        <div className="flex gap-3">
-          <Link href="/diary" className="flex-1">
-            <button className="w-full bg-[#005239] text-white py-3 rounded-[16px] font-medium hover:opacity-90 transition-opacity active:scale-[0.98]">
-              Nhập liệu
-            </button>
-          </Link>
-        </div>
-
       </main>
+
+      {/* ── BOTTOM NAV — đồng bộ Diary ──────────────────────────── */}
+      <BottomNav />
+
     </div>
-  )
+  );
 }

@@ -2,32 +2,45 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, BookOpen, BarChart2 } from 'lucide-react';
+
+const NAV_ITEMS = [
+  { href: '/',      label: 'Tổng quan', icon: 'home'      },
+  { href: '/diary', label: 'Nhật ký',   icon: 'menu_book' },
+  { href: '/stats', label: 'Thống kê',  icon: 'bar_chart' },
+];
 
 export function BottomNav() {
   const pathname = usePathname();
 
-  const navItems = [
-    { href: '/',      label: 'Tổng quan', Icon: Home      },
-    { href: '/diary', label: 'Nhật ký',   Icon: BookOpen  },
-    { href: '/stats', label: 'Thống kê',  Icon: BarChart2 },
-  ];
-
   return (
-    <nav style={{ position: 'fixed', bottom: 0, left: 0, width: '100%', zIndex: 50, background: 'rgba(255,255,255,0.88)', backdropFilter: 'blur(20px)', borderTop: '1px solid rgba(26,107,78,0.1)', boxShadow: '0 -10px 30px rgba(26,107,78,0.06)', display: 'flex', justifyContent: 'space-around', alignItems: 'center', padding: '16px 24px 32px' }}>
-      {navItems.map(({ href, label, Icon }) => {
-        const active = href === '/' ? pathname === '/' : pathname?.startsWith(href);
-        return (
-          <Link key={href} href={href} style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-            <div style={{ padding: 12, borderRadius: 9999, background: active ? 'rgba(26,107,78,0.12)' : 'transparent', transform: active ? 'scale(1.1)' : 'scale(1)', transition: 'all 0.2s' }}>
-              <Icon size={22} color={active ? '#005239' : 'rgba(26,58,42,0.4)'} />
-            </div>
-            <span style={{ fontFamily: 'var(--font-space-grotesk)', fontSize: 10, letterSpacing: '0.08em', textTransform: 'uppercase', color: active ? '#005239' : 'rgba(26,58,42,0.4)', fontWeight: active ? 700 : 400 }}>
-              {label}
-            </span>
-          </Link>
-        );
-      })}
-    </nav>
+    <footer className="fixed bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-t border-[#005239]/10 h-16 flex justify-center items-center">
+      <nav className="w-full max-w-[1100px] flex justify-around items-center px-8">
+        {NAV_ITEMS.map(({ href, label, icon }) => {
+          const active = href === '/' ? pathname === '/' : pathname?.startsWith(href);
+
+          return (
+            <Link
+              key={href}
+              href={href}
+              className={`flex flex-col items-center gap-1 py-2 px-8 rounded-2xl transition-all ${
+                active
+                  ? 'bg-[#caeadd] text-[#005239]'
+                  : 'text-[#6f7973] hover:text-[#005239]'
+              }`}
+            >
+              <span
+                className="material-symbols-outlined text-2xl"
+                style={active ? { fontVariationSettings: "'FILL' 1" } : {}}
+              >
+                {icon}
+              </span>
+              <span className="text-[10px] font-bold uppercase tracking-[0.1em] font-['Be_Vietnam_Pro']">
+                {label}
+              </span>
+            </Link>
+          );
+        })}
+      </nav>
+    </footer>
   );
 }
