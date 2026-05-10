@@ -32,6 +32,7 @@ export function searchIngredient(
   // Map source JSON shape to `Ingredient` type to satisfy TypeScript
   const normalizedIngredients: Ingredient[] = (ingredients as any[]).map(
     (i) => ({
+      id: i.id ?? crypto.randomUUID(),
       name: i.name,
       // JSON uses `calPer100g`; Ingredient expects `calories` (use per-100g as default)
       calories: i.calPer100g ?? i.calories ?? 0,
