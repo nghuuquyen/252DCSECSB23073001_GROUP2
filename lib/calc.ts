@@ -1,4 +1,4 @@
-import { UserProfile, MacroTarget } from "@/types";
+import { UserProfile, MacroTarget, DailyLog } from "@/types";
 
 // ─────────────────────────────────────────────
 // Constants
@@ -133,4 +133,92 @@ export function calcNutritionPlan(
   const tdee = calcTDEE(profile, activityLevel, gender);
   const macros = calcMacroTarget(tdee, profile.goal);
   return { tdee, macros };
+}
+
+// ─────────────────────────────────────────────
+// Streak Calculation
+// ─────────────────────────────────────────────
+
+/**
+ * Kiểm tra xem ngày hôm nay có đủ 3 bữa chính không
+ * (breakfast, lunch, dinner - không tính snack)
+ *
+ * @param log - DailyLog cần kiểm tra
+ * @returns true nếu đủ 3 bữa chính
+ */
+export function hasAllMainMeals(log: DailyLog): boolean {
+  const mealTypes = new Set(log.meals.map((m) => m.mealType));
+  return (
+    mealTypes.has("breakfast") &&
+    mealTypes.has("lunch") &&
+    mealTypes.has("dinner")
+  );
+}
+
+/**
+ * Tính chuỗi liên tục hiện tại từ logs
+ * Chỉ tính streak khi có đủ 3 bữa chính (sáng, trưa, tối)
+ *
+ * @param logs - Mảng DailyLog
+ * @returns Số ngày liên tục hiện tại
+ */
+export function calcCurrentStreak(logs: DailyLog[]): number {
+  const logMap = new Map(logs.map((l) => [l.date, l]));
+  let streak = 0;
+  for (let i = 0; i <= 365; i++) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const log = logMap.get(d.toISOString().split("T")[0]);
+    if (log && hasAllMainMeals(log)) {
+      streak++;
+    } else {
+      break;
+    }
+  }
+  return streak;
+}
+
+/**
+ * Tính best streak (kỷ lục chuỗi liên tục) từ logs
+ * Kiểm tra lịch sử để tìm chuỗi dài nhất
+ *
+ * @param logs - Mảng DailyLog
+ * @returns Số ngày streak cao nhất từng đạt được
+ */
+export function calcBestStreak(logs: DailyLog[]): number {
+  if (logs.length === 0) return 0;
+
+  const sortedLogs = [...logs].sort((a, b) => a.date.localeCompare(b.date));
+
+  let maxStreak = 0;
+  let currentStreak = 0;
+  let lastDate: Date | null = null;
+
+  for (const log of sortedLogs) {
+    if (!hasAllMainMeals(log)) {
+      maxStreak = Math.max(maxStreak, currentStreak);
+      currentStreak = 0;
+      lastDate = null;
+      continue;
+    }
+
+    const logDate = new Date(log.date);
+    if (lastDate) {
+      const daysDiff =
+        (logDate.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24);
+      // Nếu ngày liên tiếp, tăng streak, nếu không thì reset
+      if (daysDiff === 1) {
+        currentStreak++;
+      } else {
+        maxStreak = Math.max(maxStreak, currentStreak);
+        currentStreak = 1;
+      }
+    } else {
+      currentStreak = 1;
+    }
+    lastDate = logDate;
+  }
+
+  maxStreak = Math.max(maxStreak, currentStreak);
+  return maxStreak;
 }
