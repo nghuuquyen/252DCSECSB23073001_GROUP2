@@ -1,46 +1,38 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState, useMemo } from 'react';
-import dynamic from 'next/dynamic';
-import { useProfileStore } from '@/store/profileStore';
-import { getLogs } from '@/lib/storage';
-import type { DailyLog } from '@/types';
-import { BottomNav } from '@/components/nav/BottomNav';
-import Link from 'next/link';
+import React, { useEffect, useState, useMemo } from "react";
+import dynamic from "next/dynamic";
+import { useProfileStore } from "@/store/profileStore";
+import { getLogs } from "@/lib/storage";
+import type { DailyLog } from "@/types";
+import { calcCurrentStreak, calcBestStreak } from "@/lib/calc";
+import { BottomNav } from "@/components/nav/BottomNav";
+import Link from "next/link";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Lazy load heavy chart/stat components — không block initial render
 // ─────────────────────────────────────────────────────────────────────────────
 
-const WeeklyChart = dynamic(
-  () => import('@/components/stats/WeeklyChart'),
-  {
-    loading: () => (
-      <div className="rounded-3xl bg-white/60 border border-primary/10 h-[280px] animate-pulse" />
-    ),
-    ssr: false, // chart dùng client-only layout, tắt SSR để tránh hydration mismatch
-  }
-);
+const WeeklyChart = dynamic(() => import("@/components/stats/WeeklyChart"), {
+  loading: () => (
+    <div className="rounded-3xl bg-white/60 border border-primary/10 h-[280px] animate-pulse" />
+  ),
+  ssr: false, // chart dùng client-only layout, tắt SSR để tránh hydration mismatch
+});
 
-const StatCard = dynamic(
-  () => import('@/components/stats/StatCard'),
-  {
-    loading: () => (
-      <div className="rounded-3xl bg-white/60 border border-primary/10 h-24 animate-pulse" />
-    ),
-    ssr: false,
-  }
-);
+const StatCard = dynamic(() => import("@/components/stats/StatCard"), {
+  loading: () => (
+    <div className="rounded-3xl bg-white/60 border border-primary/10 h-24 animate-pulse" />
+  ),
+  ssr: false,
+});
 
-const MacroSection = dynamic(
-  () => import('@/components/stats/MacroSection'),
-  {
-    loading: () => (
-      <div className="rounded-3xl bg-white/60 border border-primary/10 h-64 animate-pulse" />
-    ),
-    ssr: false,
-  }
-);
+const MacroSection = dynamic(() => import("@/components/stats/MacroSection"), {
+  loading: () => (
+    <div className="rounded-3xl bg-white/60 border border-primary/10 h-64 animate-pulse" />
+  ),
+  ssr: false,
+});
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Helpers (pure functions — defined outside component để không re-create)
@@ -50,33 +42,22 @@ function getLast7Days(): string[] {
   return Array.from({ length: 7 }, (_, i) => {
     const d = new Date();
     d.setDate(d.getDate() - (6 - i));
-    return d.toISOString().split('T')[0];
+    return d.toISOString().split("T")[0];
   });
 }
 
 function getWeekRange(): string {
   const days = getLast7Days();
   const start = new Date(days[0]);
-  const end   = new Date(days[6]);
-  const fmt   = (d: Date) => d.toLocaleDateString('vi-VN', { day: 'numeric', month: 'long' });
+  const end = new Date(days[6]);
+  const fmt = (d: Date) =>
+    d.toLocaleDateString("vi-VN", { day: "numeric", month: "long" });
   return `${fmt(start)} - ${fmt(end)}, ${end.getFullYear()}`;
 }
 
 function getDayLabel(dateStr: string): string {
-  const labels = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+  const labels = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
   return labels[new Date(dateStr).getDay()];
-}
-
-function calcStreak(logs: DailyLog[], target: number): number {
-  const logMap = new Map(logs.map((l) => [l.date, l]));
-  let streak = 0;
-  for (let i = 0; i <= 30; i++) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    const log = logMap.get(d.toISOString().split('T')[0]);
-    if (log && log.totalCalories >= target * 0.8) { streak++; } else { break; }
-  }
-  return streak;
 }
 
 function calcAvgMacros(logs: DailyLog[]) {
@@ -87,19 +68,19 @@ function calcAvgMacros(logs: DailyLog[]) {
         m.ingredients.forEach((i) => {
           const r = (i.amount ?? 100) / 100;
           acc.protein += i.protein * r;
-          acc.carbs   += i.carbs   * r;
-          acc.fat     += i.fat     * r;
-        })
+          acc.carbs += i.carbs * r;
+          acc.fat += i.fat * r;
+        }),
       );
       return acc;
     },
-    { protein: 0, carbs: 0, fat: 0 }
+    { protein: 0, carbs: 0, fat: 0 },
   );
   const count = logs.filter((l) => l.totalCalories > 0).length || 1;
   return {
     protein: Math.round(total.protein / count),
-    carbs:   Math.round(total.carbs   / count),
-    fat:     Math.round(total.fat     / count),
+    carbs: Math.round(total.carbs / count),
+    fat: Math.round(total.fat / count),
   };
 }
 
@@ -109,56 +90,107 @@ function calcAvgMacros(logs: DailyLog[]) {
 
 export default function StatsPage() {
   const [mounted, setMounted] = useState(false);
-  const [logs, setLogs]       = useState<DailyLog[]>([]);
-  const { profile, loadProfile } = useProfileStore();
+  const [logs, setLogs] = useState<DailyLog[]>([]);
+  const { profile, loadProfile, updateProfile } = useProfileStore();
 
   useEffect(() => {
     loadProfile();
     const days = getLast7Days();
     setLogs(getLogs(days[0], days[days.length - 1]));
     setMounted(true);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ── Memoize derived data — tránh re-compute mỗi render ──
-  const target       = profile?.macroTarget?.calories ?? 2000;
-  const today        = new Date().toISOString().split('T')[0];
-  const days         = useMemo(() => getLast7Days(), []);
+  // ── Cập nhật streak trong profile khi logs thay đổi ──
+  useEffect(() => {
+    if (!profile || logs.length === 0) return;
+    const currentStreak = calcCurrentStreak(logs);
+    const bestStreak = calcBestStreak(logs);
+    // Chỉ update khi streak thay đổi để tránh re-render không cần thiết
+    if (
+      profile.currentStreak !== currentStreak ||
+      profile.bestStreak !== bestStreak
+    ) {
+      updateProfile({ currentStreak, bestStreak });
+    }
+  }, [logs, profile, updateProfile]);
 
-  const daysLogged   = useMemo(() => logs.filter((l) => l.totalCalories > 0).length, [logs]);
-  const avgCalories  = useMemo(
-    () => daysLogged > 0 ? Math.round(logs.reduce((s, l) => s + l.totalCalories, 0) / daysLogged) : 0,
-    [logs, daysLogged]
+  // ── Memoize derived data — tránh re-compute mỗi render ──
+  const target = profile?.macroTarget?.calories ?? 2000;
+  const today = new Date().toISOString().split("T")[0];
+  const days = useMemo(() => getLast7Days(), []);
+
+  const daysLogged = useMemo(
+    () => logs.filter((l) => l.totalCalories > 0).length,
+    [logs],
+  );
+  const avgCalories = useMemo(
+    () =>
+      daysLogged > 0
+        ? Math.round(logs.reduce((s, l) => s + l.totalCalories, 0) / daysLogged)
+        : 0,
+    [logs, daysLogged],
   );
   const daysMetTarget = useMemo(
     () => logs.filter((l) => l.totalCalories >= target * 0.8).length,
-    [logs, target]
+    [logs, target],
   );
   const totalDeficit = useMemo(
-    () => logs.filter((l) => l.totalCalories > 0).reduce((s, l) => s + (l.totalCalories - target), 0),
-    [logs, target]
+    () =>
+      logs
+        .filter((l) => l.totalCalories > 0)
+        .reduce((s, l) => s + (l.totalCalories - target), 0),
+    [logs, target],
   );
-  const currentStreak = useMemo(() => calcStreak(logs, target), [logs, target]);
-  const avgMacros     = useMemo(() => calcAvgMacros(logs), [logs]);
+  const currentStreak = profile?.currentStreak ?? 0;
+  const bestStreak = profile?.bestStreak ?? 0;
+  const avgMacros = useMemo(() => calcAvgMacros(logs), [logs]);
 
   const macroKcal = useMemo(() => {
     const protein = avgMacros.protein * 4;
-    const carbs   = avgMacros.carbs   * 4;
-    const fat     = avgMacros.fat     * 9;
-    const total   = protein + carbs + fat || 1;
+    const carbs = avgMacros.carbs * 4;
+    const fat = avgMacros.fat * 9;
+    const total = protein + carbs + fat || 1;
     return { protein, carbs, fat, total };
   }, [avgMacros]);
 
-  const macroStats = useMemo(() => [
-    { label: 'TINH BỘT', percent: Math.round((macroKcal.carbs   / macroKcal.total) * 100), kcal: macroKcal.carbs,   color: 'primary'           as const },
-    { label: 'ĐẠM',      percent: Math.round((macroKcal.protein / macroKcal.total) * 100), kcal: macroKcal.protein, color: 'primary-container'  as const },
-    { label: 'CHẤT BÉO', percent: Math.round((macroKcal.fat     / macroKcal.total) * 100), kcal: macroKcal.fat,     color: 'outline-variant'    as const },
-  ], [macroKcal]);
+  const macroStats = useMemo(
+    () => [
+      {
+        label: "TINH BỘT",
+        percent: Math.round((macroKcal.carbs / macroKcal.total) * 100),
+        kcal: macroKcal.carbs,
+        color: "primary" as const,
+      },
+      {
+        label: "ĐẠM",
+        percent: Math.round((macroKcal.protein / macroKcal.total) * 100),
+        kcal: macroKcal.protein,
+        color: "primary-container" as const,
+      },
+      {
+        label: "CHẤT BÉO",
+        percent: Math.round((macroKcal.fat / macroKcal.total) * 100),
+        kcal: macroKcal.fat,
+        color: "outline-variant" as const,
+      },
+    ],
+    [macroKcal],
+  );
 
-  const weeklyData = useMemo(() => days.map((date) => {
-    const log = logs.find((l) => l.date === date);
-    return { date: getDayLabel(date), calories: log?.totalCalories ?? 0, target, isToday: date === today };
-  }), [days, logs, target, today]);
+  const weeklyData = useMemo(
+    () =>
+      days.map((date) => {
+        const log = logs.find((l) => l.date === date);
+        return {
+          date: getDayLabel(date),
+          calories: log?.totalCalories ?? 0,
+          target,
+          isToday: date === today,
+        };
+      }),
+    [days, logs, target, today],
+  );
 
   const weekRange = useMemo(() => getWeekRange(), []);
 
@@ -166,7 +198,6 @@ export default function StatsPage() {
 
   return (
     <div className="bg-background text-on-background font-body-md min-h-screen">
-
       {/* ── HEADER ── */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-emerald-900/10 h-14 flex justify-center items-center px-4 sm:px-6">
         <div className="w-full max-w-[1100px] flex justify-between items-center gap-2">
@@ -189,7 +220,9 @@ export default function StatsPage() {
             </div>
             <Link href="/settings">
               <button className="hover:bg-surface-container transition-all active:scale-95 p-2 rounded-full">
-                <span className="material-symbols-outlined text-primary text-xl">settings</span>
+                <span className="material-symbols-outlined text-primary text-xl">
+                  settings
+                </span>
               </button>
             </Link>
           </div>
@@ -198,7 +231,6 @@ export default function StatsPage() {
 
       {/* ── MAIN ── */}
       <main className="pt-16 pb-24 px-4 sm:px-6 max-w-[1100px] mx-auto space-y-5">
-
         <section className="space-y-1 text-center pt-4">
           <h2 className="font-h1 text-xl sm:text-2xl text-primary font-bold">
             Thống kê tuần này
@@ -209,21 +241,37 @@ export default function StatsPage() {
         </section>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 items-start">
-
           {/* Left */}
           <div className="lg:col-span-7 space-y-4 sm:space-y-5">
             <WeeklyChart data={weeklyData} />
 
             <section className="grid grid-cols-2 gap-4 sm:gap-5">
-              <StatCard label="TB MỖI NGÀY"  value={avgCalories.toLocaleString()} unit="kcal" />
-              <StatCard label="ĐẠT MỤC TIÊU" value={`${daysMetTarget}/7`}         unit="ngày" />
+              <StatCard
+                label="TB MỖI NGÀY"
+                value={avgCalories.toLocaleString()}
+                unit="kcal"
+              />
+              <StatCard
+                label="ĐẠT MỤC TIÊU"
+                value={`${daysMetTarget}/7`}
+                unit="ngày"
+              />
               <StatCard
                 label="THÂM HỤT"
-                value={totalDeficit >= 0 ? `+${totalDeficit.toLocaleString()}` : totalDeficit.toLocaleString()}
+                value={
+                  totalDeficit >= 0
+                    ? `+${totalDeficit.toLocaleString()}`
+                    : totalDeficit.toLocaleString()
+                }
                 unit="kcal"
                 isNegative={totalDeficit < 0}
               />
-              <StatCard label="CHUỖI STREAK" value={currentStreak} unit="ngày" isStreak />
+              <StatCard
+                label="CHUỖI STREAK"
+                value={currentStreak}
+                unit="ngày"
+                isStreak
+              />
             </section>
           </div>
 
@@ -231,18 +279,22 @@ export default function StatsPage() {
           <div className="lg:col-span-5 h-full">
             <MacroSection macros={macroStats} />
           </div>
-
         </div>
 
         {/* Empty state */}
         {logs.length === 0 && (
           <div className="text-center py-10 glass-card rounded-3xl">
-            <span className="material-symbols-outlined text-4xl text-outline">bar_chart</span>
-            <p className="text-outline text-sm mt-2">Chưa có dữ liệu tuần này</p>
-            <p className="text-outline/60 text-xs mt-1">Hãy ghi nhật ký bữa ăn đầu tiên!</p>
+            <span className="material-symbols-outlined text-4xl text-outline">
+              bar_chart
+            </span>
+            <p className="text-outline text-sm mt-2">
+              Chưa có dữ liệu tuần này
+            </p>
+            <p className="text-outline/60 text-xs mt-1">
+              Hãy ghi nhật ký bữa ăn đầu tiên!
+            </p>
           </div>
         )}
-
       </main>
 
       <BottomNav />

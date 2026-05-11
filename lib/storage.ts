@@ -7,30 +7,30 @@
  * Không truy cập localStorage trực tiếp từ UI/component!
  */
 
-import { UserProfile, DailyLog } from '@/types/index'
+import { UserProfile, DailyLog } from "@/types/index";
 
 /**
  * Khóa (keys) sử dụng trong localStorage
  */
 const STORAGE_KEYS = {
   /** Khóa lưu profile người dùng */
-  PROFILE: 'calorie_profile',
+  PROFILE: "calorie_profile",
   /** Tiền tố khóa cho logs hàng ngày (sẽ kết hợp với date: "calorie_log_2026-05-08") */
-  LOG_PREFIX: 'calorie_log_',
-} as const
+  LOG_PREFIX: "calorie_log_",
+} as const;
 
 /**
  * Hàm hỗ trợ: An toàn parse JSON
  * Nếu lỗi, log warning và trả về null thay vì crash
  */
 function safeJsonParse<T>(json: string | null): T | null {
-  if (!json) return null
+  if (!json) return null;
 
   try {
-    return JSON.parse(json) as T
+    return JSON.parse(json) as T;
   } catch (error) {
-    console.warn('[Storage] Lỗi parse JSON:', error)
-    return null
+    console.warn("[Storage] Lỗi parse JSON:", error);
+    return null;
   }
 }
 
@@ -39,7 +39,7 @@ function safeJsonParse<T>(json: string | null): T | null {
  * (localStorage chỉ có trên browser, không có trên server)
  */
 function isBrowser(): boolean {
-  return typeof window !== 'undefined' && typeof localStorage !== 'undefined'
+  return typeof window !== "undefined" && typeof localStorage !== "undefined";
 }
 
 // ============================================
@@ -52,13 +52,36 @@ function isBrowser(): boolean {
  * @returns UserProfile nếu tồn tại, null nếu chưa có hoặc lỗi
  */
 export function getProfile(): UserProfile | null {
-  if (!isBrowser()) return null
+  if (!isBrowser()) return null;
 
   try {
-    const raw = localStorage.getItem(STORAGE_KEYS.PROFILE)
-    return raw ? (JSON.parse(raw) as UserProfile) : null
+    const raw = localStorage.getItem(STORAGE_KEYS.PROFILE);
+    if (!raw) return null;
+
+    const parsed = JSON.parse(raw) as UserProfile;
+    // Ensure legacy profiles get default streak values
+    if (parsed.currentStreak === undefined || parsed.currentStreak === null) {
+      parsed.currentStreak = 0;
+    }
+    if (parsed.bestStreak === undefined || parsed.bestStreak === null) {
+      parsed.bestStreak = 0;
+    }
+
+    // In development, force streaks to 0 to avoid stale local test data
+    try {
+      // process.env is replaced at build-time by Next.js — safe to check
+      // eslint-disable-next-line no-undef
+      if (process.env.NODE_ENV === "development") {
+        parsed.currentStreak = 0;
+        parsed.bestStreak = 0;
+      }
+    } catch (e) {
+      // ignore
+    }
+
+    return parsed;
   } catch {
-    return null
+    return null;
   }
 }
 
@@ -68,12 +91,18 @@ export function getProfile(): UserProfile | null {
  * @param profile - UserProfile cần lưu
  */
 export function saveProfile(profile: UserProfile): void {
-  if (!isBrowser()) return
+  if (!isBrowser()) return;
 
   try {
-    localStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(profile))
+    // Ensure streak fields exist before saving
+    const copy = { ...profile };
+    if (copy.currentStreak === undefined || copy.currentStreak === null)
+      copy.currentStreak = 0;
+    if (copy.bestStreak === undefined || copy.bestStreak === null)
+      copy.bestStreak = 0;
+    localStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(copy));
   } catch (error) {
-    console.warn('[Storage] Lỗi lưu profile:', error)
+    console.warn("[Storage] Lỗi lưu profile:", error);
   }
 }
 
@@ -88,7 +117,7 @@ export function saveProfile(profile: UserProfile): void {
  * @returns Khóa localStorage, vd: "calorie_log_2026-05-08"
  */
 function getLogKey(date: string): string {
-  return `${STORAGE_KEYS.LOG_PREFIX}${date}`
+  return `${STORAGE_KEYS.LOG_PREFIX}${date}`;
 }
 
 /**
@@ -98,13 +127,13 @@ function getLogKey(date: string): string {
  * @returns DailyLog nếu tồn tại, null nếu chưa có hoặc lỗi
  */
 export function getLog(date: string): DailyLog | null {
-  if (!isBrowser()) return null
+  if (!isBrowser()) return null;
 
   try {
-    const raw = localStorage.getItem(getLogKey(date))
-    return raw ? (JSON.parse(raw) as DailyLog) : null
+    const raw = localStorage.getItem(getLogKey(date));
+    return raw ? (JSON.parse(raw) as DailyLog) : null;
   } catch {
-    return null
+    return null;
   }
 }
 
@@ -115,12 +144,12 @@ export function getLog(date: string): DailyLog | null {
  * @param log - DailyLog cần lưu
  */
 export function saveLog(date: string, log: DailyLog): void {
-  if (!isBrowser()) return
+  if (!isBrowser()) return;
 
   try {
-    localStorage.setItem(getLogKey(date), JSON.stringify(log))
+    localStorage.setItem(getLogKey(date), JSON.stringify(log));
   } catch (error) {
-    console.warn('[Storage] Lỗi lưu log:', error)
+    console.warn("[Storage] Lỗi lưu log:", error);
   }
 }
 
@@ -132,36 +161,36 @@ export function saveLog(date: string, log: DailyLog): void {
  * @returns Mảng DailyLog được sắp xếp theo ngày
  */
 export function getLogs(startDate: string, endDate: string): DailyLog[] {
-  if (!isBrowser()) return []
+  if (!isBrowser()) return [];
 
   try {
-    const logs: DailyLog[] = []
+    const logs: DailyLog[] = [];
 
     // Iterate qua tất cả localStorage items
     for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i)
+      const key = localStorage.key(i);
 
       // Kiểm tra xem có phải log key không
       if (key && key.startsWith(STORAGE_KEYS.LOG_PREFIX)) {
         // Extract ngày từ key (format: "calorie_log_2026-05-08" -> "2026-05-08")
-        const dateFromKey = key.substring(STORAGE_KEYS.LOG_PREFIX.length)
+        const dateFromKey = key.substring(STORAGE_KEYS.LOG_PREFIX.length);
 
         // Kiểm tra xem ngày có nằm trong khoảng không
         if (dateFromKey >= startDate && dateFromKey <= endDate) {
-          const raw = localStorage.getItem(key)
-          const log = safeJsonParse<DailyLog>(raw)
+          const raw = localStorage.getItem(key);
+          const log = safeJsonParse<DailyLog>(raw);
 
           if (log) {
-            logs.push(log)
+            logs.push(log);
           }
         }
       }
     }
 
     // Sắp xếp theo ngày tăng dần
-    return logs.sort((a, b) => a.date.localeCompare(b.date))
+    return logs.sort((a, b) => a.date.localeCompare(b.date));
   } catch (error) {
-    console.warn('[Storage] Lỗi lấy logs:', error)
-    return []
+    console.warn("[Storage] Lỗi lấy logs:", error);
+    return [];
   }
 }
