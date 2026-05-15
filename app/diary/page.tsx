@@ -19,9 +19,9 @@ type MealType = "breakfast" | "lunch" | "dinner" | "snack";
 
 const MEAL_META: Record<MealType, { label: string; icon: string }> = {
   breakfast: { label: "Bữa sáng", icon: "wb_sunny" },
-  lunch:     { label: "Bữa trưa", icon: "restaurant" },
-  dinner:    { label: "Bữa tối",  icon: "bedtime" },
-  snack:     { label: "Ăn vặt",   icon: "cookie" },
+  lunch: { label: "Bữa trưa", icon: "restaurant" },
+  dinner: { label: "Bữa tối", icon: "bedtime" },
+  snack: { label: "Ăn vặt", icon: "cookie" },
 };
 
 const MEAL_ORDER: MealType[] = ["breakfast", "lunch", "dinner", "snack"];
@@ -161,9 +161,9 @@ const MealSection = memo(function MealSection({
 export default function DiaryPage() {
   const { currentLog, loadLog, addMeal, updateMeal } = useDiaryStore();
   const { profile, loadProfile, updateProfile } = useProfileStore();
-  const [mounted, setMounted]         = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [currentDate, setCurrentDate] = useState(getToday); // local today
-  const [modalMeal, setModalMeal]     = useState<MealType | null>(null);
+  const [modalMeal, setModalMeal] = useState<MealType | null>(null);
 
   useEffect(() => {
     loadProfile();
@@ -177,7 +177,7 @@ export default function DiaryPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentDate]);
 
-  const today   = getToday();
+  const today = getToday();
   const isToday = currentDate === today;
 
   // ── Navigation — dùng offsetDate đã fix ──
@@ -193,7 +193,7 @@ export default function DiaryPage() {
     });
   }, []);
 
-  const openModal  = useCallback((type: MealType) => setModalMeal(type), []);
+  const openModal = useCallback((type: MealType) => setModalMeal(type), []);
   const closeModal = useCallback(() => setModalMeal(null), []);
 
   const handleStreakUpdate = useCallback(
@@ -203,8 +203,8 @@ export default function DiaryPage() {
     [profile, updateProfile],
   );
 
-  const target    = profile?.macroTarget?.calories ?? 2000;
-  const consumed  = currentLog?.totalCalories ?? 0;
+  const target = profile?.macroTarget?.calories ?? 2000;
+  const consumed = currentLog?.totalCalories ?? 0;
   const remaining = target - consumed;
 
   function getMeal(type: MealType): MealEntry | undefined {
@@ -220,19 +220,22 @@ export default function DiaryPage() {
           existing.id,
           {
             ...existing,
-            ingredients:   updatedIngredients,
-            totalCalories: updatedIngredients.reduce((s, i) => s + i.calories, 0),
+            ingredients: updatedIngredients,
+            totalCalories: updatedIngredients.reduce(
+              (s, i) => s + i.calories,
+              0,
+            ),
           },
           handleStreakUpdate,
         );
       } else {
-        const now  = new Date();
+        const now = new Date();
         const time = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
         addMeal(
           {
-            id:            `${mealType}-${Date.now()}`,
+            id: `${mealType}-${Date.now()}`,
             mealType,
-            ingredients:   [ingredient],
+            ingredients: [ingredient],
             totalCalories: ingredient.calories,
             time,
           },
@@ -254,8 +257,8 @@ export default function DiaryPage() {
     (acc, meal) => {
       meal.ingredients.forEach((ing) => {
         acc.p += ing.protein || 0;
-        acc.c += ing.carbs   || 0;
-        acc.f += ing.fat     || 0;
+        acc.c += ing.carbs || 0;
+        acc.f += ing.fat || 0;
       });
       return acc;
     },
@@ -264,8 +267,8 @@ export default function DiaryPage() {
 
   const macroTargets = {
     p: profile?.macroTarget?.protein ?? 120,
-    c: profile?.macroTarget?.carbs   ?? 250,
-    f: profile?.macroTarget?.fat     ?? 65,
+    c: profile?.macroTarget?.carbs ?? 250,
+    f: profile?.macroTarget?.fat ?? 65,
   };
 
   return (
@@ -357,9 +360,9 @@ export default function DiaryPage() {
               <div className="space-y-3">
                 {[
                   {
-                    label:  "Đã nạp",
-                    value:  consumed,
-                    pct:    Math.min((consumed / (target || 1)) * 100, 100),
+                    label: "Đã nạp",
+                    value: consumed,
+                    pct: Math.min((consumed / (target || 1)) * 100, 100),
                     opaque: false,
                   },
                   { label: "Mục tiêu", value: target, pct: 100, opaque: true },
@@ -379,7 +382,10 @@ export default function DiaryPage() {
                     <div className="h-2 rounded-full bg-primary/10 overflow-hidden">
                       <div
                         className="h-full rounded-full bg-primary transition-all duration-700"
-                        style={{ width: `${row.pct}%`, opacity: row.opaque ? 0.25 : 1 }}
+                        style={{
+                          width: `${row.pct}%`,
+                          opacity: row.opaque ? 0.25 : 1,
+                        }}
                       />
                     </div>
                   </div>
@@ -393,11 +399,18 @@ export default function DiaryPage() {
               </p>
               <div className="grid grid-cols-3 gap-3 sm:gap-6">
                 {[
-                  { label: "Carbs",   current: macros.c, target: macroTargets.c },
-                  { label: "Protein", current: macros.p, target: macroTargets.p },
-                  { label: "Fat",     current: macros.f, target: macroTargets.f },
+                  { label: "Carbs", current: macros.c, target: macroTargets.c },
+                  {
+                    label: "Protein",
+                    current: macros.p,
+                    target: macroTargets.p,
+                  },
+                  { label: "Fat", current: macros.f, target: macroTargets.f },
                 ].map((m) => (
-                  <div key={m.label} className="space-y-1.5 sm:space-y-2 min-w-0">
+                  <div
+                    key={m.label}
+                    className="space-y-1.5 sm:space-y-2 min-w-0"
+                  >
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-0.5">
                       <span className="font-label-caps text-[9px] sm:text-[10px] font-bold text-primary uppercase">
                         {m.label}
@@ -443,7 +456,9 @@ export default function DiaryPage() {
         onClick={() => openModal("breakfast")}
         className="fixed bottom-20 right-4 sm:right-8 w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-primary text-white flex items-center justify-center shadow-2xl shadow-primary/35 hover:scale-105 active:scale-95 transition-transform z-40"
       >
-        <span className="material-symbols-outlined text-2xl sm:text-3xl">add</span>
+        <span className="material-symbols-outlined text-2xl sm:text-3xl">
+          add
+        </span>
       </button>
 
       <BottomNav />

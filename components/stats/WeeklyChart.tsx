@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React from 'react';
+import React from "react";
 
 interface WeeklyChartProps {
   data: Array<{
@@ -12,7 +12,10 @@ interface WeeklyChartProps {
 }
 
 export default function WeeklyChart({ data }: WeeklyChartProps) {
-  const maxCalories = Math.max(...data.map((d) => d.calories), data[0]?.target ?? 2000);
+  const maxCalories = Math.max(
+    ...data.map((d) => d.calories),
+    data[0]?.target ?? 2000,
+  );
 
   return (
     <section className="bg-white/88 backdrop-blur-md border border-[#005239]/10 shadow-sm rounded-3xl p-5">
@@ -35,7 +38,7 @@ export default function WeeklyChart({ data }: WeeklyChartProps) {
                     className="absolute bottom-0 w-full rounded-t-full transition-all duration-500"
                     style={{
                       height: `${heightPercent}%`,
-                      backgroundColor: item.isToday ? '#005239' : '#1a6b4e',
+                      backgroundColor: item.isToday ? "#005239" : "#1a6b4e",
                     }}
                   />
                 )}
@@ -44,7 +47,7 @@ export default function WeeklyChart({ data }: WeeklyChartProps) {
               {/* Day label */}
               <span
                 className="text-xs font-bold uppercase tracking-widest font-['Be_Vietnam_Pro']"
-                style={{ color: item.isToday ? '#005239' : '#48645a' }}
+                style={{ color: item.isToday ? "#005239" : "#48645a" }}
               >
                 {item.date}
               </span>

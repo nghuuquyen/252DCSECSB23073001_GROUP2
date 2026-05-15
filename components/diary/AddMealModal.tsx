@@ -1,32 +1,35 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import type { Ingredient } from '@/types';
-import FOOD_DB from '@/lib/ingredients.json';
+import { useState } from "react";
+import type { Ingredient } from "@/types";
+import FOOD_DB from "@/lib/ingredients.json";
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-type FoodItem = typeof FOOD_DB[number];
-type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack';
+type FoodItem = (typeof FOOD_DB)[number];
+type MealType = "breakfast" | "lunch" | "dinner" | "snack";
 
 const MEAL_META: Record<MealType, { label: string }> = {
-  breakfast: { label: 'Bữa sáng' },
-  lunch:     { label: 'Bữa trưa' },
-  dinner:    { label: 'Bữa tối'  },
-  snack:     { label: 'Ăn vặt'   },
+  breakfast: { label: "Bữa sáng" },
+  lunch: { label: "Bữa trưa" },
+  dinner: { label: "Bữa tối" },
+  snack: { label: "Ăn vặt" },
 };
 
 function removeAccents(str: string) {
-  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  return str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
 }
 
 function calcNutrition(food: FoodItem, grams: number) {
   const r = grams / 100;
   return {
     calories: Math.round(food.calories * r),
-    protein:  Math.round(food.protein  * r * 10) / 10,
-    carbs:    Math.round(food.carbs    * r * 10) / 10,
-    fat:      Math.round(food.fat      * r * 10) / 10,
+    protein: Math.round(food.protein * r * 10) / 10,
+    carbs: Math.round(food.carbs * r * 10) / 10,
+    fat: Math.round(food.fat * r * 10) / 10,
   };
 }
 
@@ -34,35 +37,46 @@ function calcNutrition(food: FoodItem, grams: number) {
 
 interface AddMealModalProps {
   mealType: MealType;
-  onClose:  () => void;
-  onAdd:    (ingredient: Ingredient) => void;
+  onClose: () => void;
+  onAdd: (ingredient: Ingredient) => void;
 }
 
-export default function AddMealModal({ mealType, onClose, onAdd }: AddMealModalProps) {
-  const [query, setQuery]       = useState('');
+export default function AddMealModal({
+  mealType,
+  onClose,
+  onAdd,
+}: AddMealModalProps) {
+  const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<FoodItem | null>(null);
-  const [grams, setGrams]       = useState('100');
+  const [grams, setGrams] = useState("100");
 
-  const filtered = query.trim() === ''
-    ? FOOD_DB
-    : FOOD_DB.filter((f) => removeAccents(f.name).includes(removeAccents(query.trim())));
+  const filtered =
+    query.trim() === ""
+      ? FOOD_DB
+      : FOOD_DB.filter((f) =>
+          removeAccents(f.name).includes(removeAccents(query.trim())),
+        );
 
-  const nutrition = selected ? calcNutrition(selected, Number(grams) || 0) : null;
+  const nutrition = selected
+    ? calcNutrition(selected, Number(grams) || 0)
+    : null;
 
   function handleConfirm() {
     if (!selected || !grams || Number(grams) <= 0) return;
     const g = Number(grams);
     const n = calcNutrition(selected, g);
     onAdd({
-      id:       `${selected.id}-${Date.now()}`,
-      name:     selected.name,
+      id: `${selected.id}-${Date.now()}`,
+      name: selected.name,
       calories: n.calories,
-      protein:  n.protein,
-      carbs:    n.carbs,
-      fat:      n.fat,
-      amount:   g,
+      protein: n.protein,
+      carbs: n.carbs,
+      fat: n.fat,
+      amount: g,
     });
-    onClose();
+    // Reset form to allow adding more items instead of closing modal
+    setSelected(null);
+    setGrams("100");
   }
 
   return (
@@ -96,20 +110,27 @@ export default function AddMealModal({ mealType, onClose, onAdd }: AddMealModalP
             aria-label="Đóng"
             className="w-8 h-8 rounded-full bg-primary/8 flex items-center justify-center hover:bg-primary/15 transition-colors"
           >
-            <span className="material-symbols-outlined text-primary text-base">close</span>
+            <span className="material-symbols-outlined text-primary text-base">
+              close
+            </span>
           </button>
         </div>
 
         {/* Search */}
         <div className="px-5 pb-3">
           <div className="flex items-center gap-2.5 bg-surface-container-lowest rounded-xl border border-primary/15 px-3.5 py-2.5">
-            <span className="material-symbols-outlined text-outline text-base">search</span>
+            <span className="material-symbols-outlined text-outline text-base">
+              search
+            </span>
             <input
               type="text"
               placeholder="Tìm nguyên liệu..."
               value={query}
               autoComplete="off"
-              onChange={(e) => { setQuery(e.target.value); setSelected(null); }}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setSelected(null);
+              }}
               className="flex-1 bg-transparent outline-none font-body-md text-sm text-on-background placeholder:text-outline"
             />
           </div>
@@ -130,14 +151,19 @@ export default function AddMealModal({ mealType, onClose, onAdd }: AddMealModalP
                 className="flex items-center justify-between px-3.5 py-3 rounded-xl bg-surface-container-lowest border border-primary/10 cursor-pointer hover:border-primary/30 hover:bg-surface-container-low transition-all"
               >
                 <div>
-                  <p className="font-body-md font-semibold text-sm text-on-background">{food.name}</p>
+                  <p className="font-body-md font-semibold text-sm text-on-background">
+                    {food.name}
+                  </p>
                   <p className="font-numbers text-[11px] text-outline mt-0.5">
-                    P: {food.protein}g · C: {food.carbs}g · F: {food.fat}g / 100g
+                    P: {food.protein}g · C: {food.carbs}g · F: {food.fat}g /
+                    100g
                   </p>
                 </div>
                 <span className="font-numbers font-bold text-sm text-primary ml-3 shrink-0">
-                  {food.calories}{' '}
-                  <span className="text-[10px] font-normal text-outline">kcal</span>
+                  {food.calories}{" "}
+                  <span className="text-[10px] font-normal text-outline">
+                    kcal
+                  </span>
                 </span>
               </div>
             ))}
@@ -153,18 +179,27 @@ export default function AddMealModal({ mealType, onClose, onAdd }: AddMealModalP
             </button>
 
             <div className="bg-surface-container-lowest rounded-2xl p-4 border border-primary/12 mb-4">
-              <p className="font-body-md font-bold text-base text-on-background mb-1">{selected.name}</p>
+              <p className="font-body-md font-bold text-base text-on-background mb-1">
+                {selected.name}
+              </p>
               <p className="font-numbers text-[11px] text-outline">
-                {selected.calories} kcal · P {selected.protein}g · C {selected.carbs}g · F {selected.fat}g / 100g
+                {selected.calories} kcal · P {selected.protein}g · C{" "}
+                {selected.carbs}g · F {selected.fat}g / 100g
               </p>
             </div>
 
-            <p className="font-label-caps text-[11px] uppercase tracking-widest text-outline mb-2">Số gram</p>
+            <p className="font-label-caps text-[11px] uppercase tracking-widest text-outline mb-2">
+              Số gram
+            </p>
             <div className="flex items-center gap-3 mb-4">
               <button
-                onClick={() => setGrams((g) => String(Math.max(10, (Number(g) || 100) - 10)))}
+                onClick={() =>
+                  setGrams((g) => String(Math.max(10, (Number(g) || 100) - 10)))
+                }
                 className="w-11 h-11 rounded-full bg-primary/10 text-primary text-2xl flex items-center justify-center hover:bg-primary/20 transition-colors"
-              >−</button>
+              >
+                −
+              </button>
               <div className="flex-1 flex items-end gap-2">
                 <input
                   type="number"
@@ -173,27 +208,47 @@ export default function AddMealModal({ mealType, onClose, onAdd }: AddMealModalP
                   onChange={(e) => setGrams(e.target.value)}
                   className="flex-1 text-center font-numbers font-bold text-3xl text-primary bg-transparent outline-none border-b-2 border-primary/20 focus:border-primary pb-1 transition-colors"
                 />
-                <span className="font-numbers text-sm text-outline pb-1">g</span>
+                <span className="font-numbers text-sm text-outline pb-1">
+                  g
+                </span>
               </div>
               <button
                 onClick={() => setGrams((g) => String((Number(g) || 100) + 10))}
                 className="w-11 h-11 rounded-full bg-primary/10 text-primary text-2xl flex items-center justify-center hover:bg-primary/20 transition-colors"
-              >+</button>
+              >
+                +
+              </button>
             </div>
 
             {nutrition && (
               <div className="grid grid-cols-4 gap-2 mb-5">
                 {[
-                  { label: 'Calo',    value: String(nutrition.calories), unit: 'kcal' },
-                  { label: 'Protein', value: String(nutrition.protein),  unit: 'g'    },
-                  { label: 'Carbs',   value: String(nutrition.carbs),    unit: 'g'    },
-                  { label: 'Fat',     value: String(nutrition.fat),       unit: 'g'    },
+                  {
+                    label: "Calo",
+                    value: String(nutrition.calories),
+                    unit: "kcal",
+                  },
+                  {
+                    label: "Protein",
+                    value: String(nutrition.protein),
+                    unit: "g",
+                  },
+                  { label: "Carbs", value: String(nutrition.carbs), unit: "g" },
+                  { label: "Fat", value: String(nutrition.fat), unit: "g" },
                 ].map(({ label, value, unit }) => (
-                  <div key={label} className="bg-surface-container-lowest rounded-xl p-2.5 border border-primary/10 text-center">
-                    <p className="font-label-caps text-[9px] uppercase tracking-widest text-outline mb-1">{label}</p>
+                  <div
+                    key={label}
+                    className="bg-surface-container-lowest rounded-xl p-2.5 border border-primary/10 text-center"
+                  >
+                    <p className="font-label-caps text-[9px] uppercase tracking-widest text-outline mb-1">
+                      {label}
+                    </p>
                     <p className="font-numbers font-bold text-sm text-primary">
                       {value}
-                      <span className="text-[9px] font-normal text-outline"> {unit}</span>
+                      <span className="text-[9px] font-normal text-outline">
+                        {" "}
+                        {unit}
+                      </span>
                     </p>
                   </div>
                 ))}
@@ -205,7 +260,9 @@ export default function AddMealModal({ mealType, onClose, onAdd }: AddMealModalP
               disabled={!grams || Number(grams) <= 0}
               className="w-full py-3.5 rounded-2xl font-body-md font-bold text-base text-white bg-primary flex items-center justify-center gap-2 shadow-lg shadow-primary/25 disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
             >
-              <span className="material-symbols-outlined text-lg filled-icon">check</span>
+              <span className="material-symbols-outlined text-lg filled-icon">
+                check
+              </span>
               Thêm vào {MEAL_META[mealType].label}
             </button>
           </div>
