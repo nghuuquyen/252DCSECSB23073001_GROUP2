@@ -96,8 +96,11 @@ export default function StatsPage() {
   useEffect(() => {
     loadProfile();
     const days = getLast7Days();
-    setLogs(getLogs(days[0], days[days.length - 1]));
-    setMounted(true);
+    // Use microtasks to avoid "synchronous setState in effect" error
+    queueMicrotask(() => {
+      setLogs(getLogs(days[0], days[days.length - 1]));
+      setMounted(true);
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -143,7 +146,6 @@ export default function StatsPage() {
     [logs, target],
   );
   const currentStreak = profile?.currentStreak ?? 0;
-  const bestStreak = profile?.bestStreak ?? 0;
   const avgMacros = useMemo(() => calcAvgMacros(logs), [logs]);
 
   const macroKcal = useMemo(() => {

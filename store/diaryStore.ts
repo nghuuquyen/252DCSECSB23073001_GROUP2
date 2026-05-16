@@ -31,6 +31,22 @@ type DiaryState = {
       bestStreak: number;
     }) => void,
   ) => void;
+  addIngredient: (
+    mealType: "breakfast" | "lunch" | "dinner" | "snack",
+    ingredient: import("@/types").Ingredient,
+    onStreakUpdate?: (streak: {
+      currentStreak: number;
+      bestStreak: number;
+    }) => void,
+  ) => void;
+  removeIngredient: (
+    mealId: string,
+    ingredientId: string,
+    onStreakUpdate?: (streak: {
+      currentStreak: number;
+      bestStreak: number;
+    }) => void,
+  ) => void;
   updateWater: (water: number) => void;
 };
 
@@ -139,6 +155,110 @@ export const useDiaryStore = create<DiaryState>((set, get) => ({
     const streak = calculateAndUpdateStreak();
     if (onStreakUpdate) {
       onStreakUpdate(streak);
+    }
+  },
+
+  // Thêm món ăn vào bữa ăn (tự động gộp nếu trùng tên)
+  addIngredient: (mealType, ingredient, onStreakUpdate) => {
+    const { currentLog, currentDate, addMeal } = get();
+    if (!currentLog) return;
+
+    const existingMeal = currentLog.meals.find((m) => m.mealType === mealType);
+
+    if (existingMeal) {
+      const existingIngIndex = existingMeal.ingredients.findIndex(
+        (i) => i.name === ingredient.name
+      );
+
+      let updatedIngredients;
+      if (existingIngIndex >= 0) {
+        // Gộp món
+        updatedIngredients = [...existingMeal.ingredients];
+        const old = updatedIngredients[existingIngIndex];
+        updatedIngredients[existingIngIndex] = {
+          ...old,
+          amount: (old.amount || 0) + (ingredient.amount || 0),
+          calories: old.calories + ingredient.calories,
+          protein: Math.round((old.protein + ingredient.protein) * 10) / 10,
+          carbs: Math.round((old.carbs + ingredient.carbs) * 10) / 10,
+          fat: Math.round((old.fat + ingredient.fat) * 10) / 10,
+        };
+      } else {
+        // Thêm mới
+        updatedIngredients = [...existingMeal.ingredients, ingredient];
+      }
+
+      const updatedMeal: MealEntry = {
+        ...existingMeal,
+        ingredients: updatedIngredients,
+        totalCalories: updatedIngredients.reduce((s, i) => s + i.calories, 0),
+      };
+
+      const updatedLog: DailyLog = {
+        ...currentLog,
+        meals: currentLog.meals.map((m) =>
+          m.id === existingMeal.id ? updatedMeal : m
+        ),
+        totalCalories: 0,
+      };
+      updatedLog.totalCalories = calcTotalCalories(updatedLog);
+      saveLog(currentDate, updatedLog);
+      set({ currentLog: updatedLog });
+
+      const streak = calculateAndUpdateStreak();
+      if (onStreakUpdate) onStreakUpdate(streak);
+    } else {
+      // Tạo bữa ăn mới
+      const now = new Date();
+      const time = `${String(now.getHours()).padStart(2, "0")}:${String(
+        now.getMinutes()
+      ).padStart(2, "0")}`;
+      
+      addMeal(
+        {
+          id: `${mealType}-${Date.now()}`,
+          mealType,
+          ingredients: [ingredient],
+          totalCalories: ingredient.calories,
+          time,
+        },
+        onStreakUpdate
+      );
+    }
+  },
+
+  // Xóa món ăn khỏi bữa ăn
+  removeIngredient: (mealId, ingredientId, onStreakUpdate) => {
+    const { currentLog, currentDate, removeMeal } = get();
+    if (!currentLog) return;
+
+    const meal = currentLog.meals.find((m) => m.id === mealId);
+    if (!meal) return;
+
+    const updatedIngredients = meal.ingredients.filter(
+      (ing) => ing.id !== ingredientId
+    );
+
+    if (updatedIngredients.length === 0) {
+      removeMeal(mealId, onStreakUpdate);
+    } else {
+      const updatedMeal: MealEntry = {
+        ...meal,
+        ingredients: updatedIngredients,
+        totalCalories: updatedIngredients.reduce((s, i) => s + i.calories, 0),
+      };
+
+      const updatedLog: DailyLog = {
+        ...currentLog,
+        meals: currentLog.meals.map((m) => (m.id === mealId ? updatedMeal : m)),
+        totalCalories: 0,
+      };
+      updatedLog.totalCalories = calcTotalCalories(updatedLog);
+      saveLog(currentDate, updatedLog);
+      set({ currentLog: updatedLog });
+
+      const streak = calculateAndUpdateStreak();
+      if (onStreakUpdate) onStreakUpdate(streak);
     }
   },
 

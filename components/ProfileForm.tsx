@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   ArrowRight,
   TrendingDown,
@@ -32,29 +32,17 @@ export default function ProfileForm() {
     goal: "maintain" as "lose" | "maintain" | "gain",
   });
 
-  const [results, setResults] = useState({
-    calories: 1850,
-    protein: 116,
-    carbs: 231,
-    fat: 51,
-  });
+  // Derive TDEE and Macros during render
+  const w = Math.abs(Number(form.weight));
+  const h = Math.abs(Number(form.height));
+  const a = Math.abs(Number(form.age));
 
-  const [error, setError] = useState<string | null>(null);
+  let error: string | null = null;
+  let results = { calories: 1850, protein: 116, carbs: 231, fat: 51 };
 
-  // Tính TDEE Real-time
-  useEffect(() => {
-    const w = Math.abs(Number(form.weight));
-    const h = Math.abs(Number(form.height));
-    const a = Math.abs(Number(form.age));
-
-    // Chặn tính toán nếu dữ liệu bằng 0 hoặc trống (Task 24: Empty data/0g input)
-    if (!w || !h || !a) {
-      setError("Vui lòng nhập đầy đủ thông số lớn hơn 0");
-      return;
-    }
-
-    setError(null);
-
+  if (!w || !h || !a) {
+    error = "Vui lòng nhập đầy đủ thông số lớn hơn 0";
+  } else {
     // Công thức Mifflin-St Jeor
     let bmr = 10 * w + 6.25 * h - 5 * a;
     bmr = form.gender === "male" ? bmr + 5 : bmr - 161;
@@ -72,8 +60,8 @@ export default function ProfileForm() {
     const fat = Math.max(Math.round((finalCal * 0.25) / 9), 1);
     const carbs = Math.max(Math.round((finalCal * 0.45) / 4), 1);
 
-    setResults({ calories: finalCal, protein, carbs, fat });
-  }, [form]);
+    results = { calories: finalCal, protein, carbs, fat };
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -213,7 +201,12 @@ export default function ProfileForm() {
                 <button
                   key={g.v}
                   type="button"
-                  onClick={() => setForm({ ...form, goal: g.v as any })}
+                  onClick={() =>
+                    setForm({
+                      ...form,
+                      goal: g.v as "lose" | "maintain" | "gain",
+                    })
+                  }
                   className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all ${
                     form.goal === g.v
                       ? "bg-[#E6F4EA] border-[#084C3A] text-[#084C3A]"

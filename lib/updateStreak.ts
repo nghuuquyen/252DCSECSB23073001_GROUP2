@@ -6,7 +6,6 @@
 
 import { calcCurrentStreak, calcBestStreak } from "./calc";
 import { getLogs } from "./storage";
-import type { DailyLog } from "@/types";
 
 /**
  * Cập nhật currentStreak và bestStreak trong profile từ tất cả logs

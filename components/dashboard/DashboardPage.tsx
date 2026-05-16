@@ -45,7 +45,8 @@ export default function DashboardPage() {
   const { profile } = useProfileStore();
 
   useEffect(() => {
-    setMounted(true);
+    // Use a microtask to avoid "synchronous setState in effect" error
+    queueMicrotask(() => setMounted(true));
     loadLog(new Date().toISOString().slice(0, 10));
   }, [loadLog]);
 

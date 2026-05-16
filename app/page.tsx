@@ -11,7 +11,7 @@ export default function Home() {
 
   // Hydration fix: Đảm bảo Client đã sẵn sàng
   useEffect(() => {
-    setIsMounted(true);
+    queueMicrotask(() => setIsMounted(true));
   }, []);
 
   if (!isMounted) {

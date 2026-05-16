@@ -6,7 +6,6 @@ import dynamic from "next/dynamic";
 import { useDiaryStore } from "@/store/diaryStore";
 import { useProfileStore } from "@/store/profileStore";
 import type { MealEntry, Ingredient } from "@/types";
-import FOOD_DB from "@/lib/ingredients.json";
 import { BottomNav } from "@/components/nav/BottomNav";
 
 const AddMealModal = dynamic(() => import("@/components/diary/AddMealModal"), {
@@ -14,7 +13,6 @@ const AddMealModal = dynamic(() => import("@/components/diary/AddMealModal"), {
   ssr: false,
 });
 
-type FoodItem = (typeof FOOD_DB)[number];
 type MealType = "breakfast" | "lunch" | "dinner" | "snack";
 
 const MEAL_META: Record<MealType, { label: string; icon: string }> = {
@@ -56,7 +54,7 @@ function offsetDate(dateStr: string, days: number): string {
 
 /** Parse "YYYY-MM-DD" → { day, month, isToday } theo local */
 function formatDate(dateStr: string) {
-  const [y, m, d] = dateStr.split("-").map(Number);
+  const [, m, d] = dateStr.split("-").map(Number);
   return {
     day: d,
     month: m,
@@ -150,7 +148,7 @@ const MealSection = memo(function MealSection({
               </span>
               <button
                 onClick={() => onRemoveIngredient(meal.id, ing.id)}
-                className="w-7 h-7 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500/20"
+                className="w-7 h-7 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500/20"
                 aria-label={`Xóa ${ing.name}`}
                 title="Xóa"
               >
@@ -169,7 +167,7 @@ const MealSection = memo(function MealSection({
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function DiaryPage() {
-  const { currentLog, loadLog, addMeal, updateMeal, removeMeal } =
+  const { currentLog, loadLog, addIngredient, removeIngredient } =
     useDiaryStore();
   const { profile, loadProfile, updateProfile } = useProfileStore();
   const [mounted, setMounted] = useState(false);
@@ -179,7 +177,8 @@ export default function DiaryPage() {
   useEffect(() => {
     loadProfile();
     loadLog(getToday());
-    setMounted(true);
+    // Use a microtask to avoid "synchronous setState in effect" error
+    queueMicrotask(() => setMounted(true));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -189,7 +188,6 @@ export default function DiaryPage() {
   }, [currentDate]);
 
   const today = getToday();
-  const isToday = currentDate === today;
 
   // ── Navigation — dùng offsetDate đã fix ──
   const goBack = useCallback(
@@ -224,70 +222,16 @@ export default function DiaryPage() {
 
   const handleAddIngredient = useCallback(
     (mealType: MealType, ingredient: Ingredient) => {
-      const existing = currentLog?.meals.find((m) => m.mealType === mealType);
-      if (existing) {
-        const updatedIngredients = [...existing.ingredients, ingredient];
-        updateMeal(
-          existing.id,
-          {
-            ...existing,
-            ingredients: updatedIngredients,
-            totalCalories: updatedIngredients.reduce(
-              (s, i) => s + i.calories,
-              0,
-            ),
-          },
-          handleStreakUpdate,
-        );
-      } else {
-        const now = new Date();
-        const time = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
-        addMeal(
-          {
-            id: `${mealType}-${Date.now()}`,
-            mealType,
-            ingredients: [ingredient],
-            totalCalories: ingredient.calories,
-            time,
-          },
-          handleStreakUpdate,
-        );
-      }
+      addIngredient(mealType, ingredient, handleStreakUpdate);
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [currentLog, addMeal, updateMeal, handleStreakUpdate],
+    [addIngredient, handleStreakUpdate]
   );
 
   const handleRemoveIngredient = useCallback(
     (mealId: string, ingredientId: string) => {
-      const meal = currentLog?.meals.find((m) => m.id === mealId);
-      if (!meal) return;
-
-      const updatedIngredients = meal.ingredients.filter(
-        (ing) => ing.id !== ingredientId,
-      );
-
-      if (updatedIngredients.length === 0) {
-        // If no ingredients left, remove the entire meal
-        removeMeal(mealId, handleStreakUpdate);
-      } else {
-        // Update meal with remaining ingredients
-        updateMeal(
-          mealId,
-          {
-            ...meal,
-            ingredients: updatedIngredients,
-            totalCalories: updatedIngredients.reduce(
-              (s, i) => s + i.calories,
-              0,
-            ),
-          },
-          handleStreakUpdate,
-        );
-      }
+      removeIngredient(mealId, ingredientId, handleStreakUpdate);
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [currentLog, updateMeal, removeMeal, handleStreakUpdate],
+    [removeIngredient, handleStreakUpdate]
   );
 
   if (!mounted) return null;
