@@ -13,8 +13,9 @@ export function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <footer className="fixed bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-t border-[#005239]/10 h-16 flex justify-center items-center">
-      <nav className="w-full max-w-[1100px] flex justify-around items-center px-8">
+    <footer className="fixed bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-t border-[#005239]/10 h-16 lg:h-[68px] flex justify-center items-center">
+      {/* max-w-7xl đồng bộ với header và main — px tăng dần theo màn hình */}
+      <nav className="w-full max-w-7xl flex justify-around items-center px-4 sm:px-6 lg:px-10">
         {NAV_ITEMS.map(({ href, label, icon }) => {
           const active = href === '/' ? pathname === '/' : pathname?.startsWith(href);
 
@@ -22,7 +23,7 @@ export function BottomNav() {
             <Link
               key={href}
               href={href}
-              className={`flex flex-col items-center gap-1 py-2 px-8 rounded-2xl transition-all ${
+              className={`flex flex-col items-center gap-1 lg:gap-1.5 py-2 px-4 sm:px-6 lg:px-10 rounded-2xl transition-all ${
                 active
                   ? 'bg-[#caeadd] text-[#005239]'
                   : 'text-[#6f7973] hover:text-[#005239]'
@@ -34,7 +35,8 @@ export function BottomNav() {
               >
                 {icon}
               </span>
-              <span className="text-[10px] font-bold uppercase tracking-[0.1em] font-['Be_Vietnam_Pro']">
+              {/* text tăng nhẹ từ tablet+ */}
+              <span className="text-[10px] sm:text-[11px] lg:text-xs font-bold uppercase tracking-[0.1em] font-['Be_Vietnam_Pro']">
                 {label}
               </span>
             </Link>
