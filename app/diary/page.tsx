@@ -72,10 +72,12 @@ const MealSection = memo(function MealSection({
   mealType,
   meal,
   onAdd,
+  onRemoveIngredient,
 }: {
   mealType: MealType;
   meal: MealEntry | undefined;
   onAdd: (type: MealType) => void;
+  onRemoveIngredient: (mealId: string, ingredientId: string) => void;
 }) {
   const { label, icon } = MEAL_META[mealType];
   const hasItems = meal && meal.ingredients.length > 0;
@@ -125,7 +127,7 @@ const MealSection = memo(function MealSection({
           {meal.ingredients.map((ing) => (
             <div
               key={ing.id}
-              className="flex items-center gap-3 py-2 border-b border-primary/4 last:border-0"
+              className="flex items-center gap-3 py-2 border-b border-primary/4 last:border-0 group"
             >
               <div className="w-10 h-10 rounded-lg bg-primary/8 flex items-center justify-center shrink-0">
                 <span className="text-lg" role="img" aria-label="món ăn">
@@ -146,6 +148,14 @@ const MealSection = memo(function MealSection({
                   kcal
                 </span>
               </span>
+              <button
+                onClick={() => onRemoveIngredient(meal.id, ing.id)}
+                className="w-7 h-7 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500/20"
+                aria-label={`Xóa ${ing.name}`}
+                title="Xóa"
+              >
+                <span className="material-symbols-outlined text-sm">close</span>
+              </button>
             </div>
           ))}
         </div>
@@ -159,7 +169,8 @@ const MealSection = memo(function MealSection({
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function DiaryPage() {
-  const { currentLog, loadLog, addMeal, updateMeal } = useDiaryStore();
+  const { currentLog, loadLog, addMeal, updateMeal, removeMeal } =
+    useDiaryStore();
   const { profile, loadProfile, updateProfile } = useProfileStore();
   const [mounted, setMounted] = useState(false);
   const [currentDate, setCurrentDate] = useState(getToday); // local today
@@ -245,6 +256,38 @@ export default function DiaryPage() {
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentLog, addMeal, updateMeal, handleStreakUpdate],
+  );
+
+  const handleRemoveIngredient = useCallback(
+    (mealId: string, ingredientId: string) => {
+      const meal = currentLog?.meals.find((m) => m.id === mealId);
+      if (!meal) return;
+
+      const updatedIngredients = meal.ingredients.filter(
+        (ing) => ing.id !== ingredientId,
+      );
+
+      if (updatedIngredients.length === 0) {
+        // If no ingredients left, remove the entire meal
+        removeMeal(mealId, handleStreakUpdate);
+      } else {
+        // Update meal with remaining ingredients
+        updateMeal(
+          mealId,
+          {
+            ...meal,
+            ingredients: updatedIngredients,
+            totalCalories: updatedIngredients.reduce(
+              (s, i) => s + i.calories,
+              0,
+            ),
+          },
+          handleStreakUpdate,
+        );
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [currentLog, updateMeal, removeMeal, handleStreakUpdate],
   );
 
   if (!mounted) return null;
@@ -446,6 +489,7 @@ export default function DiaryPage() {
                 mealType={type}
                 meal={getMeal(type)}
                 onAdd={openModal}
+                onRemoveIngredient={handleRemoveIngredient}
               />
             ))}
           </div>
