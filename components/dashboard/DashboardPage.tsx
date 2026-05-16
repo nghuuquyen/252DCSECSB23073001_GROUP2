@@ -108,7 +108,7 @@ export default function DashboardPage() {
     <div className="bg-background text-on-background font-body-md min-h-screen">
       {/* HEADER */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-emerald-900/10 h-14 flex justify-center items-center px-4 sm:px-6">
-        <div className="w-full max-w-[1100px] flex justify-between items-center gap-2">
+        <div className="w-full max-w-7xl flex justify-between items-center gap-2">
           <div className="flex items-center gap-1.5 shrink-0">
             <span className="material-symbols-outlined filled-icon text-primary text-2xl">
               local_fire_department
@@ -131,7 +131,7 @@ export default function DashboardPage() {
               </span>
             </div>
             <Link href="/settings">
-              <button className="hover:bg-surface-container transition-all active:scale-95 p-2 rounded-full">
+              <button className="hover:bg-surface-container transition-all active:scale-95 p-2 rounded-full min-h-[44px] min-w-[44px] flex items-center justify-center">
                 <span className="material-symbols-outlined text-primary text-xl">
                   settings
                 </span>
@@ -146,13 +146,14 @@ export default function DashboardPage() {
         <nav className="flex items-center justify-center gap-4 sm:gap-8 my-4 sm:my-5">
           <button
             onClick={() => loadLog(offsetDate(currentDate, -1))}
-            className="p-2 hover:bg-surface-container rounded-full transition-colors group shrink-0"
+            className="p-2 hover:bg-surface-container rounded-full transition-colors group shrink-0 min-h-[44px] min-w-[44px] flex items-center justify-center"
           >
             <span className="material-symbols-outlined text-xl sm:text-2xl text-outline group-hover:text-primary">
               chevron_left
             </span>
           </button>
-          <h2 className="font-h1 text-xl sm:text-3xl text-primary font-bold text-center leading-tight">
+          {/* text-lg mobile → text-2xl tablet → text-3xl desktop */}
+          <h2 className="font-h1 text-lg sm:text-2xl lg:text-3xl text-primary font-bold text-center leading-tight">
             {isToday ? "Hôm nay" : "Ngày"},{" "}
             <span className="font-numbers">{day}</span> tháng{" "}
             <span className="font-numbers">{month}</span>
@@ -160,7 +161,7 @@ export default function DashboardPage() {
           <button
             onClick={() => loadLog(offsetDate(currentDate, 1))}
             disabled={isAfterToday}
-            className="p-2 hover:bg-surface-container rounded-full transition-colors group disabled:opacity-30 shrink-0"
+            className="p-2 hover:bg-surface-container rounded-full transition-colors group disabled:opacity-30 shrink-0 min-h-[44px] min-w-[44px] flex items-center justify-center"
           >
             <span className="material-symbols-outlined text-xl sm:text-2xl text-outline group-hover:text-primary">
               chevron_right
@@ -402,7 +403,7 @@ export default function DashboardPage() {
       </Link>
 
       <footer className="fixed bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-t border-primary/10 h-16 flex justify-center items-center">
-        <nav className="w-full max-w-[1100px] flex justify-around items-center px-2 sm:px-8">
+        <nav className="w-full max-w-7xl flex justify-around items-center px-2 sm:px-8">
           <Link
             href="/"
             className="flex flex-col items-center gap-0.5 sm:gap-1 py-2 px-4 sm:px-8 rounded-2xl bg-secondary-container text-primary transition-all"

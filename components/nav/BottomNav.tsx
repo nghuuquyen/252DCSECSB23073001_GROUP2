@@ -14,8 +14,9 @@ export function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <footer className="fixed bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-t border-[#005239]/10 h-16 flex justify-center items-center">
-      <nav className="w-full max-w-[1100px] flex justify-around items-center px-8">
+    <footer className="fixed bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-t border-[#005239]/10 h-16 lg:h-[68px] flex justify-center items-center">
+      {/* max-w-7xl đồng bộ với header và main — px tăng dần theo màn hình */}
+      <nav className="w-full max-w-7xl flex justify-around items-center px-4 sm:px-6 lg:px-10">
         {NAV_ITEMS.map(({ href, label, icon }) => {
           const active = href === '/' ? pathname === '/' : pathname?.startsWith(href);
 
