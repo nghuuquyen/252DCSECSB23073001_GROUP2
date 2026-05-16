@@ -97,8 +97,12 @@ export default function StatsPage() {
   useEffect(() => {
     loadProfile();
     const days = getLast7Days();
-    setLogs(getLogs(days[0], days[days.length - 1]));
-    setMounted(true);
+    // Use microtasks to avoid "synchronous setState in effect" error
+    queueMicrotask(() => {
+      setLogs(getLogs(days[0], days[days.length - 1]));
+      setMounted(true);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   ArrowRight,
@@ -33,18 +33,15 @@ export default function ProfileForm() {
     goal: "maintain" as "lose" | "maintain" | "gain",
   });
 
-  const [results, setResults] = useState({
-    calories: 1850,
-    protein: 116,
-    carbs: 231,
-    fat: 51,
-  });
+  // Derive results during render
+  const w = +form.weight;
+  const h = +form.height;
+  const a = +form.age;
 
-  useEffect(() => {
-    const w = +form.weight;
-    const h = +form.height;
-    const a = +form.age;
-    if (!w || !h || !a) return;
+  const results = (() => {
+    if (!w || !h || !a) {
+      return { calories: 1850, protein: 116, carbs: 231, fat: 51 };
+    }
 
     let bmr = 10 * w + 6.25 * h - 5 * a;
     bmr = form.gender === "male" ? bmr + 5 : bmr - 161;
@@ -53,13 +50,13 @@ export default function ProfileForm() {
     if (form.goal === "gain") tdee += 500;
 
     const finalCal = Math.round(tdee);
-    setResults({
+    return {
       calories: finalCal,
       protein: Math.round((finalCal * 0.3) / 4),
       fat: Math.round((finalCal * 0.25) / 9),
       carbs: Math.round((finalCal * 0.45) / 4),
-    });
-  }, [form]);
+    };
+  })();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -196,7 +193,12 @@ export default function ProfileForm() {
                 <button
                   key={g.v}
                   type="button"
-                  onClick={() => setForm({ ...form, goal: g.v as any })}
+                  onClick={() =>
+                    setForm({
+                      ...form,
+                      goal: g.v as "lose" | "maintain" | "gain",
+                    })
+                  }
                   className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all ${
                     form.goal === g.v
                       ? "bg-[#E6F4EA] border-[#084C3A] text-[#084C3A]"
