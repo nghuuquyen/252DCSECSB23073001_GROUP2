@@ -30,11 +30,19 @@ export function searchIngredient(
 
   const normalizedQuery = normalize(query.trim());
   // Map source JSON shape to `Ingredient` type to satisfy TypeScript
-  const normalizedIngredients: Ingredient[] = (ingredients as any[]).map(
-    (i) => ({
-      id: i.id ?? crypto.randomUUID(),
-      name: i.name,
-      // JSON uses `calPer100g`; Ingredient expects `calories` (use per-100g as default)
+  const normalizedIngredients: Ingredient[] = (
+    ingredients as {
+      id?: string;
+      name: string;
+      calPer100g?: number;
+      calories?: number;
+      protein?: number;
+      carb?: number;
+      carbs?: number;
+      fat?: number;
+      amount?: number;
+    }[]
+  ).map((i) => ({
       calories: i.calPer100g ?? i.calories ?? 0,
       protein: i.protein ?? 0,
       // JSON sometimes uses `carb` (singular) — normalize to `carbs`
@@ -42,6 +50,8 @@ export function searchIngredient(
       fat: i.fat ?? 0,
       // `amount` not provided in JSON — default to 100 (grams)
       amount: i.amount ?? 100,
+      id: i.id || Math.random().toString(36).substring(7),
+      name: i.name || "Món không tên",
     }),
   );
 

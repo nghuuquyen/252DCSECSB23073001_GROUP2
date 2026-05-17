@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Be_Vietnam_Pro, Space_Grotesk } from "next/font/google";
 import "./globals.css";
+import { PageTransition } from "@/components/providers/PageTransition";
 
 const beVietnamPro = Be_Vietnam_Pro({
   weight: ["400", "500", "600", "700", "900"],
@@ -38,7 +39,9 @@ export default function RootLayout({
         />
       </head>
       <body className="h-full flex flex-col bg-[#f4fbf6] text-[#161d1a]">
-        <div className="flex-1 flex flex-col">{children}</div>
+        <PageTransition>
+          {children}
+        </PageTransition>
       </body>
     </html>
   );

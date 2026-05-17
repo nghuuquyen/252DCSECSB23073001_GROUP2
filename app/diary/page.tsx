@@ -3,34 +3,28 @@
 import Link from "next/link";
 import { useEffect, useState, useCallback, memo } from "react";
 import dynamic from "next/dynamic";
+import { motion } from "framer-motion";
 import { useDiaryStore } from "@/store/diaryStore";
 import { useProfileStore } from "@/store/profileStore";
 import type { MealEntry, Ingredient } from "@/types";
-import FOOD_DB from "@/lib/ingredients.json";
 import { BottomNav } from "@/components/nav/BottomNav";
 
-const AddMealModal = dynamic(() => import("@/components/diary/AddMealModal"), {
+const AddMealModal = dynamic(() => import("@/components/diary/AddMealModalV2"), {
   loading: () => null,
   ssr: false,
 });
 
-type FoodItem = (typeof FOOD_DB)[number];
 type MealType = "breakfast" | "lunch" | "dinner" | "snack";
 
 const MEAL_META: Record<MealType, { label: string; icon: string }> = {
   breakfast: { label: "Bữa sáng", icon: "wb_sunny" },
-  lunch:     { label: "Bữa trưa", icon: "restaurant" },
-  dinner:    { label: "Bữa tối",  icon: "bedtime" },
-  snack:     { label: "Ăn vặt",   icon: "cookie" },
+  lunch: { label: "Bữa trưa", icon: "restaurant" },
+  dinner: { label: "Bữa tối", icon: "bedtime" },
+  snack: { label: "Ăn vặt", icon: "cookie" },
 };
 
 const MEAL_ORDER: MealType[] = ["breakfast", "lunch", "dinner", "snack"];
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Helpers — dùng local timezone, KHÔNG dùng toISOString() để tránh UTC offset
-// ─────────────────────────────────────────────────────────────────────────────
-
-/** Format Date object → "YYYY-MM-DD" theo local timezone */
 function toLocalDateStr(date: Date): string {
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, "0");
@@ -38,25 +32,18 @@ function toLocalDateStr(date: Date): string {
   return `${y}-${m}-${d}`;
 }
 
-/** Ngày hôm nay theo local timezone (KHÔNG dùng toISOString) */
 function getToday(): string {
   return toLocalDateStr(new Date());
 }
 
-/**
- * Dịch chuyển ngày ±days theo local timezone
- * Fix: parse "YYYY-MM-DD" → new Date(y, m-1, d) = local midnight,
- * tránh UTC parse gây lệch múi giờ UTC+7
- */
 function offsetDate(dateStr: string, days: number): string {
   const [y, m, d] = dateStr.split("-").map(Number);
-  const date = new Date(y, m - 1, d + days); // local arithmetic
+  const date = new Date(y, m - 1, d + days);
   return toLocalDateStr(date);
 }
 
-/** Parse "YYYY-MM-DD" → { day, month, isToday } theo local */
 function formatDate(dateStr: string) {
-  const [y, m, d] = dateStr.split("-").map(Number);
+  const [, m, d] = dateStr.split("-").map(Number);
   return {
     day: d,
     month: m,
@@ -72,10 +59,12 @@ const MealSection = memo(function MealSection({
   mealType,
   meal,
   onAdd,
+  onRemoveIngredient,
 }: {
   mealType: MealType;
   meal: MealEntry | undefined;
   onAdd: (type: MealType) => void;
+  onRemoveIngredient: (mealId: string, ingredientId: string) => void;
 }) {
   const { label, icon } = MEAL_META[mealType];
   const hasItems = meal && meal.ingredients.length > 0;
@@ -108,24 +97,32 @@ const MealSection = memo(function MealSection({
             </p>
           </div>
         </div>
-        <button
+        <motion.button
           onClick={() => onAdd(mealType)}
-          className={`w-8 h-8 rounded-full flex items-center justify-center transition-all shrink-0 ${
+          className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
             hasItems
-              ? "bg-primary text-white shadow-md shadow-primary/25 hover:opacity-90"
-              : "bg-primary/10 text-primary hover:bg-primary/20"
+              ? "bg-primary text-white shadow-md shadow-primary/25"
+              : "bg-primary/10 text-primary"
           }`}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          transition={{ type: "spring", stiffness: 400, damping: 17 }}
         >
           <span className="material-symbols-outlined text-lg">add</span>
-        </button>
+        </motion.button>
       </div>
 
       {hasItems && (
-        <div className="border-t border-primary/6 px-4 pb-3 pt-2 space-y-2">
+        <motion.div
+          className="border-t border-primary/6 px-4 pb-3 pt-2 space-y-2"
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+        >
           {meal.ingredients.map((ing) => (
             <div
               key={ing.id}
-              className="flex items-center gap-3 py-2 border-b border-primary/4 last:border-0"
+              className="flex items-center gap-3 py-2 border-b border-primary/4 last:border-0 group"
             >
               <div className="w-10 h-10 rounded-lg bg-primary/8 flex items-center justify-center shrink-0">
                 <span className="text-lg" role="img" aria-label="món ăn">
@@ -146,9 +143,17 @@ const MealSection = memo(function MealSection({
                   kcal
                 </span>
               </span>
+              <button
+                onClick={() => onRemoveIngredient(meal.id, ing.id)}
+                className="w-7 h-7 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500/20"
+                aria-label={`Xóa ${ing.name}`}
+                title="Xóa"
+              >
+                <span className="material-symbols-outlined text-sm">close</span>
+              </button>
             </div>
           ))}
-        </div>
+        </motion.div>
       )}
     </section>
   );
@@ -158,29 +163,42 @@ const MealSection = memo(function MealSection({
 // Page
 // ─────────────────────────────────────────────────────────────────────────────
 
+const cardVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.12,
+      duration: 0.5,
+    },
+  }),
+};
+
 export default function DiaryPage() {
-  const { currentLog, loadLog, addMeal, updateMeal } = useDiaryStore();
-  const { profile, loadProfile, updateProfile } = useProfileStore();
-  const [mounted, setMounted]         = useState(false);
+  const { currentLog, loadLog, addIngredients, removeIngredient } =
+    useDiaryStore();
+  const { profile, loadProfile, syncStreak } = useProfileStore();
+  const [mounted, setMounted] = useState(false);
   const [currentDate, setCurrentDate] = useState(getToday); // local today
-  const [modalMeal, setModalMeal]     = useState<MealType | null>(null);
+  const [modalMeal, setModalMeal] = useState<MealType | null>(null);
 
   useEffect(() => {
     loadProfile();
     loadLog(getToday());
-    setMounted(true);
+    // Đồng bộ streak từ logs khi mount trang
+    syncStreak();
+    // Use a microtask to avoid "synchronous setState in effect" error
+    queueMicrotask(() => setMounted(true));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (mounted) loadLog(currentDate);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentDate]);
 
-  const today   = getToday();
-  const isToday = currentDate === today;
+  const today = getToday();
 
-  // ── Navigation — dùng offsetDate đã fix ──
   const goBack = useCallback(
     () => setCurrentDate((d) => offsetDate(d, -1)),
     [],
@@ -188,74 +206,54 @@ export default function DiaryPage() {
   const goNext = useCallback(() => {
     setCurrentDate((d) => {
       const next = offsetDate(d, 1);
-      // Không cho phép vượt quá hôm nay
       return next > getToday() ? d : next;
     });
   }, []);
 
-  const openModal  = useCallback((type: MealType) => setModalMeal(type), []);
+  const openModal = useCallback((type: MealType) => setModalMeal(type), []);
   const closeModal = useCallback(() => setModalMeal(null), []);
 
   const handleStreakUpdate = useCallback(
-    (streak: { currentStreak: number; bestStreak: number }) => {
-      if (profile) updateProfile(streak);
+    () => {
+      syncStreak();
     },
-    [profile, updateProfile],
+    [syncStreak],
   );
 
-  const target    = profile?.macroTarget?.calories ?? 2000;
-  const consumed  = currentLog?.totalCalories ?? 0;
+  const target = profile?.macroTarget?.calories ?? 2000;
+  const consumed = currentLog?.totalCalories ?? 0;
   const remaining = target - consumed;
 
   function getMeal(type: MealType): MealEntry | undefined {
     return currentLog?.meals.find((m) => m.mealType === type);
   }
 
-  const handleAddIngredient = useCallback(
-    (mealType: MealType, ingredient: Ingredient) => {
-      const existing = currentLog?.meals.find((m) => m.mealType === mealType);
-      if (existing) {
-        const updatedIngredients = [...existing.ingredients, ingredient];
-        updateMeal(
-          existing.id,
-          {
-            ...existing,
-            ingredients:   updatedIngredients,
-            totalCalories: updatedIngredients.reduce((s, i) => s + i.calories, 0),
-          },
-          handleStreakUpdate,
-        );
-      } else {
-        const now  = new Date();
-        const time = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
-        addMeal(
-          {
-            id:            `${mealType}-${Date.now()}`,
-            mealType,
-            ingredients:   [ingredient],
-            totalCalories: ingredient.calories,
-            time,
-          },
-          handleStreakUpdate,
-        );
-      }
+  const handleSaveIngredients = useCallback(
+    (mealType: MealType, ingredients: Ingredient[]) => {
+      addIngredients(mealType, ingredients, handleStreakUpdate);
+      closeModal();
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [currentLog, addMeal, updateMeal, handleStreakUpdate],
+    [addIngredients, handleStreakUpdate, closeModal]
+  );
+
+  const handleRemoveIngredient = useCallback(
+    (mealId: string, ingredientId: string) => {
+      removeIngredient(mealId, ingredientId, handleStreakUpdate);
+    },
+    [removeIngredient, handleStreakUpdate]
   );
 
   if (!mounted) return null;
 
   const { day, month, isToday: todayFlag } = formatDate(currentDate);
-  // isAfterToday: string compare "YYYY-MM-DD" là đúng vì format cố định
   const isAfterToday = currentDate >= today;
 
   const macros = currentLog?.meals.reduce(
     (acc, meal) => {
       meal.ingredients.forEach((ing) => {
         acc.p += ing.protein || 0;
-        acc.c += ing.carbs   || 0;
-        acc.f += ing.fat     || 0;
+        acc.c += ing.carbs || 0;
+        acc.f += ing.fat || 0;
       });
       return acc;
     },
@@ -264,13 +262,13 @@ export default function DiaryPage() {
 
   const macroTargets = {
     p: profile?.macroTarget?.protein ?? 120,
-    c: profile?.macroTarget?.carbs   ?? 250,
-    f: profile?.macroTarget?.fat     ?? 65,
+    c: profile?.macroTarget?.carbs ?? 250,
+    f: profile?.macroTarget?.fat ?? 65,
   };
 
   return (
     <div className="bg-background text-on-background font-body-md min-h-screen">
-      {/* ── HEADER ── */}
+      {/* HEADER */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-emerald-900/10 h-14 flex justify-center items-center px-4 sm:px-6">
         <div className="w-full max-w-[1100px] flex justify-between items-center gap-2">
           <div className="flex items-center gap-2 shrink-0">
@@ -306,16 +304,17 @@ export default function DiaryPage() {
       </header>
 
       <main className="pt-16 pb-28 sm:pb-24 px-4 sm:px-6 max-w-[1100px] mx-auto">
-        {/* ── Date Nav ── */}
+        {/* Date Nav */}
         <nav className="flex items-center justify-center gap-4 sm:gap-8 my-4 sm:my-5">
-          <button
+          <motion.button
             onClick={goBack}
             className="p-2 hover:bg-surface-container rounded-full transition-colors group shrink-0"
+            whileTap={{ scale: 0.9 }}
           >
             <span className="material-symbols-outlined text-xl sm:text-2xl text-outline group-hover:text-primary">
               chevron_left
             </span>
-          </button>
+          </motion.button>
 
           <h2 className="font-h1 text-xl sm:text-3xl text-primary font-bold text-center leading-tight">
             {todayFlag ? "Hôm nay" : "Ngày"},{" "}
@@ -323,22 +322,31 @@ export default function DiaryPage() {
             <span className="font-numbers">{month}</span>
           </h2>
 
-          {/* isAfterToday: disable khi đang ở hôm nay hoặc sau hôm nay */}
-          <button
+          <motion.button
             onClick={goNext}
             disabled={isAfterToday}
             className="p-2 hover:bg-surface-container rounded-full transition-colors group disabled:opacity-30 shrink-0"
+            whileTap={{ scale: 0.9 }}
           >
             <span className="material-symbols-outlined text-xl sm:text-2xl text-outline group-hover:text-primary">
               chevron_right
             </span>
-          </button>
+          </motion.button>
         </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 items-start">
           {/* LEFT: Summary */}
-          <div className="lg:col-span-7 space-y-4 sm:space-y-5">
-            <section className="glass-card rounded-3xl p-4 sm:p-6">
+          <motion.div
+            className="lg:col-span-7 space-y-4 sm:space-y-5"
+            initial="hidden"
+            animate="visible"
+          >
+            {/* Calorie summary */}
+            <motion.section
+              custom={0}
+              variants={cardVariants}
+              className="glass-card rounded-3xl p-4 sm:p-6"
+            >
               <p className="font-label-caps text-[10px] uppercase tracking-widest text-outline mb-3">
                 Tổng kết hôm nay
               </p>
@@ -357,9 +365,9 @@ export default function DiaryPage() {
               <div className="space-y-3">
                 {[
                   {
-                    label:  "Đã nạp",
-                    value:  consumed,
-                    pct:    Math.min((consumed / (target || 1)) * 100, 100),
+                    label: "Đã nạp",
+                    value: consumed,
+                    pct: Math.min((consumed / (target || 1)) * 100, 100),
                     opaque: false,
                   },
                   { label: "Mục tiêu", value: target, pct: 100, opaque: true },
@@ -379,25 +387,40 @@ export default function DiaryPage() {
                     <div className="h-2 rounded-full bg-primary/10 overflow-hidden">
                       <div
                         className="h-full rounded-full bg-primary transition-all duration-700"
-                        style={{ width: `${row.pct}%`, opacity: row.opaque ? 0.25 : 1 }}
+                        style={{
+                          width: `${row.pct}%`,
+                          opacity: row.opaque ? 0.25 : 1,
+                        }}
                       />
                     </div>
                   </div>
                 ))}
               </div>
-            </section>
+            </motion.section>
 
-            <section className="glass-card rounded-3xl p-4 sm:p-6">
+            {/* Macro */}
+            <motion.section
+              custom={1}
+              variants={cardVariants}
+              className="glass-card rounded-3xl p-4 sm:p-6"
+            >
               <p className="font-label-caps text-[10px] uppercase tracking-widest text-outline mb-4">
                 Dinh dưỡng
               </p>
               <div className="grid grid-cols-3 gap-3 sm:gap-6">
                 {[
-                  { label: "Carbs",   current: macros.c, target: macroTargets.c },
-                  { label: "Protein", current: macros.p, target: macroTargets.p },
-                  { label: "Fat",     current: macros.f, target: macroTargets.f },
+                  { label: "Carbs", current: macros.c, target: macroTargets.c },
+                  {
+                    label: "Protein",
+                    current: macros.p,
+                    target: macroTargets.p,
+                  },
+                  { label: "Fat", current: macros.f, target: macroTargets.f },
                 ].map((m) => (
-                  <div key={m.label} className="space-y-1.5 sm:space-y-2 min-w-0">
+                  <div
+                    key={m.label}
+                    className="space-y-1.5 sm:space-y-2 min-w-0"
+                  >
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-0.5">
                       <span className="font-label-caps text-[9px] sm:text-[10px] font-bold text-primary uppercase">
                         {m.label}
@@ -417,8 +440,8 @@ export default function DiaryPage() {
                   </div>
                 ))}
               </div>
-            </section>
-          </div>
+            </motion.section>
+          </motion.div>
 
           {/* RIGHT: Meals */}
           <div className="lg:col-span-5 space-y-3">
@@ -427,24 +450,40 @@ export default function DiaryPage() {
                 Bữa ăn hôm nay
               </h3>
             </div>
-            {MEAL_ORDER.map((type) => (
-              <MealSection
+            {MEAL_ORDER.map((type, index) => (
+              <motion.div
                 key={type}
-                mealType={type}
-                meal={getMeal(type)}
-                onAdd={openModal}
-              />
+                custom={index + 2}
+                variants={cardVariants}
+                initial="hidden"
+                animate="visible"
+              >
+                <MealSection
+                  mealType={type}
+                  meal={getMeal(type)}
+                  onAdd={openModal}
+                  onRemoveIngredient={handleRemoveIngredient}
+                />
+              </motion.div>
             ))}
           </div>
         </div>
       </main>
 
-      <button
+      {/* FAB */}
+      <motion.button
         onClick={() => openModal("breakfast")}
-        className="fixed bottom-20 right-4 sm:right-8 w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-primary text-white flex items-center justify-center shadow-2xl shadow-primary/35 hover:scale-105 active:scale-95 transition-transform z-40"
+        className="fixed bottom-20 right-4 sm:right-8 w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-primary text-white flex items-center justify-center shadow-2xl shadow-primary/35 z-40"
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.92 }}
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 300, damping: 20, delay: 0.3 }}
       >
-        <span className="material-symbols-outlined text-2xl sm:text-3xl">add</span>
-      </button>
+        <span className="material-symbols-outlined text-2xl sm:text-3xl">
+          add
+        </span>
+      </motion.button>
 
       <BottomNav />
 
@@ -452,7 +491,7 @@ export default function DiaryPage() {
         <AddMealModal
           mealType={modalMeal}
           onClose={closeModal}
-          onAdd={(ingredient) => handleAddIngredient(modalMeal, ingredient)}
+          onSave={(ingredients) => handleSaveIngredients(modalMeal, ingredients)}
         />
       )}
     </div>

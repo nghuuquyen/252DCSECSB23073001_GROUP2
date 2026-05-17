@@ -4,8 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useDiaryStore } from "@/store/diaryStore";
 import { useProfileStore } from "@/store/profileStore";
 import Link from "next/link";
-
-// ─────────────────────────────────────────────────────────────────────────────
+import { motion } from "framer-motion";
 
 const MEAL_LABELS: Record<string, string> = {
   breakfast: "Bữa sáng",
@@ -32,37 +31,45 @@ const MEAL_ICONS: Record<string, string> = {
 
 function offsetDate(dateStr: string, days: number): string {
   const d = new Date(dateStr);
-  if (isNaN(d.getTime())) return new Date().toISOString().slice(0, 10); // Fix invalid date
+  if (isNaN(d.getTime())) return new Date().toISOString().slice(0, 10);
   d.setDate(d.getDate() + days);
   return d.toISOString().slice(0, 10);
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
+const cardVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.15,
+      duration: 0.5,
+    },
+  }),
+};
 
 export default function DashboardPage() {
   const [mounted, setMounted] = useState(false);
   const { currentLog, currentDate, loadLog, updateWater } = useDiaryStore();
-  const { profile } = useProfileStore();
+  const { profile, syncStreak } = useProfileStore();
 
   useEffect(() => {
-    setMounted(true);
+    // Use a microtask to avoid "synchronous setState in effect" error
+    queueMicrotask(() => setMounted(true));
     loadLog(new Date().toISOString().slice(0, 10));
-  }, [loadLog]);
+    // Đồng bộ streak từ logs khi mount trang
+    syncStreak();
+  }, [loadLog, syncStreak]);
 
   if (!mounted) return null;
 
-  // ── CALORIES (Fix Edge Case: 0 input & Large values) ──────────────────────
-  // Đảm bảo TARGET tối thiểu là 1 để tránh lỗi chia cho 0 (NaN)
   const TARGET = Math.max(profile?.macroTarget?.calories ?? 2480, 1);
   const consumed = Math.max(currentLog?.totalCalories || 0, 0);
   const remaining = Math.max(TARGET - consumed, 0);
   const CIRC = 930;
-
-  // Tính toán dashOffset an toàn
   const percentage = Math.min((consumed / TARGET) * 100, 100);
   const dashOffset = CIRC - (CIRC * percentage) / 100;
 
-  // ── MACROS (Fix Edge Case: Missing profile & 0g input) ─────────────────────
   const macros = currentLog?.meals.reduce(
     (acc, meal) => {
       meal.ingredients.forEach((ing) => {
@@ -81,8 +88,6 @@ export default function DashboardPage() {
     f: Math.max(profile?.macroTarget?.fat ?? 65, 1),
   };
 
-  // ── WATER (Fix Edge Case: Large values & Empty data) ──────────────────────
-  // Giới hạn tối đa 50 ly nước để tránh treo trình duyệt do render quá nhiều icon
   const waterGlasses = Math.min(Math.max(currentLog?.water || 0, 0), 50);
   const waterMl = waterGlasses * 250;
 
@@ -91,7 +96,6 @@ export default function DashboardPage() {
     updateWater(Math.min(newVal, 50));
   };
 
-  // ── DATE ──────────────────────────────────────────────────────────────────
   const dateObj = new Date(currentDate || new Date());
   const day = dateObj.getDate();
   const month = dateObj.getMonth() + 1;
@@ -99,14 +103,13 @@ export default function DashboardPage() {
   const isToday = currentDate === todayStr;
   const isAfterToday = (currentDate || "") > todayStr;
 
-  // ── MEALS ─────────────────────────────────────────────────────────────────
   const mealMap = Object.fromEntries(
     (currentLog?.meals || []).map((m) => [m.mealType, m]),
   );
 
   return (
     <div className="bg-background text-on-background font-body-md min-h-screen">
-      {/* --- TOP NAV --- */}
+      {/* HEADER */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-emerald-900/10 h-14 flex justify-center items-center px-4 sm:px-6">
         <div className="w-full max-w-7xl flex justify-between items-center gap-2">
           <div className="flex items-center gap-1.5 shrink-0">
@@ -141,8 +144,8 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      <main className="pt-16 pb-28 sm:pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        {/* --- Date Navigation --- */}
+      <main className="pt-16 pb-28 sm:pb-24 px-4 sm:px-6 max-w-[1100px] mx-auto">
+        {/* Date Navigation */}
         <nav className="flex items-center justify-center gap-4 sm:gap-8 my-4 sm:my-5">
           <button
             onClick={() => loadLog(offsetDate(currentDate, -1))}
@@ -169,29 +172,33 @@ export default function DashboardPage() {
           </button>
         </nav>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4 sm:gap-5 items-start">
-          {/* --- LEFT: Calories + Water --- */}
-          <div className="md:col-span-1 lg:col-span-7 space-y-4 sm:space-y-5">
-            <section className="glass-card rounded-3xl p-4 sm:p-6 flex flex-col items-center">
-              {/* Ring: w-40 mobile → w-48 tablet → w-56 desktop */}
-              <div className="relative w-40 h-40 sm:w-48 sm:h-48 lg:w-56 lg:h-56 flex items-center justify-center mb-4 sm:mb-5">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 items-start">
+          {/* LEFT */}
+          <motion.div
+            className="lg:col-span-7 space-y-4 sm:space-y-5"
+            initial="hidden"
+            animate="visible"
+          >
+            {/* Calorie Ring */}
+            <motion.section
+              custom={0}
+              variants={cardVariants}
+              className="glass-card rounded-3xl p-4 sm:p-6 flex flex-col items-center"
+            >
+              <div className="relative w-44 h-44 sm:w-56 sm:h-56 flex items-center justify-center mb-4 sm:mb-5">
                 <svg
                   className="w-full h-full transform -rotate-90"
                   viewBox="0 0 320 320"
                 >
                   <circle
-                    cx="160"
-                    cy="160"
-                    r="148"
+                    cx="160" cy="160" r="148"
                     fill="transparent"
                     stroke="currentColor"
                     strokeWidth="16"
                     className="text-surface-container-highest"
                   />
                   <circle
-                    cx="160"
-                    cy="160"
-                    r="148"
+                    cx="160" cy="160" r="148"
                     fill="transparent"
                     stroke="currentColor"
                     strokeWidth="16"
@@ -214,17 +221,10 @@ export default function DashboardPage() {
               <div className="w-full sm:max-w-sm grid grid-cols-3 gap-3 sm:gap-6">
                 {[
                   { label: "Carbs", current: macros.c, target: macroTargets.c },
-                  {
-                    label: "Protein",
-                    current: macros.p,
-                    target: macroTargets.p,
-                  },
+                  { label: "Protein", current: macros.p, target: macroTargets.p },
                   { label: "Fat", current: macros.f, target: macroTargets.f },
                 ].map((m) => (
-                  <div
-                    key={m.label}
-                    className="space-y-1.5 sm:space-y-2 min-w-0"
-                  >
+                  <div key={m.label} className="space-y-1.5 sm:space-y-2 min-w-0">
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-0.5">
                       <span className="font-label-caps text-[9px] sm:text-[10px] font-bold text-primary uppercase truncate">
                         {m.label}
@@ -244,9 +244,14 @@ export default function DashboardPage() {
                   </div>
                 ))}
               </div>
-            </section>
+            </motion.section>
 
-            <section className="glass-card rounded-3xl p-4 sm:p-5">
+            {/* Water */}
+            <motion.section
+              custom={1}
+              variants={cardVariants}
+              className="glass-card rounded-3xl p-4 sm:p-5"
+            >
               <div className="flex justify-between items-center mb-3 sm:mb-4">
                 <div>
                   <h3 className="font-h2 text-base sm:text-lg text-primary font-bold">
@@ -267,25 +272,39 @@ export default function DashboardPage() {
               </div>
               <div className="flex flex-wrap gap-2 sm:gap-0 sm:justify-between items-center px-0 sm:px-2">
                 {Array.from({ length: 8 }, (_, i) => (
-                  <button
+                  <motion.button
                     key={i}
                     onClick={() => handleWaterClick(i)}
-                    className="transition-transform hover:scale-110 active:scale-90 min-h-[44px] min-w-[44px] flex items-center justify-center"
+                    whileTap={{ scale: 0.85 }}
+                    whileHover={{ scale: 1.15 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
                   >
                     <span
-                      className={`material-symbols-outlined text-3xl sm:text-4xl ${i < waterGlasses ? "filled-icon text-primary" : "text-outline/20"}`}
+                      className={`material-symbols-outlined text-3xl sm:text-4xl ${
+                        i < waterGlasses
+                          ? "filled-icon text-primary"
+                          : "text-outline/20"
+                      }`}
                     >
                       water_full
                     </span>
-                  </button>
+                  </motion.button>
                 ))}
               </div>
-            </section>
-          </div>
+            </motion.section>
+          </motion.div>
 
-          {/* --- RIGHT: Meal Log --- */}
-          <div className="md:col-span-1 lg:col-span-5 space-y-3">
-            <div className="flex justify-between items-center px-1 mb-1">
+          {/* RIGHT: Meal Log */}
+          <motion.div
+            className="lg:col-span-5 space-y-3"
+            initial="hidden"
+            animate="visible"
+          >
+            <motion.div
+              custom={0}
+              variants={cardVariants}
+              className="flex justify-between items-center px-1 mb-1"
+            >
               <h3 className="font-h2 text-base sm:text-lg text-primary font-bold">
                 Bữa ăn hôm nay
               </h3>
@@ -295,83 +314,95 @@ export default function DashboardPage() {
               >
                 Xem tất cả
               </Link>
-            </div>
+            </motion.div>
+
             <div className="space-y-3">
-              {MEAL_ORDER.map((mealType) => {
+              {MEAL_ORDER.map((mealType, index) => {
                 const meal = mealMap[mealType];
                 const label = MEAL_LABELS[mealType];
-                if (meal) {
-                  const subtitle =
-                    meal.ingredients
-                      .map((i) => i.name)
-                      .slice(0, 2)
-                      .join(", ") || `${meal.ingredients.length} món`;
-                  return (
-                    <Link key={mealType} href="/diary">
-                      <div className="glass-card rounded-2xl p-3 sm:p-4 flex items-center gap-3 hover:bg-white transition-all cursor-pointer group hover:shadow-md">
-                        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex-shrink-0 bg-surface-container group-hover:scale-105 transition-transform duration-300 flex items-center justify-center">
-                          <span className="material-symbols-outlined filled-icon text-primary text-xl sm:text-2xl">
-                            {MEAL_ICONS[mealType]}
-                          </span>
-                        </div>
-                        <div className="flex-grow min-w-0">
-                          <div className="flex justify-between items-center gap-2">
-                            <div className="min-w-0">
-                              <h4 className="font-body-md font-bold text-primary text-sm sm:text-base">
-                                {label}
-                              </h4>
-                              <p className="text-xs text-outline truncate">
-                                {subtitle}
-                              </p>
-                            </div>
-                            <span className="font-stat-value text-sm sm:text-base text-primary font-numbers whitespace-nowrap shrink-0">
-                              {meal.totalCalories} kcal
+                return (
+                  <motion.div
+                    key={mealType}
+                    custom={index + 1}
+                    variants={cardVariants}
+                  >
+                    {meal ? (
+                      <Link href="/diary">
+                        <div className="glass-card rounded-2xl p-3 sm:p-4 flex items-center gap-3 hover:bg-white transition-all cursor-pointer group hover:shadow-md">
+                          <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex-shrink-0 bg-surface-container group-hover:scale-105 transition-transform duration-300 flex items-center justify-center">
+                            <span className="material-symbols-outlined filled-icon text-primary text-xl sm:text-2xl">
+                              {MEAL_ICONS[mealType]}
                             </span>
                           </div>
-                        </div>
-                      </div>
-                    </Link>
-                  );
-                }
-                return (
-                  <Link key={mealType} href="/diary">
-                    <div className="rounded-2xl p-3 sm:p-4 flex items-center gap-3 border-2 border-dashed border-outline-variant opacity-60 hover:opacity-100 transition-all cursor-pointer group">
-                      <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl border-2 border-dashed border-outline-variant flex items-center justify-center flex-shrink-0 group-hover:bg-primary/5 transition-colors">
-                        <span className="material-symbols-outlined text-outline-variant text-xl sm:text-2xl">
-                          add
-                        </span>
-                      </div>
-                      <div className="flex-grow min-w-0">
-                        <div className="flex justify-between items-center gap-2">
-                          <div className="min-w-0">
-                            <h4 className="font-body-md font-bold text-primary/60 text-sm sm:text-base">
-                              {label}
-                            </h4>
-                            <p className="text-xs text-outline/60 truncate">
-                              {MEAL_SUBTITLES[mealType]}
-                            </p>
+                          <div className="flex-grow min-w-0">
+                            <div className="flex justify-between items-center gap-2">
+                              <div className="min-w-0">
+                                <h4 className="font-body-md font-bold text-primary text-sm sm:text-base">
+                                  {label}
+                                </h4>
+                                <p className="text-xs text-outline truncate">
+                                  {meal.ingredients.map((i) => i.name).slice(0, 2).join(", ") ||
+                                    `${meal.ingredients.length} món`}
+                                </p>
+                              </div>
+                              <span className="font-stat-value text-sm sm:text-base text-primary font-numbers whitespace-nowrap shrink-0">
+                                {meal.totalCalories} kcal
+                              </span>
+                            </div>
                           </div>
-                          <span className="font-stat-value text-sm sm:text-base text-primary/60 font-numbers shrink-0">
-                            0 kcal
-                          </span>
                         </div>
-                      </div>
-                    </div>
-                  </Link>
+                      </Link>
+                    ) : (
+                      <Link href="/diary">
+                        <div className="rounded-2xl p-3 sm:p-4 flex items-center gap-3 border-2 border-dashed border-outline-variant opacity-60 hover:opacity-100 transition-all cursor-pointer group">
+                          <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl border-2 border-dashed border-outline-variant flex items-center justify-center flex-shrink-0 group-hover:bg-primary/5 transition-colors">
+                            <span className="material-symbols-outlined text-outline-variant text-xl sm:text-2xl">
+                              add
+                            </span>
+                          </div>
+                          <div className="flex-grow min-w-0">
+                            <div className="flex justify-between items-center gap-2">
+                              <div className="min-w-0">
+                                <h4 className="font-body-md font-bold text-primary/60 text-sm sm:text-base">
+                                  {label}
+                                </h4>
+                                <p className="text-xs text-outline/60 truncate">
+                                  {MEAL_SUBTITLES[mealType]}
+                                </p>
+                              </div>
+                              <span className="font-stat-value text-sm sm:text-base text-primary/60 font-numbers shrink-0">
+                                0 kcal
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </Link>
+                    )}
+                  </motion.div>
                 );
               })}
             </div>
-          </div>
+          </motion.div>
         </div>
       </main>
 
+      {/* FAB */}
       <Link
         href="/diary"
-        className="fixed bottom-20 right-4 sm:right-8 w-12 h-12 sm:w-14 sm:h-14 bg-primary text-white rounded-2xl shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-40"
+        className="fixed bottom-20 right-4 sm:right-8 z-40"
       >
-        <span className="material-symbols-outlined text-2xl sm:text-3xl">
-          add
-        </span>
+        <motion.div
+          className="w-12 h-12 sm:w-14 sm:h-14 bg-primary text-white rounded-2xl shadow-2xl flex items-center justify-center"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.92 }}
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 300, damping: 20, delay: 0.4 }}
+        >
+          <span className="material-symbols-outlined text-2xl sm:text-3xl">
+            add
+          </span>
+        </motion.div>
       </Link>
 
       <footer className="fixed bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-t border-primary/10 h-16 flex justify-center items-center">

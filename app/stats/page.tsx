@@ -2,22 +2,19 @@
 
 import React, { useEffect, useState, useMemo } from "react";
 import dynamic from "next/dynamic";
+import { motion } from "framer-motion";
 import { useProfileStore } from "@/store/profileStore";
 import { getLogs } from "@/lib/storage";
 import type { DailyLog } from "@/types";
-import { calcCurrentStreak, calcBestStreak } from "@/lib/calc";
+
 import { BottomNav } from "@/components/nav/BottomNav";
 import Link from "next/link";
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Lazy load heavy chart/stat components — không block initial render
-// ─────────────────────────────────────────────────────────────────────────────
 
 const WeeklyChart = dynamic(() => import("@/components/stats/WeeklyChart"), {
   loading: () => (
     <div className="rounded-3xl bg-white/60 border border-primary/10 h-[280px] animate-pulse" />
   ),
-  ssr: false, // chart dùng client-only layout, tắt SSR để tránh hydration mismatch
+  ssr: false,
 });
 
 const StatCard = dynamic(() => import("@/components/stats/StatCard"), {
@@ -33,10 +30,6 @@ const MacroSection = dynamic(() => import("@/components/stats/MacroSection"), {
   ),
   ssr: false,
 });
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Helpers (pure functions — defined outside component để không re-create)
-// ─────────────────────────────────────────────────────────────────────────────
 
 function getLast7Days(): string[] {
   return Array.from({ length: 7 }, (_, i) => {
@@ -84,38 +77,36 @@ function calcAvgMacros(logs: DailyLog[]) {
   };
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Page
-// ─────────────────────────────────────────────────────────────────────────────
+const cardVariants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.12,
+      duration: 0.45,
+    },
+  }),
+};
 
 export default function StatsPage() {
   const [mounted, setMounted] = useState(false);
   const [logs, setLogs] = useState<DailyLog[]>([]);
-  const { profile, loadProfile, updateProfile } = useProfileStore();
+  const { profile, loadProfile, syncStreak } = useProfileStore();
 
   useEffect(() => {
     loadProfile();
     const days = getLast7Days();
-    setLogs(getLogs(days[0], days[days.length - 1]));
-    setMounted(true);
+    // Use microtasks to avoid "synchronous setState in effect" error
+    queueMicrotask(() => {
+      setLogs(getLogs(days[0], days[days.length - 1]));
+      setMounted(true);
+    });
+    // Đồng bộ streak từ logs (dùng chung logic với các trang khác)
+    syncStreak();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ── Cập nhật streak trong profile khi logs thay đổi ──
-  useEffect(() => {
-    if (!profile || logs.length === 0) return;
-    const currentStreak = calcCurrentStreak(logs);
-    const bestStreak = calcBestStreak(logs);
-    // Chỉ update khi streak thay đổi để tránh re-render không cần thiết
-    if (
-      profile.currentStreak !== currentStreak ||
-      profile.bestStreak !== bestStreak
-    ) {
-      updateProfile({ currentStreak, bestStreak });
-    }
-  }, [logs, profile, updateProfile]);
-
-  // ── Memoize derived data — tránh re-compute mỗi render ──
   const target = profile?.macroTarget?.calories ?? 2000;
   const today = new Date().toISOString().split("T")[0];
   const days = useMemo(() => getLast7Days(), []);
@@ -143,7 +134,6 @@ export default function StatsPage() {
     [logs, target],
   );
   const currentStreak = profile?.currentStreak ?? 0;
-  const bestStreak = profile?.bestStreak ?? 0;
   const avgMacros = useMemo(() => calcAvgMacros(logs), [logs]);
 
   const macroKcal = useMemo(() => {
@@ -198,7 +188,7 @@ export default function StatsPage() {
 
   return (
     <div className="bg-background text-on-background font-body-md min-h-screen">
-      {/* ── HEADER ── */}
+      {/* HEADER */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-emerald-900/10 h-14 flex justify-center items-center px-4 sm:px-6">
         <div className="w-full max-w-[1100px] flex justify-between items-center gap-2">
           <div className="flex items-center gap-2 shrink-0">
@@ -229,61 +219,83 @@ export default function StatsPage() {
         </div>
       </header>
 
-      {/* ── MAIN ── */}
+      {/* MAIN */}
       <main className="pt-16 pb-24 px-4 sm:px-6 max-w-[1100px] mx-auto space-y-5">
-        <section className="space-y-1 text-center pt-4">
+        {/* Title */}
+        <motion.section
+          custom={0}
+          variants={cardVariants}
+          initial="hidden"
+          animate="visible"
+          className="space-y-1 text-center pt-4"
+        >
           <h2 className="font-h1 text-xl sm:text-2xl text-primary font-bold">
             Thống kê tuần này
           </h2>
           <p className="font-body-md text-sm sm:text-base text-secondary font-semibold">
             {weekRange}
           </p>
-        </section>
+        </motion.section>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 items-start">
           {/* Left */}
           <div className="lg:col-span-7 space-y-4 sm:space-y-5">
-            <WeeklyChart data={weeklyData} />
+            {/* Chart */}
+            <motion.div
+              custom={1}
+              variants={cardVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              <WeeklyChart data={weeklyData} />
+            </motion.div>
 
+            {/* Stat cards */}
             <section className="grid grid-cols-2 gap-4 sm:gap-5">
-              <StatCard
-                label="TB MỖI NGÀY"
-                value={avgCalories.toLocaleString()}
-                unit="kcal"
-              />
-              <StatCard
-                label="ĐẠT MỤC TIÊU"
-                value={`${daysMetTarget}/7`}
-                unit="ngày"
-              />
-              <StatCard
-                label="THÂM HỤT"
-                value={
-                  totalDeficit >= 0
-                    ? `+${totalDeficit.toLocaleString()}`
-                    : totalDeficit.toLocaleString()
-                }
-                unit="kcal"
-                isNegative={totalDeficit < 0}
-              />
-              <StatCard
-                label="CHUỖI STREAK"
-                value={currentStreak}
-                unit="ngày"
-                isStreak
-              />
+              {[
+                { label: "TB MỖI NGÀY", value: avgCalories.toLocaleString(), unit: "kcal" },
+                { label: "ĐẠT MỤC TIÊU", value: `${daysMetTarget}/7`, unit: "ngày" },
+                {
+                  label: "THÂM HỤT",
+                  value: totalDeficit >= 0 ? `+${totalDeficit.toLocaleString()}` : totalDeficit.toLocaleString(),
+                  unit: "kcal",
+                  isNegative: totalDeficit < 0,
+                },
+                { label: "CHUỖI STREAK", value: currentStreak, unit: "ngày", isStreak: true },
+              ].map((card, index) => (
+                <motion.div
+                  key={card.label}
+                  custom={index + 2}
+                  variants={cardVariants}
+                  initial="hidden"
+                  animate="visible"
+                >
+                  <StatCard {...card} />
+                </motion.div>
+              ))}
             </section>
           </div>
 
           {/* Right */}
-          <div className="lg:col-span-5 h-full">
+          <motion.div
+            custom={3}
+            variants={cardVariants}
+            initial="hidden"
+            animate="visible"
+            className="lg:col-span-5 h-full"
+          >
             <MacroSection macros={macroStats} />
-          </div>
+          </motion.div>
         </div>
 
         {/* Empty state */}
         {logs.length === 0 && (
-          <div className="text-center py-10 glass-card rounded-3xl">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="text-center py-10 glass-card rounded-3xl"
+          >
             <span className="material-symbols-outlined text-4xl text-outline">
               bar_chart
             </span>
@@ -293,7 +305,7 @@ export default function StatsPage() {
             <p className="text-outline/60 text-xs mt-1">
               Hãy ghi nhật ký bữa ăn đầu tiên!
             </p>
-          </div>
+          </motion.div>
         )}
       </main>
 

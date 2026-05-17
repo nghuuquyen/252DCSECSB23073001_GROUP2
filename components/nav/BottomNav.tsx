@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { motion } from 'framer-motion';
 
 const NAV_ITEMS = [
   { href: '/',      label: 'Tổng quan', icon: 'home'      },
@@ -23,26 +24,42 @@ export function BottomNav() {
             <Link
               key={href}
               href={href}
-              className={`flex flex-col items-center gap-1 lg:gap-1.5 py-2 px-4 sm:px-6 lg:px-10 rounded-2xl transition-all ${
-                active
-                  ? 'bg-[#caeadd] text-[#005239]'
-                  : 'text-[#6f7973] hover:text-[#005239]'
-              }`}
+              className="flex flex-col items-center gap-1 py-2 px-8 rounded-2xl relative"
             >
-              <span
-                className="material-symbols-outlined text-2xl"
-                style={active ? { fontVariationSettings: "'FILL' 1" } : {}}
+              {/* Active background */}
+              {active && (
+                <motion.div
+                  layoutId="nav-active"
+                  className="absolute inset-0 bg-[#caeadd] rounded-2xl"
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+              )}
+
+              {/* Icon */}
+              <motion.span
+                className="material-symbols-outlined text-2xl relative z-10"
+                style={{
+                  color: active ? '#005239' : '#6f7973',
+                  fontVariationSettings: active ? "'FILL' 1" : "'FILL' 0",
+                }}
+                animate={{ scale: active ? 1.1 : 1 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 20 }}
               >
                 {icon}
-              </span>
-              {/* text tăng nhẹ từ tablet+ */}
-              <span className="text-[10px] sm:text-[11px] lg:text-xs font-bold uppercase tracking-[0.1em] font-['Be_Vietnam_Pro']">
+              </motion.span>
+
+              {/* Label */}
+              <motion.span
+                className="text-[10px] font-bold uppercase tracking-[0.1em] font-['Be_Vietnam_Pro'] relative z-10"
+                animate={{ color: active ? '#005239' : '#6f7973' }}
+                transition={{ duration: 0.2 }}
+              >
                 {label}
-              </span>
+              </motion.span>
             </Link>
           );
         })}
       </nav>
     </footer>
   );
-}
+} 

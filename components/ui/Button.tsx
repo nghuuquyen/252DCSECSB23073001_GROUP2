@@ -1,24 +1,44 @@
+'use client'
+
+import { motion } from 'framer-motion'
+
 type ButtonProps = {
-  children: React.ReactNode;
-  variant?: "primary" | "secondary";
-  onClick?: () => void;
-};
+  children: React.ReactNode
+  variant?: 'primary' | 'secondary'
+  onClick?: () => void
+  disabled?: boolean
+  className?: string
+  type?: 'button' | 'submit' | 'reset'
+}
 
 export default function Button({
   children,
-  variant = "primary",
+  variant = 'primary',
   onClick,
+  disabled = false,
+  className = '',
+  type = 'button',
 }: ButtonProps) {
-  const base = "px-4 py-2 rounded font-medium";
-
   const styles = {
-    primary: "bg-blue-500 text-white",
-    secondary: "bg-gray-200 text-black",
-  };
+    primary: 'bg-[#005239] text-white',
+    secondary: 'bg-[#e8f0eb] text-[#005239]',
+  }
 
   return (
-    <button className={`${base} ${styles[variant]}`} onClick={onClick}>
+    <motion.button
+      type={type}
+      onClick={onClick}
+      disabled={disabled}
+      className={`px-4 py-2 rounded-xl font-medium transition-opacity
+        ${styles[variant]}
+        ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
+        ${className}
+      `}
+      whileTap={{ scale: 0.96 }}
+      whileHover={{ scale: 1.02 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+    >
       {children}
-    </button>
-  );
+    </motion.button>
+  )
 }

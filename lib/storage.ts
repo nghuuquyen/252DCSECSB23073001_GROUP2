@@ -70,12 +70,11 @@ export function getProfile(): UserProfile | null {
     // In development, force streaks to 0 to avoid stale local test data
     try {
       // process.env is replaced at build-time by Next.js — safe to check
-      // eslint-disable-next-line no-undef
       if (process.env.NODE_ENV === "development") {
         parsed.currentStreak = 0;
         parsed.bestStreak = 0;
       }
-    } catch (e) {
+    } catch {
       // ignore
     }
 
