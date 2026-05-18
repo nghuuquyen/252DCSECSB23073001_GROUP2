@@ -3,7 +3,6 @@
  *
  * Helper để cập nhật streak trong profile khi có log mới
  */
-
 import { calcCurrentStreak, calcBestStreak, toLocalDateStr } from "./calc";
 import { getLogs, getProfile, saveProfile } from "./storage";
 
@@ -32,7 +31,6 @@ export function calculateAndUpdateStreak(): {
   const end = toLocalDateStr(new Date());
 
   const allLogs = getLogs(start, end);
-
   const currentStreak = calcCurrentStreak(allLogs);
   const bestStreak = calcBestStreak(allLogs);
 

@@ -185,9 +185,9 @@ export function calcCurrentStreak(logs: DailyLog[]): number {
   for (let i = 0; i <= 365; i++) {
     const d = new Date();
     d.setDate(d.getDate() - i);
-    // Dùng toLocalDateStr() thay vì toISOString() để tránh lệch ngày
-    // với người dùng UTC+7 (Việt Nam) sau 17:00 UTC (00:00 giờ VN)
-    const log = logMap.get(toLocalDateStr(d));
+
+const log = logMap.get(toLocalDateStr(d));
+
     if (log && hasAllMainMeals(log)) {
       streak++;
     } else {
@@ -240,4 +240,6 @@ export function calcBestStreak(logs: DailyLog[]): number {
 
   maxStreak = Math.max(maxStreak, currentStreak);
   return maxStreak;
+
 }
+
