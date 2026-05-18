@@ -1,18 +1,514 @@
 [
-  { "id": "thit-ga-ta", "name": "Thịt gà ta (thịt)", "calories": 199, "protein": 20.3, "carbs": 0.0, "fat": 13.1, "unit": "gram" },
-  { "id": "thit-ga-rung", "name": "Thịt gà rừng", "calories": 141, "protein": 24.4, "carbs": 0.0, "fat": 4.8, "unit": "gram" },
-  { "id": "thit-heo-nac", "name": "Thịt heo nạc", "calories": 139, "protein": 19.0, "carbs": 0.0, "fat": 6.8, "unit": "gram" },
-  { "id": "thit-bo-nac", "name": "Thịt bò nạc", "calories": 118, "protein": 21.0, "carbs": 0.0, "fat": 3.8, "unit": "gram" },
-  { "id": "ca-hoi", "name": "Cá hồi", "calories": 136, "protein": 22.0, "carbs": 0.0, "fat": 5.3, "unit": "gram" },
-  { "id": "trung-ga", "name": "Trứng gà", "calories": 166, "protein": 14.8, "carbs": 0.5, "fat": 11.6, "unit": "gram" },
-  { "id": "dau-phu", "name": "Đậu phụ", "calories": 95, "protein": 10.9, "carbs": 0.7, "fat": 5.4, "unit": "gram" },
-  { "id": "gao-te-may", "name": "Gạo tẻ máy (sống)", "calories": 344, "protein": 7.9, "carbs": 75.9, "fat": 1.0, "unit": "gram" },
-  { "id": "bun", "name": "Bún", "calories": 110, "protein": 1.7, "carbs": 25.0, "fat": 0.1, "unit": "gram" },
-  { "id": "khoai-lang-trang", "name": "Khoai lang trắng", "calories": 119, "protein": 0.8, "carbs": 28.5, "fat": 0.2, "unit": "gram" },
-  { "id": "khoai-lang-nghe", "name": "Khoai lang nghệ", "calories": 105, "protein": 1.2, "carbs": 24.5, "fat": 0.1, "unit": "gram" },
-  { "id": "cai-thia", "name": "Cải thìa (cải trắng)", "calories": 17, "protein": 1.4, "carbs": 2.4, "fat": 0.3, "unit": "gram" },
-  { "id": "cai-xanh", "name": "Cải xanh", "calories": 16, "protein": 1.7, "carbs": 2.0, "fat": 0.3, "unit": "gram" },
-  { "id": "rau-muong", "name": "Rau muống", "calories": 25, "protein": 3.2, "carbs": 3.0, "fat": 0.3, "unit": "gram" },
-  { "id": "chuoi-xanh", "name": "Chuối xanh", "calories": 74, "protein": 1.2, "carbs": 16.4, "fat": 0.5, "unit": "gram" },
-  { "id": "bo-tim", "name": "Bơ tím (quả bơ)", "calories": 74, "protein": 1.8, "carbs": 2.8, "fat": 6.2, "unit": "gram" }
+  {
+    "name": "Gạo tẻ máy (sống)",
+    "calories": 344,
+    "protein": 7.9,
+    "carbs": 75.9,
+    "fat": 1.0,
+    "id": "18b6369d-109a-41ff-a9bf-94742f17d73b"
+  },
+  {
+    "name": "Gạo lứt",
+    "calories": 346,
+    "protein": 7.5,
+    "carbs": 72.8,
+    "fat": 2.7,
+    "id": "56054d19-8af0-4de2-adc6-7d0df98f1312"
+  },
+  {
+    "name": "Bún (chín)",
+    "calories": 110,
+    "protein": 1.7,
+    "carbs": 25.0,
+    "fat": 0.1,
+    "id": "0ffa0247-bded-4cdf-b17c-366b34780847"
+  },
+  {
+    "name": "Bánh phở (tươi)",
+    "calories": 143,
+    "protein": 3.2,
+    "carbs": 31.7,
+    "fat": 0.4,
+    "id": "740a3d05-4618-4c8a-9427-674872e5ef73"
+  },
+  {
+    "name": "Bánh mì",
+    "calories": 249,
+    "protein": 7.9,
+    "carbs": 52.6,
+    "fat": 0.8,
+    "id": "4fbd6e67-83bf-48f4-8c47-c6bcc70d4582"
+  },
+  {
+    "name": "Mì sợi khô (lúa mì)",
+    "calories": 349,
+    "protein": 11.0,
+    "carbs": 74.2,
+    "fat": 0.9,
+    "id": "1a38153a-39dd-4b00-8035-67fad1b5bbc0"
+  },
+  {
+    "name": "Bánh bao nhân thịt",
+    "calories": 219,
+    "protein": 6.1,
+    "carbs": 47.5,
+    "fat": 0.5,
+    "id": "e47b7341-b32b-4e28-9536-a695515169d7"
+  },
+  {
+    "name": "Khoai lang trắng",
+    "calories": 119,
+    "protein": 0.8,
+    "carbs": 28.5,
+    "fat": 0.2,
+    "id": "f2e1cf42-ea15-49a3-b64c-c18af50792ae"
+  },
+  {
+    "name": "Khoai lang nghệ",
+    "calories": 116,
+    "protein": 1.2,
+    "carbs": 27.1,
+    "fat": 0.3,
+    "id": "2ea2bab0-d9a9-45ee-b1cd-980f852622c3"
+  },
+  {
+    "name": "Khoai tây",
+    "calories": 92,
+    "protein": 2.0,
+    "carbs": 20.9,
+    "fat": 0.1,
+    "id": "99ce6af0-c066-4d68-b970-ed4c34ea45ec"
+  },
+  {
+    "name": "Đậu phụ (tàu hũ)",
+    "calories": 95,
+    "protein": 10.9,
+    "carbs": 0.7,
+    "fat": 5.4,
+    "id": "1358c5ec-9715-4dc6-90b8-c91ca9032bdd"
+  },
+  {
+    "name": "Bí đỏ (bí ngô)",
+    "calories": 26,
+    "protein": 0.3,
+    "carbs": 6.1,
+    "fat": 0.1,
+    "id": "6c21f641-b41c-43ed-b8fa-4c8ed4fe2961"
+  },
+  {
+    "name": "Cà chua",
+    "calories": 20,
+    "protein": 0.6,
+    "carbs": 4.0,
+    "fat": 0.2,
+    "id": "3155fcec-2049-4cf1-b95c-6ba690216318"
+  },
+  {
+    "name": "Cà rốt",
+    "calories": 39,
+    "protein": 1.5,
+    "carbs": 7.8,
+    "fat": 0.2,
+    "id": "f4eff05b-03b4-4309-83bf-66f787aab801"
+  },
+  {
+    "name": "Bắp cải trắng",
+    "calories": 29,
+    "protein": 1.8,
+    "carbs": 5.3,
+    "fat": 0.1,
+    "id": "28749fe7-0051-4885-a1b7-c61e944d5f54"
+  },
+  {
+    "name": "Cải thìa (cải trắng)",
+    "calories": 17,
+    "protein": 1.4,
+    "carbs": 2.4,
+    "fat": 0.3,
+    "id": "4c134c1f-1500-43df-925e-4e6336bc2865"
+  },
+  {
+    "name": "Cải xanh",
+    "calories": 16,
+    "protein": 1.7,
+    "carbs": 2.0,
+    "fat": 0.3,
+    "id": "b9704358-ed79-4f10-b07c-dc855d43ee98"
+  },
+  {
+    "name": "Dưa chuột",
+    "calories": 16,
+    "protein": 0.8,
+    "carbs": 2.9,
+    "fat": 0.1,
+    "id": "062c98c4-1c01-4ec4-aa3d-47d0f6ec324f"
+  },
+  {
+    "name": "Giá đỗ xanh",
+    "calories": 44,
+    "protein": 5.5,
+    "carbs": 5.1,
+    "fat": 0.2,
+    "id": "771099e6-4f44-496e-bcfc-a31d1a4f04a6"
+  },
+  {
+    "name": "Khổ qua (mướp đắng)",
+    "calories": 17,
+    "protein": 0.9,
+    "carbs": 2.8,
+    "fat": 0.2,
+    "id": "9a854e03-2cfb-4eab-887a-a6f11470f5db"
+  },
+  {
+    "name": "Rau muống",
+    "calories": 25,
+    "protein": 3.2,
+    "carbs": 2.1,
+    "fat": 0.4,
+    "id": "169598ba-089c-4135-8f40-6101218a097b"
+  },
+  {
+    "name": "Súp lơ xanh (broccoli)",
+    "calories": 26,
+    "protein": 3.0,
+    "carbs": 2.9,
+    "fat": 0.3,
+    "id": "dd6a2830-3b8c-4e01-8722-f43aa5fe45a4"
+  },
+  {
+    "name": "Súp lơ trắng (cauliflower)",
+    "calories": 30,
+    "protein": 2.5,
+    "carbs": 4.8,
+    "fat": 0.1,
+    "id": "035df849-f0e8-493b-b60f-a98ea2b92317"
+  },
+  {
+    "name": "Tỏi",
+    "calories": 120,
+    "protein": 6.0,
+    "carbs": 23.0,
+    "fat": 0.5,
+    "id": "29f31b4d-7fdc-4dff-a8fb-31da1d23cc28"
+  },
+  {
+    "name": "Nấm rơm",
+    "calories": 57,
+    "protein": 3.6,
+    "carbs": 3.4,
+    "fat": 3.2,
+    "id": "52d465c9-d6d8-4d22-8d67-9e48c30e3c80"
+  },
+  {
+    "name": "Nấm đông cô (shiitake) tươi",
+    "calories": 32,
+    "protein": 5.5,
+    "carbs": 3.1,
+    "fat": 0.5,
+    "id": "d4a93a45-7012-4573-8faf-4a2632acdf5c"
+  },
+  {
+    "name": "Chuối xanh",
+    "calories": 74,
+    "protein": 1.2,
+    "carbs": 16.4,
+    "fat": 0.5,
+    "id": "24d6401f-f2d2-46e0-8092-eb280f0dab0b"
+  },
+  {
+    "name": "Chuối tiêu (chuối chín)",
+    "calories": 56,
+    "protein": 0.9,
+    "carbs": 12.4,
+    "fat": 0.3,
+    "id": "010c8021-7dc3-463e-9301-beecd30df741"
+  },
+  {
+    "name": "Dưa hấu",
+    "calories": 17,
+    "protein": 1.2,
+    "carbs": 2.3,
+    "fat": 0.2,
+    "id": "7f15766d-a4d1-487d-a5c9-5bf86cab5914"
+  },
+  {
+    "name": "Dứa (khóm)",
+    "calories": 38,
+    "protein": 0.5,
+    "carbs": 8.8,
+    "fat": 0.1,
+    "id": "84cde4d7-5c2c-4654-97af-5ceb6b0add73"
+  },
+  {
+    "name": "Đu đủ chín",
+    "calories": 35,
+    "protein": 1.0,
+    "carbs": 7.6,
+    "fat": 0.1,
+    "id": "16bcc0ac-e6ed-48f2-a953-92860f14c54c"
+  },
+  {
+    "name": "Xoài xanh",
+    "calories": 67,
+    "protein": 0.6,
+    "carbs": 15.3,
+    "fat": 0.4,
+    "id": "0db966a0-72db-4b57-bc92-de6615040720"
+  },
+  {
+    "name": "Xoài chín",
+    "calories": 62,
+    "protein": 0.6,
+    "carbs": 14.1,
+    "fat": 0.3,
+    "id": "ff86062e-caac-401c-b3b9-4802ae0c0538"
+  },
+  {
+    "name": "Bơ tím (quả bơ)",
+    "calories": 74,
+    "protein": 1.8,
+    "carbs": 2.8,
+    "fat": 6.2,
+    "id": "95d7d4c3-4fdb-46e7-88a7-3ccb41ab19d8"
+  },
+  {
+    "name": "Sầu riêng",
+    "calories": 132,
+    "protein": 2.5,
+    "carbs": 26.9,
+    "fat": 1.6,
+    "id": "47ffea9c-4127-4907-ad76-e17e42efcd60"
+  },
+  {
+    "name": "Mãng cầu ta (na)",
+    "calories": 66,
+    "protein": 1.6,
+    "carbs": 14.2,
+    "fat": 0.3,
+    "id": "dd17c3b2-a115-4c97-ad51-d0997c3f4a0a"
+  },
+  {
+    "name": "Nhãn",
+    "calories": 47,
+    "protein": 0.9,
+    "carbs": 10.9,
+    "fat": 0.1,
+    "id": "86ffe021-de4b-4b67-a837-b5158adf4aad"
+  },
+  {
+    "name": "Vải thiều",
+    "calories": 40,
+    "protein": 0.7,
+    "carbs": 9.6,
+    "fat": 0.4,
+    "id": "671bc26d-2770-4b1d-a7ea-702c0cc65a0a"
+  },
+  {
+    "name": "Dầu thực vật",
+    "calories": 897,
+    "protein": 0.0,
+    "carbs": 0.0,
+    "fat": 99.7,
+    "id": "e179aa6c-50bc-4c3c-a022-d72e7b00e1a5"
+  },
+  {
+    "name": "Bơ nhạt (butter)",
+    "calories": 756,
+    "protein": 0.5,
+    "carbs": 0.5,
+    "fat": 83.5,
+    "id": "02db8345-dea9-4591-8f03-44cdb7ea4c88"
+  },
+  {
+    "name": "Thịt bò nạc",
+    "calories": 118,
+    "protein": 21.0,
+    "carbs": 0.0,
+    "fat": 3.8,
+    "id": "e6049e91-0de1-4d91-94d6-e8c860e541b1"
+  },
+  {
+    "name": "Thịt gà ta",
+    "calories": 199,
+    "protein": 20.3,
+    "carbs": 0.0,
+    "fat": 13.1,
+    "id": "969e39d4-2e4f-48dd-90b6-37b9b51f5be4"
+  },
+  {
+    "name": "Thịt gà rừng (gà ri)",
+    "calories": 141,
+    "protein": 24.4,
+    "carbs": 0.0,
+    "fat": 4.8,
+    "id": "0844b995-2fad-4081-a4d6-a9277081fc2c"
+  },
+  {
+    "name": "Thịt heo nạc",
+    "calories": 139,
+    "protein": 19.0,
+    "carbs": 0.0,
+    "fat": 7.0,
+    "id": "c17a5ec1-fbcd-41ab-9b83-b596c231261d"
+  },
+  {
+    "name": "Thịt heo ba chỉ",
+    "calories": 260,
+    "protein": 16.5,
+    "carbs": 0.0,
+    "fat": 21.5,
+    "id": "d4504ca8-8689-4c75-943e-c27c65c3e46d"
+  },
+  {
+    "name": "Thịt vịt",
+    "calories": 267,
+    "protein": 17.8,
+    "carbs": 0.0,
+    "fat": 21.8,
+    "id": "52e63587-c15c-4f2e-8aa8-1c92b340f8f7"
+  },
+  {
+    "name": "Gan heo",
+    "calories": 116,
+    "protein": 18.8,
+    "carbs": 2.0,
+    "fat": 3.6,
+    "id": "d9abf65d-50be-4a1a-bf79-aa7c48366f9a"
+  },
+  {
+    "name": "Gan bò",
+    "calories": 110,
+    "protein": 17.4,
+    "carbs": 3.0,
+    "fat": 3.1,
+    "id": "f95ad43c-ef7a-4a47-b928-28f6a40af647"
+  },
+  {
+    "name": "Cá hồi",
+    "calories": 136,
+    "protein": 22.0,
+    "carbs": 0.0,
+    "fat": 5.3,
+    "id": "434c7b89-ad05-4814-90f6-ec4f55c11f00"
+  },
+  {
+    "name": "Cá thu",
+    "calories": 166,
+    "protein": 18.2,
+    "carbs": 0.0,
+    "fat": 10.3,
+    "id": "648ce105-fe78-4bda-aebf-b9a816263250"
+  },
+  {
+    "name": "Cá rô phi",
+    "calories": 92,
+    "protein": 19.7,
+    "carbs": 0.0,
+    "fat": 2.3,
+    "id": "d6da0af6-f9a0-4a89-a991-acb6b72e54b2"
+  },
+  {
+    "name": "Cua biển",
+    "calories": 103,
+    "protein": 17.5,
+    "carbs": 7.0,
+    "fat": 0.6,
+    "id": "db33183f-489a-4dac-9bda-f7a3bdf932dd"
+  },
+  {
+    "name": "Mực tươi",
+    "calories": 73,
+    "protein": 16.3,
+    "carbs": 0.0,
+    "fat": 0.9,
+    "id": "479dfa01-30b2-40c6-a731-c8d4e856287c"
+  },
+  {
+    "name": "Tôm biển",
+    "calories": 82,
+    "protein": 17.6,
+    "carbs": 0.9,
+    "fat": 0.9,
+    "id": "e5bbf39b-093d-4104-83c7-a7cfba44b69a"
+  },
+  {
+    "name": "Trứng gà",
+    "calories": 166,
+    "protein": 14.8,
+    "carbs": 0.5,
+    "fat": 11.6,
+    "id": "f88d107a-8b28-463e-9f0d-26cfc1373c1b"
+  },
+  {
+    "name": "Trứng vịt",
+    "calories": 184,
+    "protein": 13.0,
+    "carbs": 1.0,
+    "fat": 14.2,
+    "id": "aae538d0-24dd-4ddd-9d5b-4d3906682626"
+  },
+  {
+    "name": "Trứng cút",
+    "calories": 154,
+    "protein": 13.1,
+    "carbs": 0.4,
+    "fat": 11.1,
+    "id": "56e12dab-2c3a-4f54-964f-042fbdc5e85d"
+  },
+  {
+    "name": "Trứng vịt lộn",
+    "calories": 182,
+    "protein": 13.6,
+    "carbs": 4.0,
+    "fat": 12.4,
+    "id": "be145226-494d-4586-a5ab-03d278fb8169"
+  },
+  {
+    "name": "Sữa bò tươi",
+    "calories": 74,
+    "protein": 3.9,
+    "carbs": 4.8,
+    "fat": 4.4,
+    "id": "35ea19e3-8a1b-426b-aafa-77e6d47b0606"
+  },
+  {
+    "name": "Sữa chua (yogurt nguyên kem)",
+    "calories": 61,
+    "protein": 3.3,
+    "carbs": 3.6,
+    "fat": 3.7,
+    "id": "12ecdafa-12fb-4200-86fc-0051f016b56e"
+  },
+  {
+    "name": "Sữa bột toàn phần",
+    "calories": 494,
+    "protein": 27.0,
+    "carbs": 38.0,
+    "fat": 26.0,
+    "id": "7744ccf0-557e-4360-885f-b2be768d0db1"
+  },
+  {
+    "name": "Sữa đặc có đường",
+    "calories": 336,
+    "protein": 8.1,
+    "carbs": 56.0,
+    "fat": 8.8,
+    "id": "a4a94428-eac3-4290-afb4-dca5207a968a"
+  },
+  {
+    "name": "Nước dừa tươi",
+    "calories": 21,
+    "protein": 0.4,
+    "carbs": 4.8,
+    "fat": 0.0,
+    "id": "25dc51b0-84d9-420e-a8f7-072810022cce"
+  },
+  {
+    "name": "Nước cam tươi",
+    "calories": 23,
+    "protein": 0.7,
+    "carbs": 4.5,
+    "fat": 0.2,
+    "id": "41ede9bc-fa79-45ac-867a-ca2efaec563b"
+  }
 ]

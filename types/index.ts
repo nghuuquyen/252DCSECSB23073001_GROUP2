@@ -41,6 +41,10 @@ export interface UserProfile {
   goal: 'lose' | 'maintain' | 'gain'
   /** Mục tiêu dinh dưỡng hàng ngày (chứa MacroTarget) */
   macroTarget: MacroTarget
+  /** Chuỗi ngày hiện tại (số ngày liên tiếp đáp ứng mục tiêu) */
+  currentStreak: number
+  /** Chuỗi ngày tốt nhất ghi được */
+  bestStreak: number
 }
 
 /**
@@ -97,6 +101,6 @@ export interface DailyLog {
   meals: MealEntry[]
   /** Tổng calo tiêu thụ trong ngày (tính từ các bữa ăn) */
   totalCalories: number
-  /** Lượng nước uống trong ngày (đơn vị: ly) */
+  /** Lượng nước đã uống trong ngày (ml) */
   water: number
 }

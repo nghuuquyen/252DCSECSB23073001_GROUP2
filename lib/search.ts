@@ -1,4 +1,6 @@
-import ingredients from "@/lib/ingredients.json";
+'use server'; // Biến file này thành Server Action chạy ngầm
+
+import prisma from "@/lib/prisma"; // Ống nước Database
 import type { Ingredient } from "@/types";
 
 function normalize(str: string): string {
@@ -10,48 +12,49 @@ function normalize(str: string): string {
     .replace(/Đ/g, "d");
 }
 
-// Tính điểm khớp - điểm càng cao càng ưu tiên
+// Tính điểm khớp - điểm càng cao càng ưu tiên (Giữ nguyên của team ông)
 function getMatchScore(
   normalizedName: string,
   normalizedQuery: string,
 ): number {
-  if (normalizedName === normalizedQuery) return 4; // khớp chính xác
-  if (normalizedName.startsWith(normalizedQuery)) return 3; // bắt đầu bằng query
-  if (normalizedName.includes(` ${normalizedQuery}`)) return 2; // khớp đầu từ
-  if (normalizedName.includes(normalizedQuery)) return 1; // chứa query
+  if (normalizedName === normalizedQuery) return 4; 
+  if (normalizedName.startsWith(normalizedQuery)) return 3; 
+  if (normalizedName.includes(` ${normalizedQuery}`)) return 2; 
+  if (normalizedName.includes(normalizedQuery)) return 1; 
   return 0;
 }
 
-export function searchIngredient(
+// Thêm chữ 'async' vì giờ mình phải chờ lấy data từ mạng về
+export async function searchIngredient(
   query: string,
   limit: number = 10,
-): Ingredient[] {
+): Promise<Ingredient[]> {
   if (!query || query.trim() === "") return [];
 
   const normalizedQuery = normalize(query.trim());
-  // Map source JSON shape to `Ingredient` type to satisfy TypeScript
-  const normalizedIngredients: Ingredient[] = (ingredients as any[]).map(
-    (i) => ({
-      id: i.id ?? crypto.randomUUID(),
-      name: i.name,
-      // JSON uses `calPer100g`; Ingredient expects `calories` (use per-100g as default)
-      calories: i.calPer100g ?? i.calories ?? 0,
-      protein: i.protein ?? 0,
-      // JSON sometimes uses `carb` (singular) — normalize to `carbs`
-      carbs: i.carb ?? i.carbs ?? 0,
-      fat: i.fat ?? 0,
-      // `amount` not provided in JSON — default to 100 (grams)
-      amount: i.amount ?? 100,
-    }),
-  );
 
+  // 1. Móc toàn bộ data từ Supabase về thay vì đọc file JSON
+  const dbIngredients = await prisma.ingredient.findMany();
+
+  // 2. Chuyển đổi format cho khớp 100% với kiểu dữ liệu cũ của team ông
+  const normalizedIngredients: Ingredient[] = dbIngredients.map((i) => ({
+    id: i.id,
+    name: i.name,
+    calories: i.calories,
+    protein: i.protein,
+    carbs: i.carbs,
+    fat: i.fat,
+    amount: 100, // Mặc định 100g như code cũ của ông
+  }));
+
+  // 3. Logic chấm điểm và lọc kết quả (Giữ nguyên)
   return normalizedIngredients
     .map((item) => ({
       item,
       score: getMatchScore(normalize(item.name), normalizedQuery),
     }))
-    .filter(({ score }) => score > 0) // bỏ những cái không khớp
-    .sort((a, b) => b.score - a.score) // sort theo điểm cao nhất
-    .slice(0, limit) // giới hạn kết quả
-    .map(({ item }) => item); // trả về Ingredient[]
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map(({ item }) => item);
 }
