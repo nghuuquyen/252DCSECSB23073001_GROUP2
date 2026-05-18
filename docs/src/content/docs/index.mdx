@@ -227,6 +227,9 @@ Chào mừng đến với tài liệu dự án **Calorie Web**. Đây là ứng 
 ✅ **Lưu trữ tự động**: Dùng Zustand + localStorage, không mất dữ liệu khi reload
 ✅ **Responsive**: Mobile-first, tối ưu cho điện thoại
 ✅ **Sửa toàn bộ lỗi**: Đã fix lỗi typescript, props, import/export, duplicate export, v.v.
+✅ **Database Động**: Chuyển đổi từ hệ thống data tĩnh (JSON) sang database động, hỗ trợ CRUD operations thời gian thực
+✅ **Responsive Layout**: Tối ưu hóa giao diện để hiển thị tốt trên mọi thiết bị (mobile, tablet, desktop)
+✅ **PR #2 - Fix Timezone Bug**: Sửa lỗi timezone trong streak calculation, đảm bảo tính toán chuỗi ngày chính xác trên các múi giờ khác nhau
 ✅ **Dashboard**: Hiển thị thông tin dinh dưỡng hôm nay
 ✅ **Components**: Hoàn tất UI component library (Button, Card, Input, Modal, Badge, ProgressBar)
 ✅ **Task 22**: Fix lỗi searchIngredient
@@ -826,4 +829,17 @@ Xem [Hướng Dẫn Đóng Góp](../README.md#git-workflow) trong README chính.
 ---
 
 **Documentation Version:** 0.1.0  
-**Last Updated:** 08/05/2026
+**Last Updated:** 19/05/2026
+
+---
+
+## 📋 Changelog
+
+### v0.1.0 (19/05/2026)
+
+**Enhancements:**
+- ✨ **Database Động**: Thay thế hệ thống data tĩnh bằng database động, hỗ trợ thêm/xóa/cập nhật nguyên liệu và món ăn thời gian thực
+- ✨ **Responsive Layout**: Tối ưu hóa layout với Tailwind CSS breakpoints, Đảm bảo giao diện đẹp trên mọi thiết bị
+
+**Bug Fixes:**
+- 🐛 [PR #2] **Fix Timezone Bug in Streak Calculation** - Sửa lỗi tính toán chuỗi ngày khi người dùng ở các múi giờ khác nhau
