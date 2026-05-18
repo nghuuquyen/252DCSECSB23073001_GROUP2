@@ -7,7 +7,7 @@ import { Card, CardGrid } from "@astrojs/starlight/components";
 
 # 🍽️ Calorie Web - Tài Liệu Hoàn Chỉnh
 
-**Cập nhật lần cuối:** 11/05/2026 
+**Cập nhật lần cuối:** 16/05/2026  
 **Version:** 0.1.0
 
 Chào mừng đến với tài liệu dự án **Calorie Web**. Đây là ứng dụng web hiện đại được xây dựng bằng **Next.js 16** và **React 19**, được thiết kế để giúp người dùng theo dõi và quản lý lượng calo tiêu thụ hàng ngày.
@@ -55,6 +55,7 @@ Chào mừng đến với tài liệu dự án **Calorie Web**. Đây là ứng 
 | **TypeScript**       | Version 5 (strict mode) |
 | **State Management** | Zustand 5.0.13          |
 | **Styling**          | Tailwind CSS v4         |
+| **Animations**       | Framer Motion 12.38.0 (NEW!) |
 | **Charts**           | Recharts 3.8.1          |
 | **Icons**            | Lucide React 1.14.0     |
 
@@ -66,8 +67,8 @@ Chào mừng đến với tài liệu dự án **Calorie Web**. Đây là ứng 
 |-----|-----------|-------|--------|
 | `/` | `app/page.tsx` + `DashboardPage.tsx` | Home page - hiển thị ProfileForm nếu chưa setup, hoặc Dashboard | ✅ Active |
 | `/diary` | `app/diary/page.tsx` | Giao diện nhập nhật ký calo hàng ngày, 4 bữa ăn | ✅ Active |
-| `/settings` | `app/settings/page.tsx` | Cài đặt ứng dụng | 📋 Planned |
-| `/stats` | `app/stats/page.tsx` | Thống kê, biểu đồ, analytics | 🔄 In Progress |
+| `/settings` | `app/settings/page.tsx` | Cài đặt & chỉnh sửa hồ sơ, tính TDEE & macros | ✅ Active |
+| `/stats` | `app/stats/page.tsx` | Thống kê tuần: streak, calories, macros, weekly chart | ✅ Active |
 
 ### Chi Tiết từng Page
 
@@ -90,20 +91,27 @@ Chào mừng đến với tài liệu dự án **Calorie Web**. Đây là ứng 
   - Hiển thị tổng calories từng bữa và cả ngày
 - **Dependencies:** `useDiaryStore`
 
-#### **Settings Page** (`/settings`) [Planning]
-- **Dự kiến chức năng:**
-  - Chỉnh sửa hồ sơ người dùng
-  - Thay đổi mục tiêu calo
-  - Cài đặt thông báo
-  - Quản lý dữ liệu
+#### **Settings Page** (`/settings`) [✅ Active]
+- **Component chính:** `ProfileForm.tsx` (initial) + `app/settings/page.tsx` (edit)
+- **Chức năng:**
+  - Chỉnh sửa hồ sơ người dùng (giới tính, tuổi, chiều cao, cân nặng)
+  - Chọn mức độ hoạt động (activity level: sedentary → very active)
+  - Chọn mục tiêu (giảm cân, duy trì, tăng cân)
+  - Hiển thị tính toán TDEE & macro target dự tính thời gian thực
+  - Form validation & error handling
+- **Dependencies:** `useProfileStore`, Lucide React icons
 
-#### **Stats Page** (`/stats`) [In Progress]
-- **Dự kiến chức năng:**
-  - Biểu đồ calories theo ngày/tuần/tháng
-  - Macro distribution charts
-  - Progress towards goals
-  - Streak tracking
-- **Dependencies:** `Recharts`, `useDiaryStore`, `useProfileStore`
+#### **Stats Page** (`/stats`) [✅ Active]
+- **Component chính:** `app/stats/page.tsx` với dynamic imports
+- **Chức năng:**
+  - Phân tích 7 ngày gần nhất
+  - Streak tracking: current streak, best streak
+  - Thống kê: days logged, avg calories, days met target, total deficit
+  - Macro analysis: average protein/carbs/fat, kcal distribution
+  - Weekly chart hiển thị calorie vs target
+  - Motion animations cho cards
+  - Header với streak display
+- **Dependencies:** `Recharts`, `useDiaryStore`, `useProfileStore`, `framer-motion`
 
 ---
 
@@ -223,8 +231,13 @@ Chào mừng đến với tài liệu dự án **Calorie Web**. Đây là ứng 
 ✅ **Lưu trữ tự động**: Dùng Zustand + localStorage, không mất dữ liệu khi reload
 ✅ **Responsive**: Mobile-first, tối ưu cho điện thoại
 ✅ **Sửa toàn bộ lỗi**: Đã fix lỗi typescript, props, import/export, duplicate export, v.v.
-✅ **Dashboard**: Hiển thị thông tin dinh dưỡng hôm nay
+✅ **Dashboard**: Hiển thị thông tin dinh dưỡng hôm nay, calorie tracker, macro display
 ✅ **Components**: Hoàn tất UI component library (Button, Card, Input, Modal, Badge, ProgressBar)
+✅ **Settings Page**: Setup & chỉnh sửa hồ sơ, tính TDEE & macros thời gian thực
+✅ **Stats Page**: Phân tích tuần, streak tracking, macro distribution, weekly chart
+✅ **Streak System**: Theo dõi chuỗi ngày liên tục, current streak & best streak, auto-update
+✅ **Framer Motion**: Smooth animations trên tất cả pages & components
+✅ **Dynamic Imports**: Optimize performance với lazy loading components
 ✅ **Task 22**: Fix lỗi searchIngredient
 ✅ **Task 23**: Tối ưu Responsive cho Dashboard và làm lại UI ProfileForm sang trọng hơn
 
@@ -233,26 +246,32 @@ Chào mừng đến với tài liệu dự án **Calorie Web**. Đây là ứng 
 ## 📈 Tiến Độ & Kế Hoạch
 
 ### ✅ Hoàn Thành
-- Diary UI (4 bữa, modal thêm/xóa món, tổng calo)
+- Diary UI (4 bữa, modal thêm/xóa món, tổng calo, motion animations)
 - Giao diện thiết lập hồ sơ người dùng (ProfileForm)
-- Core tính toán dinh dưỡng (calc.ts)
+- Settings page cho chỉnh sửa hồ sơ
+- Core tính toán dinh dưỡng (calc.ts) với streak calculation
 - State management với Zustand, auto-persist
-- Dashboard layout + calorie tracker
-- Base UI components library
+- Dashboard layout + calorie tracker + macro display
+- Stats page + weekly analysis + streak tracking
+- Base UI components library (Button, Card, Input, Modal, Badge, ProgressBar)
+- Framer Motion animations
+- Dynamic imports & lazy loading
 - Sửa toàn bộ lỗi typescript, props, import/export
 
-### 🔄 Đang phát triển
-- Stats page với biểu đồ
-- Advanced analytics
+### 🔄 Đang Tối Ưu
+- Advanced analytics (monthly trends, comparisons)
+- Performance optimization
+- Mobile gesture support
 
-### 📋 Sắp làm
-- Settings page
-- Biểu đồ calories, protein, carbs, fat theo ngày/tuần
-- Tối ưu UX cho mobile/tablet
-- Thêm hướng dẫn sử dụng chi tiết
+### 📋 Sắp Làm
+- Export data features
+- Weight trend graph (requires backend)
+- Offline support (PWA)
+- Custom date range reports
+- Gesture support (swipe for date navigation)
 - Backend API integration
 - User authentication
-- PWA support
+- Cloud deployment
 
 ---
 
@@ -702,25 +721,34 @@ type AppState = {
 ### Phase 2: Core UI ✅ (Hoàn thành)
 - Home/Dashboard page
 - Diary page
-- ProfileForm
+- ProfileForm & Settings page
 - All base components
+- Framer Motion setup
 
-### Phase 3: Features 🔄 (Đang làm)
-- Stats page + charts
+### Phase 3: Features ✅ (Hoàn thành)
+- Stats page + weekly charts
 - Advanced data visualization
-- Analytics
+- Analytics & streak tracking
+- Dynamic imports & lazy loading
+- Motion animations
 
-### Phase 4: Polish 📋 (Sắp làm)
-- Settings page
-- Notifications
-- Testing
-- Optimization
-- Documentation refinement
+### Phase 4: Polish 🔄 (Đang làm)
+- Performance optimization
+- Mobile gesture support
+- Advanced analytics (monthly trends)
+- Data export features
+- Testing & refinement
 
 ### Phase 5: Backend 📋 (Sắp làm)
 - API endpoints
 - Database integration
 - User authentication
+- Cloud sync
+
+### Phase 6: Deployment 📋 (Sắp làm)
+- Cloud deployment (Vercel/Netlify)
+- PWA features
+- Performance monitoring
 
 ---
 
@@ -814,4 +842,4 @@ Xem [Hướng Dẫn Đóng Góp](../README.md#git-workflow) trong README chính.
 ---
 
 **Documentation Version:** 0.1.0  
-**Last Updated:** 08/05/2026
+**Last Updated:** 16/05/2026
