@@ -257,6 +257,10 @@ npm run docs      # Generate documentation
 | **Stats Page** | Phân tích tuần: streak tracking, average calories, macro distribution, weekly chart |
 | **Sửa toàn bộ lỗi** | Đã fix lỗi typescript, props, import/export, duplicate export, v.v. |
 | **Tối ưu hiệu năng (Task 25)** | Đạt điểm Lighthouse > 75. Áp dụng Lazy loading (next/dynamic) cho Modal và Biểu đồ. Cải thiện Accessibility (thêm aria-label). Tối ưu re-render (useMemo, useCallback) và cấu hình Cache Headers. |
+| **Database Động** | Chuyển đổi từ Database tĩnh (JSON) sang Database động, hỗ trợ thêm/xóa/cập nhật nguyên liệu thời gian thực |
+| **Responsive Layout** | Tối ưu hóa layout để hiển thị tốt trên mọi thiết bị (mobile, tablet, desktop) với các breakpoint tailwind |
+| **PR #2 - Fix Timezone Bug** | Sửa lỗi timezone trong streak calculation, đảm bảo tính toán chuỗi ngày chính xác trên các múi giờ khác nhau |
+
 ### 🔄 Đang Phát Triển
 
 - Dashboard tổng hợp, biểu đồ thống kê
@@ -400,5 +404,20 @@ git push origin feature/feature-name
 
 ---
 
-**Cập nhật lần cuối:** 
-**Version:** 
+
+**Cập nhật lần cuối:** 19/05/2026  
+**Version:** 0.1.0
+
+---
+
+## 📋 Changelog
+
+### v0.1.0 (19/05/2026)
+
+**Features:**
+- ✨ Database động: Thay thế hệ thống data tĩnh bằng database động
+- ✨ Responsive layout: Tối ưu hóa giao diện cho tất cả thiết bị
+
+**Bug Fixes:**
+- 🐛 [PR #2] Fix timezone bug trong streak calculation - đảm bảo tính toán chính xác trên các múi giờ
+
