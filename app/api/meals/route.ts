@@ -1,45 +1,99 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-// GET /api/users?email=xxx
-// Tìm user theo email
+// GET /api/meals?userId=xxx&date=2024-05-18
+// Lấy tất cả bữa ăn của 1 user trong 1 ngày, kèm ingredients
 export async function GET(request: NextRequest) {
-  const email = request.nextUrl.searchParams.get("email");
+  const userId = request.nextUrl.searchParams.get("userId");
+  const date = request.nextUrl.searchParams.get("date");
 
-  if (!email) {
-    return NextResponse.json({ error: "Thiếu email" }, { status: 400 });
+  if (!userId) {
+    return NextResponse.json({ error: "Thiếu userId" }, { status: 400 });
   }
 
   try {
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) {
-      return NextResponse.json({ error: "Không tìm thấy user" }, { status: 404 });
+    const where: { userId: string; date?: { gte: Date; lt: Date } } = { userId };
+
+    if (date) {
+      const start = new Date(date);
+      const end = new Date(date);
+      end.setDate(end.getDate() + 1);
+      where.date = { gte: start, lt: end };
     }
-    return NextResponse.json(user);
+
+    const meals = await prisma.meal.findMany({
+      where,
+      include: {
+        ingredients: {
+          include: { ingredient: true },
+        },
+      },
+      orderBy: { createdAt: "asc" },
+    });
+
+    return NextResponse.json(meals);
   } catch {
     return NextResponse.json({ error: "Lỗi server" }, { status: 500 });
   }
 }
 
-// POST /api/users
-// Body: { email: string, name?: string }
-// Tạo mới hoặc trả về user đã tồn tại (upsert)
+// POST /api/meals
+// Body: { userId, mealType, date, ingredients: [{ ingredientId, amountInGram }] }
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { email, name } = body as { email: string; name?: string };
+    const {
+      userId,
+      mealType,
+      date,
+      ingredients,
+    } = body as {
+      userId: string;
+      mealType: string;
+      date: string;
+      ingredients: { ingredientId: string; amountInGram: number }[];
+    };
 
-    if (!email) {
-      return NextResponse.json({ error: "Thiếu email" }, { status: 400 });
+    if (!userId || !mealType || !date) {
+      return NextResponse.json({ error: "Thiếu thông tin bắt buộc" }, { status: 400 });
     }
 
-    const user = await prisma.user.upsert({
-      where: { email },
-      update: { name: name ?? undefined },
-      create: { email, name },
+    // Tính totalKcal từ từng ingredient
+    let totalKcal = 0;
+    if (ingredients?.length) {
+      const ingredientIds = ingredients.map((i) => i.ingredientId);
+      const dbIngredients = await prisma.ingredient.findMany({
+        where: { id: { in: ingredientIds } },
+      });
+
+      totalKcal = ingredients.reduce((sum, item) => {
+        const found = dbIngredients.find((d) => d.id === item.ingredientId);
+        if (!found) return sum;
+        return sum + Math.round((found.calories * item.amountInGram) / 100);
+      }, 0);
+    }
+
+    const meal = await prisma.meal.create({
+      data: {
+        userId,
+        mealType,
+        date: new Date(date),
+        totalKcal,
+        ingredients: {
+          create: ingredients?.map((i) => ({
+            ingredientId: i.ingredientId,
+            amountInGram: i.amountInGram,
+          })) ?? [],
+        },
+      },
+      include: {
+        ingredients: {
+          include: { ingredient: true },
+        },
+      },
     });
 
-    return NextResponse.json(user, { status: 201 });
+    return NextResponse.json(meal, { status: 201 });
   } catch {
     return NextResponse.json({ error: "Lỗi server" }, { status: 500 });
   }
