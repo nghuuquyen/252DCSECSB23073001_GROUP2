@@ -21,9 +21,10 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const timer = setTimeout(() => setBarsLoaded(true), 600);
-    return () => clearTimeout(timer);
-  }, []);
+useEffect(() => {
+  const timer = setTimeout(() => setBarsLoaded(true), 600);
+  return () => clearTimeout(timer);
+}, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
