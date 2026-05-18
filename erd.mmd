@@ -1,0 +1,36 @@
+erDiagram
+  User {
+    String id PK
+    String email
+    String name
+    DateTime createdAt
+  }
+
+  Meal {
+    String id PK
+    String userId FK
+    String mealType
+    DateTime date
+    Int totalKcal
+    DateTime createdAt
+  }
+
+  Ingredient {
+    String id PK
+    String name
+    Int calories
+    Float protein
+    Float carbs
+    Float fat
+  }
+
+  MealIngredient {
+    String id PK
+    String mealId FK
+    String ingredientId FK
+    Int amountInGram
+  }
+
+  User ||--o{ Meal : has
+  Meal ||--o{ MealIngredient : contains
+  Ingredient ||--o{ MealIngredient : "used in"
