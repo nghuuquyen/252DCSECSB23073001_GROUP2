@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
 // DELETE /api/meals/[id]
 // Xóa bữa ăn (MealIngredient sẽ bị xóa theo do onDelete: Cascade)
 export async function DELETE(
