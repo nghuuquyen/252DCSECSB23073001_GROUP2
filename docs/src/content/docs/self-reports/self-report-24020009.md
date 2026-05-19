@@ -120,10 +120,34 @@
 
 ---
 
+## Task 6 — UI Refinement & Bug Fixing
+
+**Tuần:** Tuần 4 (18/05/2026 – 20/05/2026)
+
+**Công việc đã làm:**
+- **Tinh chỉnh giao diện Homepage & Dashboard:** Tổ chức lại bố cục trang chủ (Homepage), dọn dẹp các thành phần UI thừa trên Dashboard, đồng thời tối ưu tỷ lệ hiển thị nhằm nâng cao trải nghiệm người dùng.
+- **Cập nhật Web Tab Icon (Logo):** Thay đổi biểu tượng favicon của trang web thành icon `local_fire_department` để đồng bộ với nhận diện chuỗi ngày (streak) của ứng dụng.
+- **Giải quyết xung đột mã nguồn (Merge Conflict):** Xử lý xung đột cấu hình phức tạp trong tệp `app/layout.tsx` (giữ lại liên kết icon và cấu hình font Material Symbols) đảm bảo quá trình build và gộp code diễn ra an toàn.
+
+**Bằng chứng đóng góp:**
+- Commits:
+  - [4387530](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/438753004c3b642c51dd56d77451038d107f2516) - `resolve: merge conflict in layout.tsx - keep icon link + Material Symbols`
+  - [4ed70b4](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/4ed70b4148efdd98ad30e72688e5623f84d1504a) - `fix logo lan 1`
+  - [7ddef05](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/7ddef058b1202bba2ab69e84826927514ffba421) - `zoom homepage`
+  - [b7b5ea5](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/b7b5ea58f15c67d3e397ce70a4a46c3edaad8bf4) - `fix homepage lan 2`
+  - [69cec29](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/69cec290f75514f07bcd9a1f4ce3e44307034c39) - `sua lai hompage`
+
+**Khó khăn gặp phải:**
+- Quá trình giải quyết merge conflict ở file layout gốc yêu cầu sự tỉ mỉ để không làm đứt gãy các liên kết thư viện font chữ và UI components của toàn dự án.
+
+**Đánh giá bản thân:** 8/10
+
+---
+
 ## Tổng Kết Đóng Góp Cá Nhân
 
 **Tóm tắt những gì bạn đã đóng góp cho dự án:**
-Trong dự án CaloMate, tôi tự hào khi đảm nhận vai trò Lập trình viên Full-stack & Phụ trách kỹ thuật cốt lõi của nhóm. Tôi đã thiết kế và xây dựng thành công công cụ tính toán dinh dưỡng Mifflin-St Jeor tự động, xây dựng hệ thống UI Components dùng chung cốt lõi, phát triển thuật toán tìm kiếm món ăn Việt thông minh (chuẩn hóa tiếng Việt, xếp hạng kết quả) và triển khai hệ thống đồng bộ hóa chuỗi ngày đạt mục tiêu (Streak Sync) trên toàn ứng dụng. Đồng thời, tôi luôn tích cực hỗ trợ giải quyết các xung đột merge conflict lớn, tối ưu hóa Git workflow của cả nhóm và viết tài liệu kỹ thuật hoàn chỉnh. Qua dự án này, tôi đã cải thiện đáng kể kỹ năng lập trình Next.js/React 19, quản lý state nâng cao với Zustand, và tích lũy được nhiều kinh nghiệm thực chiến quý báu khi giải quyết các bài toán logic phức tạp trong làm việc nhóm.
+Trong dự án CaloMate, tôi đã thiết kế và xây dựng thành công công cụ tính toán dinh dưỡng Mifflin-St Jeor tự động, xây dựng hệ thống UI Components dùng chung cốt lõi, phát triển thuật toán tìm kiếm món ăn Việt thông minh (chuẩn hóa tiếng Việt, xếp hạng kết quả) và triển khai hệ thống đồng bộ hóa chuỗi ngày đạt mục tiêu (Streak Sync) trên toàn ứng dụng. Gần đây, tôi cũng đã thực hiện tinh chỉnh tối ưu hóa giao diện trang chủ, cập nhật bộ nhận diện logo ứng dụng và trực tiếp giải quyết các xung đột merge conflict phức tạp ở tầng layout tổng. Đồng thời, tôi luôn tích cực hỗ trợ giải quyết các xung đột merge conflict lớn, tối ưu hóa Git workflow của cả nhóm và viết tài liệu kỹ thuật hoàn chỉnh. Qua dự án này, tôi đã cải thiện đáng kể kỹ năng lập trình Next.js/React 19, quản lý state nâng cao với Zustand, và tích lũy được nhiều kinh nghiệm thực chiến quý báu khi giải quyết các bài toán logic phức tạp trong làm việc nhóm.
 
 **Ước tính % đóng góp so với cả nhóm:** ~25%
 
