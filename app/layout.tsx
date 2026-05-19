@@ -23,6 +23,11 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   title: "CaloMate",
   description: "Theo dõi calo và dinh dưỡng hàng ngày",
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({
@@ -36,6 +41,8 @@ export default function RootLayout({
       className={`${beVietnamPro.variable} ${spaceGrotesk.variable} h-full antialiased`}
     >
       <head>
+        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+
         {/* Material Symbols */}
         <link
           rel="stylesheet"
