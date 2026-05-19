@@ -11,7 +11,8 @@
 | **Team name** | CaloMate |
 | **Project name** | Calorie Web — Daily Calorie Management App |
 | **GitHub Repository** | https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io |
-| **Live Demo (Vercel)** | https://vercel.com/nguyenduythaibao1611-engs-projects/calorie-web-github-io |
+| **Vercel link** | https://vercel.com/nguyenduythaibao1611-engs-projects/calorie-web-github-io |
+| **Live Demo** | https://www.youtube.com/watch?v=Fd_FY82gkHs |
 | **Design (Stitch)** | https://stitch.withgoogle.com/projects/9056904569092767828 |
 | **Submission date** | 19/05/2026 |
 
@@ -68,11 +69,9 @@
 | 📱 Responsive UI | Mobile-first, Bottom Navigation | ✅ Completed |
 | 🎞️ Animations | Framer Motion UI effects | ✅ Completed |
 
-![alt text](docs/image.png)
-![alt text](docs/image-1.png)
-![alt text](docs/image-2.png)
-![alt text](docs/image-3.png)
-![alt text](docs/image-4.png)
+![alt text](public/image-1.1.png)
+![alt text](public/image-2.2.png)
+![alt text](public/image-3.png)
 
 ---
 
@@ -95,7 +94,7 @@ cd calorie-web.github.io
 # 2. Install dependencies
 npm install
 
-# 3. Configure environment
+# 3. Configure environment variables
 cp .env.example .env
 # Fill in DATABASE_URL (Supabase connection string) in .env
 
@@ -121,12 +120,12 @@ npm run build && npm run start
 | **Nguyễn Duy Thái Bảo** (24020015) | Leader / Frontend Developer | System architecture, project setup, TypeScript types, localStorage layer, Git workflow, Root Page routing, Diary sync, Dashboard, Stats, Homepage, build optimization |
 | **Đặng Đức Minh** (24020001) | Backend Developer | Dashboard real data (Task 20), TDEE store connection (Task 18), Profile UI (Task 14), Prisma schema, Supabase setup, API routes (meals/users/ingredients), Responsive UI (Task 23), Lighthouse optimization (Task 25) |
 | **Từ Văn Huy Hoàng** (24020009) | Full-stack Developer / Tech Lead | Calorie & macro calculation (`lib/calc.ts`), UI Components library, Bottom Navigation, Search algorithm (`lib/search.ts`), Diary page (merge items, delete items), Streak sync (`syncStreak`), Git conflict resolution |
-| **Trần Tiến Đạt** | Frontend Developer / UI | Dashboard UI, Stats page UI, Homepage, edge case handling (0g, empty, large values) |
-| **Lê Hoàng Triều** | Frontend Developer / Animations & Stats | Stats real data integration, Animations (Framer Motion), Ingredients database, Search system, Header & Bottom nav optimization |
+| **Trần Tiến Đạt** (24020013) | Frontend Developer / UI | Dashboard UI, Stats page UI, Homepage, edge case handling (0g, empty, large values) |
+| **Lê Hoàng Triều** (24020012) | Frontend Developer / Animations & Stats | Stats real data integration, Animations (Framer Motion), Ingredients database, Search system, Header & Bottom nav optimization |
 
 ### (b) Wireframe
 
-- **Tool used:** Google Stitch
+- **Design tool:** Google Stitch
 - **Design link:** https://stitch.withgoogle.com/projects/9056904569092767828
 - **Pages designed:**
   - [x] `/setup` — Profile setup (onboarding)
@@ -134,11 +133,6 @@ npm run build && npm run start
   - [x] `/diary` — Food diary
   - [x] `/stats` — Statistics & charts
   - [x] `/settings` — Account settings
-
-web application/stitch/projects/9056904569092767828/screens/8d79e27b4c924e97ba6ccf9b2da59d0d
-web application/stitch/projects/9056904569092767828/screens/fb6bcd8364d84b0b855383e7572b3139
-web application/stitch/projects/9056904569092767828/screens/b6ce5ae2e2544608b507da2d6eb39b45
-web application/stitch/projects/9056904569092767828/screens/926730ed532944ee9567731f99e94485
 
 ### (c) Milestones
 
@@ -192,7 +186,7 @@ chore: update dependencies
 |---|---|---|---|
 | [`9e8fd83`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/9e8fd83) | Nguyễn Duy Thái Bảo | 06/05 | `initial commit` |
 | [`be61f61`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/be61f61) | Nguyễn Duy Thái Bảo | 06/05 | `setup: initialize Next.js project with Tailwind, TypeScript and setup project structure` |
-| [`8a7bb38`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/8a7bb38) | Nguyễn Duy Thái Bảo | 08/05 | `add UserProfile, MacroTarget, Ingredient, MealEntry, DailyLog + add localStorage layer` |
+| [`8a7bb38`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/8a7bb38) | Nguyễn Duy Thái Bảo | 08/05 | `add UserProfile, MacroTarget, Ingredient, MealEntry, DailyLog + localStorage layer` |
 | [`24cac34`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/24cac34) | Lê Hoàng Triều | 08/05 | `add ingredient search system (#8)` |
 | [`ce56975`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/ce56975) | Lê Hoàng Triều | 08/05 | `[TV1] feat: add ingredients database` |
 | [`49d0b16`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/49d0b16) | Lê Hoàng Triều | 08/05 | `add profile store (#12)` |
@@ -207,7 +201,6 @@ chore: update dependencies
 | [`4349cdb`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/4349cdb) | Lê Hoàng Triều | 10/05 | `feat: stats real data integration (#21)` |
 | [`4d18754`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/4d18754) | Từ Văn Huy Hoàng | 10/05 | `feat: improve search with scoring and ranking (#22)` |
 | [`8ef7d6d`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/8ef7d6d) | Đặng Đức Minh | 10/05 | `feat: complete Task 23 - optimize Responsive UI for Dashboard on Mobile and Tablet` |
-| [`dbbe44d`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/dbbe44d) | Nguyễn Duy Thái Bảo | 10/05 | `Sync overview page and diary page. Create settings button` |
 | [`00b0a44`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/00b0a44) | Trần Tiến Đạt | 11/05 | `feat: handle edge cases (0g, empty, large values) for Task 24 #25` |
 | [`78bb0e2`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/78bb0e2) | Đặng Đức Minh | 11/05 | `perf: complete Task 25 - Lighthouse optimization, lazy load and accessibility` |
 | [`8cf3790`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/8cf3790) | Từ Văn Huy Hoàng | 15/05 | `fix: allow merging multiple food items together` |
@@ -215,14 +208,14 @@ chore: update dependencies
 | [`9f7ec73`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/9f7ec73) | Lê Hoàng Triều | 16/05 | `add animation for stats page` |
 | [`6a0bdb1`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/6a0bdb1) | Từ Văn Huy Hoàng | 16/05 | `fix food item selection method, and add food item deletion feature` |
 | [`1cb3596`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/1cb3596) | Lê Hoàng Triều | 17/05 | `optimize header and bottom nav` |
-| [`c8a525f`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/c8a525f) | Đặng Đức Minh | 17/05 | `Install Prisma, connect Supabase and setup Database Search feature` |
+| [`c8a525f`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/c8a525f) | Đặng Đức Minh | 17/05 | `install Prisma, connect Supabase and setup Database Search feature` |
 | [`7e4aa99`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/7e4aa99) | Từ Văn Huy Hoàng | 17/05 | `PR #1: done (also added syncStreak feature)` |
 | [`ea2063c`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/ea2063c) | Trần Tiến Đạt | 17/05 | `homepage` |
-| [`4236e93`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/4236e93) | Đặng Đức Minh | 18/05 | `feat: Integrate Prisma + API routes for meals, users, ingredients` |
+| [`4236e93`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/4236e93) | Đặng Đức Minh | 18/05 | `feat: integrate Prisma + API routes for meals, users, ingredients` |
 | [`60e85ce`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/60e85ce) | Trần Tiến Đạt | 18/05 | `homepage` |
-| [`beb4f22`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/beb4f22) | Nguyễn Duy Thái Bảo | 19/05 | `Fix web workflow - sync add meal data` |
+| [`beb4f22`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/beb4f22) | Nguyễn Duy Thái Bảo | 19/05 | `fix web workflow - sync add meal data` |
 | [`80a9f37`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/80a9f37) | Nguyễn Duy Thái Bảo | 19/05 | `fix: resolve merge conflict` |
-| [`6bfeabd`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/6bfeabd) | Đặng Đức Minh | 19/05 | `fix: Add postinstall prisma generate to fix Vercel cache` |
+| [`6bfeabd`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/6bfeabd) | Đặng Đức Minh | 19/05 | `fix: add postinstall prisma generate to fix Vercel cache` |
 
 ![alt text](docs/image-5.png)
 ![alt text](docs/image-6.png)
@@ -239,17 +232,16 @@ chore: update dependencies
 | Root Redirect | `/` | Auto-routing: has profile → `/dashboard`, none → `/homepage` | Nguyễn Duy Thái Bảo |
 | Landing Page | `/homepage` | Hero section, features, stats, CTA, footer | Trần Tiến Đạt |
 | Profile Setup | `/setup` | Onboarding form for entering personal information the first time | Đặng Đức Minh |
-| Dashboard | `/dashboard` | Today's calorie overview, macro bars, water tracker, streak | Trần Tiến Đạt + Đặng Đức Minh |
-| Food Diary | `/diary` | 4 meals, search modal, merge items, delete items, animations | Từ Văn Huy Hoàng + Nguyễn Duy Thái Bảo |
-| Statistics | `/stats` | Weekly/monthly calorie & macro charts (Recharts) | Trần Tiến Đạt + Lê Hoàng Triều |
+| Dashboard | `/dashboard` | Today's calorie overview, macro bars, water tracker, streak, 4 meals, search modal, merge items, delete items, animations | Trần Tiến Đạt + Đặng Đức Minh + Từ Văn Huy Hoàng + Nguyễn Duy Thái Bảo |
+| Statistics | `/stats` | Weekly/monthly calorie & macro charts (Recharts) | Trần Tiến Đạt + Lê Hoàng Triều + Nguyễn Duy Thái Bảo |
 | Settings | `/settings` | Edit personal information and nutrition goals | Đặng Đức Minh |
 
-![alt text](docs/image-8.png)
-![alt text](docs/image-9.png)
-![alt text](docs/image-10.png)
-![alt text](docs/image-11.png)
-![alt text](docs/image-12.png)
-![alt text](docs/image-13.png)
+![alt text](public/image-4.png)
+![alt text](public/image-5.png)
+![alt text](public/image-6.png)
+![alt text](public/image-7.png)
+![alt text](public/image-8.png)
+![alt text](public/image-9.png)
 
 ### (b) Tailwind CSS
 
@@ -284,8 +276,6 @@ The project uses **Tailwind CSS v4** integrated via PostCSS. Key utility classes
 - [x] **Desktop (> 1024px):** Full layout, sidebar navigation
 
 > Evidence commit: [`8ef7d6d`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/8ef7d6d) — `feat: complete Task 23 - optimize Responsive UI for Dashboard on Mobile and Tablet`
-
-
 
 ---
 
@@ -337,7 +327,7 @@ The project uses **Tailwind CSS v4** integrated via PostCSS. Key utility classes
 | Page | Data Displayed | Data Source | Implemented by |
 |---|---|---|---|
 | `/dashboard` | Total daily calories, macro progress bars, water, streak | `diaryStore` + `profileStore` (Zustand + API) | Đặng Đức Minh |
-| `/diary` | Meal lists, total calories/macros per meal | `diaryStore` → localStorage + Prisma API | Nguyễn Duy Thái Bảo + Từ Văn Huy Hoàng |
+| `/dashboard` *(diary)* | Meal lists, total calories/macros per meal *(merged into Dashboard)* | `diaryStore` → localStorage + Prisma API | Nguyễn Duy Thái Bảo + Từ Văn Huy Hoàng + Đặng Đức Minh |
 | `/stats` | Weekly chart, macro distribution | `getLogs()` from localStorage + API | Lê Hoàng Triều |
 | `/settings` | Current profile info, goals | `profileStore` → Prisma API | Đặng Đức Minh |
 
@@ -345,18 +335,17 @@ The project uses **Tailwind CSS v4** integrated via PostCSS. Key utility classes
 
 | Operation | Function | File |
 |---|---|---|
-| Read profile | `getProfile()` | `lib/storage.ts` |
-| Save profile | `saveProfile(profile)` | `lib/storage.ts` |
-| Read diary | `getLog(date)` | `lib/storage.ts` |
-| Save diary | `saveLog(date, log)` | `lib/storage.ts` |
+| Read profile | `getProfile()` | `lib/storage.ts` → `store/profileStore.ts` |
+| Save profile | `saveProfile(profile)` | `lib/storage.ts` → `store/profileStore.ts` |
+| Read diary | `getLog(date)` | `lib/storage.ts` → `store/diaryStore.ts` |
+| Save diary | `saveLog(date, log)` | `lib/storage.ts` → `store/diaryStore.ts` |
 | Read all logs | `getLogs()` | `lib/storage.ts` |
 
 > Evidence commit: [`8a7bb38`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/8a7bb38) — `add UserProfile, MacroTarget, Ingredient, MealEntry, DailyLog + add localStorage layer`
 
-![alt text](docs/image-14.png)
-![alt text](docs/image-15.png)
-![alt text](docs/image-16.png)
-![alt text](docs/image-17.png)
+![alt text](public/image-10.png)
+![alt text](public/image-11.png)
+![alt text](public/image-12.png)
 
 ---
 
@@ -416,10 +405,8 @@ The project uses **Tailwind CSS v4** integrated via PostCSS. Key utility classes
 
 | Tool | Status | Notes |
 |---|---|---|
-| Google Analytics |G-YW2B5LPCB2 | ![alt text](public/image-2.png)|
-| Sentry / Error monitoring | https://b9b2cecf50aa40e27ea148a948d4f8a4@o4511417423364096.ingest.us.sentry.io/4511417443745792 | ![alt text](public/image.png)|
-
-
+| Google Analytics | G-YW2B5LPCB2 | ![alt text](public/image-2.png) |
+| Sentry / Error monitoring | https://b9b2cecf50aa40e27ea148a948d4f8a4@o4511417423364096.ingest.us.sentry.io/4511417443745792 | ![alt text](public/image.png) |
 
 ---
 
@@ -463,6 +450,18 @@ The project uses **Tailwind CSS v4** integrated via PostCSS. Key utility classes
 
 ---
 
+## 08 · 📝 Instructor Feedback & Resolutions
+
+| Requirement | Implemented by | Details |
+|---|---|---|
+| Create Homepage | Trần Tiến Đạt *(primary)* | Built Homepage with hero section, features, stats, CTA, footer |
+| Fix Homepage navigation | Nguyễn Duy Thái Bảo *(primary)* | Added routing logic: first-time users → `/setup`, returning users → `/dashboard` |
+| Update Dashboard | Đặng Đức Minh *(primary)* + Lê Hoàng Triều + Nguyễn Duy Thái Bảo *(support)* | Merged Dashboard and Diary into one page, improved layout, optimized responsive design (PR #128, #133, #134, #135) |
+| Split Onboarding & Settings UI | Từ Văn Huy Hoàng *(primary)* | Separated BMI Setting popup into 2 distinct UIs: Onboarding screen (`/setup`) and Settings screen (gear icon button) |
+| Add date range selector on Stats | Nguyễn Duy Thái Bảo *(primary)* | Supports Week / Month / Custom views with an integrated date range picker and mini calendar (commit `cf5c0eb`) |
+
+---
+
 ## ✅ Deliverables Checklist
 
 - [x] **Source code on GitHub** — public repository: https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io
@@ -480,7 +479,7 @@ The project uses **Tailwind CSS v4** integrated via PostCSS. Key utility classes
 | Đặng Đức Minh | 24020001 | [`docs/src/content/docs/self-reports/self-report-24020001.md`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/blob/main/docs/src/content/docs/self-reports/self-report-24020001.md) |
 | Từ Văn Huy Hoàng | 24020009 | [`docs/src/content/docs/self-reports/self-report-24020009.md`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/blob/main/docs/src/content/docs/self-reports/self-report-24020009.md) |
 | Trần Tiến Đạt | 24020013 | [`docs/src/content/docs/self-reports/self-report-24020013.md`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/blob/main/docs/src/content/docs/self-reports/self-report-24020013.md) |
-| Lê Hoàng Triều | 24020012 | [`docs/src/content/docs/self-reports-24020012.md`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/blob/main/docs/src/content/docs/self-reports/self-report-24020012.md) |
+| Lê Hoàng Triều | 24020012 | [`docs/src/content/docs/self-reports/self-report-24020012.md`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/blob/main/docs/src/content/docs/self-reports/self-report-24020012.md) |
 
 ---
 
@@ -488,15 +487,13 @@ The project uses **Tailwind CSS v4** integrated via PostCSS. Key utility classes
 
 | Member | Task 1 | Task 2 | Task 3 | Task 4 | Task 5 | Est. % |
 |---|---|---|---|---|---|---|
-| Nguyễn Duy Thái Bảo (Leader) | 8/10 | 8/10 | 6/10 | 7/10 | 8/10 | ~25% |
-| Đặng Đức Minh | 7/10 | 7/10 | 7/10 | 7/10 | 8/10 | ~25% |
-| Từ Văn Huy Hoàng | 8/10 | 8/10 | 8/10 | 8/10 | 8/10 | ~25% |
-| Trần Tiến Đạt | 7/10 | 8/10 | 7/10 | 7/10 | 7/10 | ~13% |
-| Lê Hoàng Triều | 7/10 | 8/10 | 7/10 | 7/10 | 7/10 | ~12% |
+| Nguyễn Duy Thái Bảo (Leader) | 8/10 | 8/10 | 7/10 | 7/10 | 8/10 | ~24% |
+| Đặng Đức Minh | 7/10 | 7/10 | 7/10 | 7/10 | 8/10 | ~24% |
+| Từ Văn Huy Hoàng | 8/10 | 8/10 | 8/10 | 8/10 | 8/10 | ~20% |
+| Trần Tiến Đạt | 7/10 | 8/10 | 7/10 | 7/10 | 7/10 | ~16% |
+| Lê Hoàng Triều | 7/10 | 8/10 | 7/10 | 7/10 | 7/10 | ~16% |
 
 ---
 
-*📝 This report was compiled from individual self-reports, git commit history, and technical documentation of the CaloMate team.*
+*📝 This report was compiled from individual self-reports, git commit history, and technical documentation of the CaloMate team.*  
 *🔗 Repository: https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io*
-
-
