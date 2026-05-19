@@ -479,7 +479,7 @@ The project uses **Tailwind CSS v4** integrated via PostCSS. Key utility classes
 | Nguyễn Duy Thái Bảo | 24020015 | [`docs/src/content/docs/self-reports/self-report-24020015.md`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/blob/main/docs/src/content/docs/self-reports/self-report-24020015.md) |
 | Đặng Đức Minh | 24020001 | [`docs/src/content/docs/self-reports/self-report-24020001.md`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/blob/main/docs/src/content/docs/self-reports/self-report-24020001.md) |
 | Từ Văn Huy Hoàng | 24020009 | [`docs/src/content/docs/self-reports/self-report-24020009.md`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/blob/main/docs/src/content/docs/self-reports/self-report-24020009.md) |
-| Trần Tiến Đạt | _(Student ID)_ | `docs/src/content/docs/self-reports-[StudentID].md` |
+| Trần Tiến Đạt | 24020013 | [`docs/src/content/docs/self-reports/self-report-24020013.md`](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/blob/main/docs/src/content/docs/self-reports/self-report-24020013.md) |
 | Lê Hoàng Triều | _(Student ID)_ | `docs/src/content/docs/self-reports-[StudentID].md` |
 
 ---
