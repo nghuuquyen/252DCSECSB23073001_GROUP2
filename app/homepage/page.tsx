@@ -101,7 +101,6 @@ export default function Home() {
             <p className="hero-sub anim-text d3">
               CaloMate giúp bạn tính TDEE, theo dõi macro, ghi nhật ký bữa ăn và tiến trình thay đổi cơ thể bằng giao diện đơn giản, hiện đại và trực quan.
             </p>
-
           </div>
 
           <div className="mock-wrap anim-card">

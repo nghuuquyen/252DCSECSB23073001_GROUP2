@@ -135,7 +135,7 @@ html {
 
 .navbar-inner {
   width: 100%;
-  max-width: 1100px;
+  max-width: 1240px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -282,23 +282,22 @@ html {
   filter: blur(90px);
   opacity: 0.5;
 }
-
 .hero {
-  min-height: 100vh;
+  min-height: 85vh;
   display: flex;
   align-items: center;
-  padding: 96px 24px 80px;
+  padding: 120px 24px 72px;
   position: relative;
   overflow: hidden;
 }
 
 .hero-inner {
   width: 100%;
-  max-width: 1100px;
+  max-width: 1240px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 60px;
+  gap: 80px;
   align-items: center;
 }
 
@@ -352,7 +351,7 @@ html {
   line-height: 1.7;
   color: #6f7973;
   margin-bottom: 36px;
-  max-width: 480px;
+  max-width: 540px;
 }
 
 @media (max-width: 860px) {
@@ -397,13 +396,24 @@ html {
 
 .mock-wrap {
   position: relative;
+  transform: scale(1.28);
+  transform-origin: center center;
+  margin: 40px 0;
+  transition: transform 0.3s ease;
+}
+
+@media (max-width: 860px) {
+  .mock-wrap {
+    transform: scale(1);
+    margin: 20px 0;
+  }
 }
 
 .mock-card {
   background: rgba(255, 255, 255, 0.94);
   border: 1px solid rgba(0, 82, 57, 0.10);
   border-radius: 28px;
-  padding: 30px;
+  padding: 38px 34px;
   box-shadow: 0 24px 64px rgba(0, 82, 57, 0.14), 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
@@ -543,11 +553,11 @@ html {
 }
 
 .section {
-  padding: 96px 24px;
+  padding: 76px 24px;
 }
 
 .section-inner {
-  max-width: 1100px;
+  max-width: 1240px;
   margin: 0 auto;
 }
 
@@ -565,8 +575,8 @@ html {
   font-size: 17px;
   color: #6f7973;
   text-align: center;
-  max-width: 520px;
-  margin: 0 auto 56px;
+  max-width: 600px;
+  margin: 0 auto 40px;
   line-height: 1.65;
 }
 
@@ -809,7 +819,7 @@ footer {
 
 .footer-inner {
   width: 100%;
-  max-width: 1100px;
+  max-width: 1240px;
   display: flex;
   justify-content: space-between;
   align-items: center;
