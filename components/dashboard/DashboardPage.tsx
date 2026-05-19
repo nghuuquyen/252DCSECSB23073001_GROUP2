@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { AppShell } from "@/components/nav/AppShell";
 import AddMealModalV2 from "@/components/diary/AddMealModalV2";
 import { getLog } from "@/lib/storage";
+import { calcMinWater } from "@/lib/calc-water";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -229,9 +230,19 @@ export default function DashboardPage() {
   };
 
   // ── Water ─────────────────────────────────────────────────────────────────
-  const waterGlassCount = Math.min(Math.max(currentLog?.water || 0, 0), 50);
-  const waterMl = waterGlassCount * 250;
+  const ACTIVITY_LEVEL_MAP = ["sedentary", "light", "moderate", "active", "veryActive"] as const;
+  const waterActivityLevel =
+    typeof profile?.activityLevel === "number"
+      ? (ACTIVITY_LEVEL_MAP[profile.activityLevel] ?? "moderate")
+      : "moderate";
+  const waterGender = profile?.gender ?? "male";
+  const waterGoal = profile
+    ? calcMinWater(profile, waterActivityLevel, waterGender)
+    : 2500;
+  const mlPerGlass = Math.round(waterGoal / 10); // luôn chia 10 ly cho đẹp
 
+  const waterGlassCount = Math.min(Math.max(currentLog?.water || 0, 0), 50);
+  const waterMl = waterGlassCount * mlPerGlass;
   const handleWaterClick = (i: number) => {
     const newVal = i < waterGlassCount ? i : i + 1;
     updateWater(Math.min(newVal, 50));
@@ -610,9 +621,9 @@ export default function DashboardPage() {
                     </h3>
                     <p className="text-xs text-outline">
                       Mục tiêu:{" "}
-                      <span className="font-numbers">2,000</span> ml
+                      <span className="font-numbers">{waterGoal.toLocaleString()}</span> ml
                       {" "}·{" "}
-                      <span className="font-numbers">8</span> ly
+                      <span className="font-numbers">10</span> ly
                     </p>
                   </div>
                   <div className="text-right">
@@ -623,12 +634,12 @@ export default function DashboardPage() {
                       ml
                     </span>
                     <p className="text-[10px] text-outline/60 font-numbers">
-                      {waterGlassCount}/8 ly
+                      {waterGlassCount}/10 ly
                     </p>
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-2 sm:gap-0 sm:justify-between items-center px-0 sm:px-2">
-                  {Array.from({ length: 8 }, (_, i) => (
+                  {Array.from({ length: 10 }, (_, i) => (
                     <motion.button
                       key={i}
                       onClick={() => handleWaterClick(i)}
