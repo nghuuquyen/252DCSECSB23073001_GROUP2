@@ -15,7 +15,7 @@ export default function Modal({ isOpen, onClose, children }: Props) {
         <>
           {/* Backdrop */}
           <motion.div
-            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50"
+            className="fixed inset-0 bg-black/40 z-50"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -25,7 +25,7 @@ export default function Modal({ isOpen, onClose, children }: Props) {
 
           {/* Modal sheet — slide up từ dưới */}
           <motion.div
-            className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-[28px] p-6 max-w-[700px] mx-auto"
+            className="fixed bottom-0 left-0 right-0 z-[60] bg-white rounded-t-[28px] p-6 max-w-[700px] mx-auto"
             initial={{ y: '100%', opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: '100%', opacity: 0 }}
