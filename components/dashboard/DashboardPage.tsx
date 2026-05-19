@@ -276,14 +276,14 @@ export default function DashboardPage() {
   return (
     <AppShell>
       <div className="bg-background text-on-background font-body-md min-h-screen">
-        <main className="pt-16 pb-28 sm:pb-24 px-4 sm:px-6 max-w-[1100px] mx-auto">
+        <main className="pt-16 pb-32 sm:pb-28 lg:pb-24 px-4 sm:px-6 lg:px-8 max-w-[1100px] mx-auto">
 
           {/* ── 7-Day Calendar Strip ────────────────────────────────────── */}
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="glass-card rounded-2xl p-3 sm:p-4 my-4 sm:my-5"
+            className="glass-card rounded-2xl p-3 sm:p-4 my-4 sm:my-5 lg:my-6"
           >
             {/* Arrow navigation integrated into the calendar card */}
             <div className="flex items-center gap-2">
@@ -319,13 +319,13 @@ export default function DashboardPage() {
           </motion.div>
 
           {/* ── Main Grid ───────────────────────────────────────────────── */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-5 lg:gap-6 items-start">
 
             {/* ════════════════════════════════════════════════════════════
                 LEFT: Bữa ăn
             ════════════════════════════════════════════════════════════ */}
             <motion.div
-              className="lg:col-span-5 space-y-3"
+              className="md:col-span-5 space-y-3"
               initial="hidden"
               animate="visible"
             >
@@ -506,7 +506,7 @@ export default function DashboardPage() {
                 RIGHT: Vòng tròn Kcal + Uống nước
             ════════════════════════════════════════════════════════════ */}
             <motion.div
-              className="lg:col-span-7 space-y-4 sm:space-y-5"
+              className="md:col-span-7 space-y-4 sm:space-y-5"
               initial="hidden"
               animate="visible"
             >
@@ -514,9 +514,9 @@ export default function DashboardPage() {
               <motion.section
                 custom={0}
                 variants={cardVariants}
-                className="glass-card rounded-3xl p-4 sm:p-6 flex flex-col items-center"
+                className="glass-card rounded-3xl p-4 sm:p-5 lg:p-6 flex flex-col items-center"
               >
-                <div className="relative w-44 h-44 sm:w-56 sm:h-56 flex items-center justify-center mb-4 sm:mb-5">
+                <div className="relative w-40 h-40 sm:w-52 sm:h-52 lg:w-60 lg:h-60 flex items-center justify-center mb-4 sm:mb-5">
                   <svg
                     className="w-full h-full transform -rotate-90"
                     viewBox="0 0 320 320"
@@ -549,7 +549,7 @@ export default function DashboardPage() {
                   </svg>
 
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="font-stat-display text-4xl sm:text-5xl text-primary font-numbers">
+                    <span className="font-stat-display text-3xl sm:text-4xl lg:text-5xl text-primary font-numbers">
                       {consumed.toLocaleString()}
                     </span>
                     <span className="font-label-caps text-[10px] sm:text-xs text-outline uppercase tracking-[0.15em] sm:tracking-[0.2em] mt-1 font-bold">
@@ -562,7 +562,7 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Macro bars */}
-                <div className="w-full sm:max-w-sm grid grid-cols-3 gap-3 sm:gap-6">
+                <div className="w-full sm:max-w-sm lg:max-w-md grid grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
                   {[
                     {
                       label: "Carbs",
@@ -634,7 +634,7 @@ export default function DashboardPage() {
                     </span>
                   </div>
                 </div>
-                <div className="flex flex-wrap gap-2 sm:gap-0 sm:justify-between items-center px-0 sm:px-2">
+                <div className="grid grid-cols-5 gap-y-2 sm:grid-cols-10 sm:gap-y-0 items-center px-0 sm:px-1 place-items-center">
                   {Array.from({ length: 10 }, (_, i) => (
                     <motion.button
                       key={i}
@@ -649,7 +649,7 @@ export default function DashboardPage() {
                       aria-label={`Ly nước ${i + 1}`}
                     >
                       <span
-                        className={`material-symbols-outlined text-3xl sm:text-4xl transition-all ${
+                        className={`material-symbols-outlined text-[28px] xs:text-3xl sm:text-[32px] lg:text-4xl transition-all ${
                           i < waterGlassCount ? "text-primary" : "text-outline/20"
                         }`}
                         style={{
