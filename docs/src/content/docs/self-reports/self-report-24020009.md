@@ -9,11 +9,11 @@ description: "Detailed contribution report for Full-stack Developer & Core Tech 
 
 ## Personal Information
 
-| | |
-|---|---|
-| **Full Name** | Từ Văn Huy Hoàng |
-| **Student ID** | 24020009 |
-| **Team** | CaloMate |
+|                  |                                       |
+| ---------------- | ------------------------------------- |
+| **Full Name**    | Từ Văn Huy Hoàng                      |
+| **Student ID**   | 24020009                              |
+| **Team**         | CaloMate                              |
 | **Role in Team** | Full-stack Developer & Core Tech Lead |
 
 ---
@@ -23,17 +23,20 @@ description: "Detailed contribution report for Full-stack Developer & Core Tech 
 **Week:** Week 1 (May 1–8, 2026)
 
 **Work completed:**
+
 - **Designed & implemented the core Nutrition Calculation Module (`lib/calc.ts`):** Programmed algorithms to automatically calculate users' daily energy needs using the Mifflin-St Jeor formula (computing BMR, TDEE, and automatically setting Calorie, Protein, Carbs, and Fat targets based on the user's weight loss/gain/maintenance goal).
 - **Built the core shared UI Components system (`components/ui/`):** Designed a library of highly reusable basic interface components including Button, Card, Input, Modal, ProgressBar, Badge, and BottomNav.
 - **Implemented the Bottom Navigation system (`components/nav/BottomNav.tsx`):** Developed the bottom navigation bar linking the main pages: Dashboard (`/`), Diary (`/diary`), and Stats (`/stats`).
 
 **Evidence of contribution:**
+
 - Commits:
   - [b2162de](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/b2162de) - `feat: implement calorie & macro calculation (issue #7)`
   - [152615c](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/152615c) - `feat: add reusable UI components (issue #9)`
   - [060c166](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/060c166) - `feat: implement bottom navigation (issue #10)`
 
 **Difficulties encountered:**
+
 - Designing the TypeScript type system (`types/index.ts`) that was flexible enough to cover a wide variety of daily meals while ensuring absolute state consistency when syncing the Store.
 
 **Self-assessment:** 8/10
@@ -45,19 +48,28 @@ description: "Detailed contribution report for Full-stack Developer & Core Tech 
 **Week:** Week 2 (May 9–15, 2026)
 
 **Work completed:**
+
 - **Built & optimized the ingredient search algorithm (`lib/search.ts`):** Implemented a Vietnamese string normalization mechanism (removing diacritics and special characters) combined with a scoring and ranking algorithm to deliver a fast and accurate search experience across 15+ popular Vietnamese dishes.
 - **Completed & enhanced the Food Diary page UI/UX (`app/diary/page.tsx`):** Programmed the 4-meal (main/snack) interface, added a feature to merge duplicate food items (automatically accumulating gram weight and updating calorie/nutrition totals), improved the food selector, and integrated an intuitive delete functionality.
 - **Optimizations and display bug fixes:** Fixed JSX syntax errors, CSS attributes, and integrated the Framer Motion library to create smooth animations for `motion.button` elements on the Diary page.
+- **Updated Web Tab Icon (Logo/Favicon):** Changed the website's favicon to the `local_fire_department` icon to align with the streak branding of the application.
+- **Homepage layout adjustments & Dashboard UI refinement:** Refined the homepage layout, fixed display issues, adjusted zoom/scaling behavior, cleaned up redundant UI elements on the Dashboard, and optimized display ratios to enhance user experience.
 
 **Evidence of contribution:**
+
 - Commits:
   - [4d18754](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/4d18754) - `feat: improve search with scoring and ranking (#22)`
   - [8cf3790](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/8cf3790) - `fix: allow merging multiple food items together`
   - [6a0bdb1](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/6a0bdb1) - `fix food item selection method, and add food item deletion feature`
   - [4be543f](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/4be543f) - `fix: resolve JSX syntax and motion.button tag errors on diary page`
   - [215e68f](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/215e68f) - `feat: fix string`
+  - [4ed70b4](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/4ed70b4) - `fix logo lan 1`
+  - [69cec29](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/69cec29) - `sua lai homepage`
+  - [7ddef05](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/7ddef05) - `zoom homepage`
+  - [b7b5ea5](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/b7b5ea5) - `fix homepage lan 2`
 
 **Difficulties encountered:**
+
 - Handling the merging of identically named ingredients and recalculating the meal's total calorie count in real time required meticulous nested state management in Zustand to avoid data sync errors or unnecessary re-renders.
 
 **Self-assessment:** 8/10
@@ -69,15 +81,20 @@ description: "Detailed contribution report for Full-stack Developer & Core Tech 
 **Week:** Week 3 (May 16–17, 2026)
 
 **Work completed:**
+
 - **Developed the goal-streak synchronization mechanism (`syncStreak`):** Designed and programmed the `calculateAndUpdateStreak` function to automatically scan historical diary log data, evaluate completion conditions (having all 3 main meals — Breakfast, Lunch, Dinner — in a day), and count and sync the user's actual Streak.
 - **Integrated global state synchronization:** Synchronized Streak data, nutritional goals, and food diary entries directly across the main pages via Zustand Store (`profileStore.ts` & `diaryStore.ts`).
 - **Built an Offline-first Storage Layer:** Maximized use of `localStorage` through an automatic state sync and restore mechanism (Zustand persist helper), ensuring the app runs smoothly offline without risk of data loss.
+- **Continued streak string fixes:** Fixed additional edge cases in the streak calculation and display logic, ensuring correct rendering of streak data across various user scenarios.
 
 **Evidence of contribution:**
+
 - Commits:
   - [7e4aa99](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/7e4aa99) - `PR #1: done (also added syncStreak feature to synchronize all streaks together)`
+  - [ac51290](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/ac51290) - `fix tiếp chuỗi`
 
 **Difficulties encountered:**
+
 - Continuously syncing the Streak required precise coordination between two independent Stores (`profileStore` managing profile/streak info and `diaryStore` managing meal logs) without causing conflicts or data inconsistency when users navigate between pages frequently.
 
 **Self-assessment:** 8/10
@@ -89,71 +106,50 @@ description: "Detailed contribution report for Full-stack Developer & Core Tech 
 **Week:** Week 3 (May 16–17, 2026)
 
 **Work completed:**
+
 - **Optimized the team's development workflow (Git Workflow):** Directly resolved complex code merge conflicts, merged the `fix-workflow` branch, and established a safe automatic code-merging mechanism that takes all incoming changes.
 - **Improved code quality:** Thoroughly fixed recurring JSX and TypeScript syntax errors (fix round 3) to ensure the entire project builds and runs stably.
 - **Finalized technical documentation:** Updated the complete project documentation file (`docs/src/content/docs/index.mdx`) with detailed descriptions of the Store architecture, database structure, and application data flow diagrams.
+- **Resolved source code merge conflict in `app/layout.tsx`:** Handled complex configuration conflicts (preserving icon links and Material Symbols font configuration) to ensure the build and code merge process went smoothly.
+- **Fixed Settings page functionality:** Debugged and resolved issues with the user settings page, ensuring preference changes persist correctly through the LocalStorage-based state management system.
+- **Optimized header and bottom navigation layout:** Improved spacing, alignment, and visual consistency of the shared header component and bottom navigation bar across all pages.
 
 **Evidence of contribution:**
+
 - Commits:
   - [1fae67f](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/1fae67f) - `merge: merge fix-workflow and automatically take all incoming changes`
   - [0d8251f](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/0d8251f) - `fix round 3`
   - [54477af](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/54477af) - `fix round 3 (non-diacritic conversion)`
   - [d67b282](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/d67b282) - `update docs file`
+  - [4387530](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/4387530) - `resolve: merge conflict in layout.tsx - keep icon link + Material Symbols`
+  - [ca3483d](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/ca3483d) - `fix setting lan 1`
+  - [1cb3596](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/1cb3596) - `optimize header và bottom`
 
 **Difficulties encountered:**
+
 - Integrating and merging code from multiple parallel development branches required careful review to definitively resolve conflicts in file structure and library versions without disrupting the team's overall progress.
 
 **Self-assessment:** 8/10
 
 ---
 
-## Task 5 — Settings, Homepage Fix & Streak Optimization
+## Task 5 — Peer Review
 
-**Week:** Week 3–4 (May 17–19, 2026)
-
-**Work completed:**
-- **Fixed Settings page functionality:** Debugged and resolved issues with the user settings page, ensuring preference changes persist correctly through the LocalStorage-based state management system.
-- **Optimized header and bottom navigation layout:** Improved spacing, alignment, and visual consistency of the shared header component and bottom navigation bar across all pages.
-- **Continued streak string fixes:** Fixed additional edge cases in the streak calculation and display logic, ensuring correct rendering of streak data across various user scenarios.
-- **Homepage layout adjustments:** Refined the homepage layout, fixed display issues, and adjusted zoom/scaling behavior for better visual presentation.
-
-**Evidence of contribution:**
-- Commits:
-  - [ca3483d](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/ca3483d) - `fix setting lan 1`
-  - [1cb3596](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/1cb3596) - `optimize header và bottom`
-  - [ac51290](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/ac51290) - `fix tiếp chuỗi`
-  - [69cec29](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/69cec29) - `sua lai homepage`
-  - [7ddef05](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/7ddef05) - `zoom homepage`
-  - [b7b5ea5](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/b7b5ea5) - `fix homepage lan 2`
-
-**Difficulties encountered:**
-- Coordinating settings persistence with offline-first LocalStorage architecture required careful handling to prevent data loss when users switch between pages or reload the app unexpectedly.
-
-**Self-assessment:** 8/10
-
----
-
-## Task 6 — UI Refinement & Bug Fixing
-
-**Week:** Week 4 (May 18–20, 2026)
+**Week:** Week 4 (May 17 - 20, 2026)
 
 **Work completed:**
-- **Refined Homepage & Dashboard UI:** Reorganized the homepage layout, cleaned up redundant UI elements on the Dashboard, and optimized display ratios to enhance user experience.
-- **Updated Web Tab Icon (Logo):** Changed the website's favicon to the `local_fire_department` icon to align with the streak branding of the application.
-- **Resolved source code merge conflicts:** Handled complex configuration conflicts in the `app/layout.tsx` file (preserving icon links and Material Symbols font configuration) to ensure the build and code merge process went smoothly.
+
+- Review the code of the tducn110/Tracker_yourMoney team and identify issues to be resolved.
 
 **Evidence of contribution:**
-- Commits:
-  - [4387530](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/4387530) - `resolve: merge conflict in layout.tsx - keep icon link + Material Symbols`
-  - [4ed70b4](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/4ed70b4) - `fix logo lan 1`
-  - [7ddef05](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/7ddef05) - `zoom homepage`
-  - [b7b5ea5](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/b7b5ea5) - `fix homepage lan 2`
-  - [69cec29](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/69cec29) - `sua lai homepage`
+
+- [Peer review issue submitted to tducn110/Tracker_yourMoney](https://github.com/tducn110/Tracker_yourMoney/issues/177)
 
 **Difficulties encountered:**
-- Resolving merge conflicts in the root layout file required meticulous attention to avoid breaking the font library links and UI component configurations of the entire project.
 
-**Self-assessment:** 8/10
+- No
+
+**Self-assessment:** 9/10
 
 ---
 
@@ -162,6 +158,6 @@ description: "Detailed contribution report for Full-stack Developer & Core Tech 
 **Summary of contributions to the project:**
 In the CaloMate project, I successfully designed and built the automatic Mifflin-St Jeor nutrition calculator, developed the core shared UI Components system, created the intelligent Vietnamese food search algorithm (Vietnamese normalization, result ranking), and implemented the goal-streak synchronization system across the entire app. Recently, I also performed UI refinement and optimization on the homepage, updated the application's logo/favicon branding, and directly resolved complex merge conflicts at the root layout level. I also actively supported the team by resolving major merge conflicts, optimizing the Git workflow, and writing complete technical documentation. Through this project, I significantly improved my Next.js/React 19 programming skills, advanced state management with Zustand, and gained valuable hands-on experience solving complex logic problems in a team environment.
 
-**Estimated % contribution relative to the team:** *(To be updated later)*
+**Estimated % contribution relative to the team:** _(To be updated later)_
 
 **Overall self-assessment score:** 8/10
