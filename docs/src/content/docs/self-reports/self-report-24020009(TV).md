@@ -107,18 +107,51 @@ description: "Báo cáo chi tiết vị trí Lập trình viên Full-stack & Tec
 
 ---
 
-## Task 5 — Peer Review
+## Task 5 — Sửa Settings, Homepage & Tối ưu Streak
 
-**Tuần:** Tuần 3 (16/05/2026 – 17/05/2026)
+**Tuần:** Tuần 3–4 (17/05/2026 – 19/05/2026)
 
 **Công việc đã làm:**
-- Chưa thực hiện hoạt động review đánh giá chéo lớp học. Sẽ cập nhật chi tiết phần này sau khi có thông tin phân công từ giảng viên.
+- **Sửa lỗi trang Settings:** Khắc phục và giải quyết các vấn đề trên trang cài đặt người dùng, đảm bảo các thay đổi thiết lập được lưu trữ chính xác thông qua hệ thống quản lý trạng thái dựa trên LocalStorage.
+- **Tối ưu hóa layout header và bottom navigation:** Cải thiện khoảng cách, căn chỉnh và tính nhất quán thị giác của component header dùng chung và thanh điều hướng phía dưới trên tất cả các trang.
+- **Tiếp tục sửa lỗi chuỗi streak:** Khắc phục các trường hợp ngoại lệ bổ sung trong logic tính toán và hiển thị streak, đảm bảo dữ liệu streak được hiển thị chính xác trong mọi tình huống người dùng.
+- **Chỉnh sửa bố cục Homepage:** Tinh chỉnh bố cục trang chủ, sửa các lỗi hiển thị và điều chỉnh hành vi zoom/scaling để cải thiện trình bày trực quan.
 
 **Bằng chứng đóng góp:**
-- *(Chưa có - Sẽ cập nhật sau)*
+- Commits:
+  - [ca3483d](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/ca3483d) - `fix setting lan 1`
+  - [1cb3596](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/1cb3596) - `optimize header và bottom`
+  - [ac51290](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/ac51290) - `fix tiếp chuỗi`
+  - [69cec29](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/69cec29) - `sua lai homepage`
+  - [7ddef05](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/7ddef05) - `zoom homepage`
+  - [b7b5ea5](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/b7b5ea5) - `fix homepage lan 2`
 
 **Khó khăn gặp phải:**
-- *(Chưa có - Sẽ cập nhật sau)*
+- Việc đồng bộ cài đặt với kiến trúc LocalStorage offline-first đòi hỏi xử lý cẩn thận để tránh mất dữ liệu khi người dùng chuyển trang hoặc reload ứng dụng bất ngờ.
+
+**Đánh giá bản thân:** 8/10
+
+---
+
+## Task 6 — Tinh chỉnh UI & Sửa lỗi
+
+**Tuần:** Tuần 4 (18/05/2026 – 20/05/2026)
+
+**Công việc đã làm:**
+- **Tinh chỉnh giao diện Homepage & Dashboard:** Tổ chức lại bố cục trang chủ (Homepage), dọn dẹp các thành phần UI thừa trên Dashboard, đồng thời tối ưu tỷ lệ hiển thị nhằm nâng cao trải nghiệm người dùng.
+- **Cập nhật Web Tab Icon (Logo):** Thay đổi biểu tượng favicon của trang web thành icon `local_fire_department` để đồng bộ với nhận diện chuỗi ngày (streak) của ứng dụng.
+- **Giải quyết xung đột mã nguồn (Merge Conflict):** Xử lý xung đột cấu hình phức tạp trong tệp `app/layout.tsx` (giữ lại liên kết icon và cấu hình font Material Symbols) đảm bảo quá trình build và gộp code diễn ra an toàn.
+
+**Bằng chứng đóng góp:**
+- Commits:
+  - [4387530](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/4387530) - `resolve: merge conflict in layout.tsx - keep icon link + Material Symbols`
+  - [4ed70b4](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/4ed70b4) - `fix logo lan 1`
+  - [7ddef05](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/7ddef05) - `zoom homepage`
+  - [b7b5ea5](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/b7b5ea5) - `fix homepage lan 2`
+  - [69cec29](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/69cec29) - `sua lai homepage`
+
+**Khó khăn gặp phải:**
+- Quá trình giải quyết merge conflict ở file layout gốc yêu cầu sự tỉ mỉ để không làm đứt gãy các liên kết thư viện font chữ và UI components của toàn dự án.
 
 **Đánh giá bản thân:** 8/10
 
@@ -127,7 +160,7 @@ description: "Báo cáo chi tiết vị trí Lập trình viên Full-stack & Tec
 ## Tổng Kết Đóng Góp Cá Nhân
 
 **Tóm tắt những gì bạn đã đóng góp cho dự án:**
-Trong dự án CaloMate, tôi tự hào khi đảm nhận vai trò Lập trình viên Full-stack & Phụ trách kỹ thuật cốt lõi của nhóm. Tôi đã thiết kế và xây dựng thành công công cụ tính toán dinh dưỡng Mifflin-St Jeor tự động, xây dựng hệ thống UI Components dùng chung cốt lõi, phát triển thuật toán tìm kiếm món ăn Việt thông minh (chuẩn hóa tiếng Việt, xếp hạng kết quả) và triển khai hệ thống đồng bộ hóa chuỗi ngày đạt mục tiêu (Streak Sync) trên toàn ứng dụng. Đồng thời, tôi luôn tích cực hỗ trợ giải quyết các xung đột merge conflict lớn, tối ưu hóa Git workflow của cả nhóm và viết tài liệu kỹ thuật hoàn chỉnh. Qua dự án này, tôi đã cải thiện đáng kể kỹ năng lập trình Next.js/React 19, quản lý state nâng cao với Zustand, và tích lũy được nhiều kinh nghiệm thực chiến quý báu khi giải quyết các bài toán logic phức tạp trong làm việc nhóm.
+Trong dự án CaloMate, tôi đã thiết kế và xây dựng thành công công cụ tính toán dinh dưỡng Mifflin-St Jeor tự động, xây dựng hệ thống UI Components dùng chung cốt lõi, phát triển thuật toán tìm kiếm món ăn Việt thông minh (chuẩn hóa tiếng Việt, xếp hạng kết quả) và triển khai hệ thống đồng bộ hóa chuỗi ngày đạt mục tiêu (Streak Sync) trên toàn ứng dụng. Gần đây, tôi cũng đã thực hiện tinh chỉnh tối ưu hóa giao diện trang chủ, cập nhật bộ nhận diện logo ứng dụng và trực tiếp giải quyết các xung đột merge conflict phức tạp ở tầng layout tổng. Đồng thời, tôi luôn tích cực hỗ trợ giải quyết các xung đột merge conflict lớn, tối ưu hóa Git workflow của cả nhóm và viết tài liệu kỹ thuật hoàn chỉnh. Qua dự án này, tôi đã cải thiện đáng kể kỹ năng lập trình Next.js/React 19, quản lý state nâng cao với Zustand, và tích lũy được nhiều kinh nghiệm thực chiến quý báu khi giải quyết các bài toán logic phức tạp trong làm việc nhóm.
 
 **Ước tính % đóng góp so với cả nhóm:** *(Sẽ cập nhật sau)*
 

@@ -107,18 +107,51 @@ description: "Detailed contribution report for Full-stack Developer & Core Tech 
 
 ---
 
-## Task 5 — Peer Review
+## Task 5 — Settings, Homepage Fix & Streak Optimization
 
-**Week:** Week 3 (May 16–17, 2026)
+**Week:** Week 3–4 (May 17–19, 2026)
 
 **Work completed:**
-- Cross-team peer review activity has not yet been carried out. This section will be updated once task assignments are received from the instructor.
+- **Fixed Settings page functionality:** Debugged and resolved issues with the user settings page, ensuring preference changes persist correctly through the LocalStorage-based state management system.
+- **Optimized header and bottom navigation layout:** Improved spacing, alignment, and visual consistency of the shared header component and bottom navigation bar across all pages.
+- **Continued streak string fixes:** Fixed additional edge cases in the streak calculation and display logic, ensuring correct rendering of streak data across various user scenarios.
+- **Homepage layout adjustments:** Refined the homepage layout, fixed display issues, and adjusted zoom/scaling behavior for better visual presentation.
 
 **Evidence of contribution:**
-- *(Not yet available — will be updated later)*
+- Commits:
+  - [ca3483d](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/ca3483d) - `fix setting lan 1`
+  - [1cb3596](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/1cb3596) - `optimize header và bottom`
+  - [ac51290](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/ac51290) - `fix tiếp chuỗi`
+  - [69cec29](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/69cec29) - `sua lai homepage`
+  - [7ddef05](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/7ddef05) - `zoom homepage`
+  - [b7b5ea5](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/b7b5ea5) - `fix homepage lan 2`
 
 **Difficulties encountered:**
-- *(Not yet available — will be updated later)*
+- Coordinating settings persistence with offline-first LocalStorage architecture required careful handling to prevent data loss when users switch between pages or reload the app unexpectedly.
+
+**Self-assessment:** 8/10
+
+---
+
+## Task 6 — UI Refinement & Bug Fixing
+
+**Week:** Week 4 (May 18–20, 2026)
+
+**Work completed:**
+- **Refined Homepage & Dashboard UI:** Reorganized the homepage layout, cleaned up redundant UI elements on the Dashboard, and optimized display ratios to enhance user experience.
+- **Updated Web Tab Icon (Logo):** Changed the website's favicon to the `local_fire_department` icon to align with the streak branding of the application.
+- **Resolved source code merge conflicts:** Handled complex configuration conflicts in the `app/layout.tsx` file (preserving icon links and Material Symbols font configuration) to ensure the build and code merge process went smoothly.
+
+**Evidence of contribution:**
+- Commits:
+  - [4387530](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/4387530) - `resolve: merge conflict in layout.tsx - keep icon link + Material Symbols`
+  - [4ed70b4](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/4ed70b4) - `fix logo lan 1`
+  - [7ddef05](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/7ddef05) - `zoom homepage`
+  - [b7b5ea5](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/b7b5ea5) - `fix homepage lan 2`
+  - [69cec29](https://github.com/nguyenduythaibao1611-eng/calorie-web.github.io/commit/69cec29) - `sua lai homepage`
+
+**Difficulties encountered:**
+- Resolving merge conflicts in the root layout file required meticulous attention to avoid breaking the font library links and UI component configurations of the entire project.
 
 **Self-assessment:** 8/10
 
@@ -127,7 +160,7 @@ description: "Detailed contribution report for Full-stack Developer & Core Tech 
 ## Personal Contribution Summary
 
 **Summary of contributions to the project:**
-In the CaloMate project, I am proud to have taken on the role of Full-stack Developer and Core Tech Lead for the team. I successfully designed and built the automatic Mifflin-St Jeor nutrition calculator, developed the core shared UI Components system, created the intelligent Vietnamese food search algorithm (Vietnamese normalization, result ranking), and implemented the goal-streak synchronization system across the entire app. I also actively supported the team by resolving major merge conflicts, optimizing the Git workflow, and writing complete technical documentation. Through this project, I significantly improved my Next.js/React 19 programming skills, advanced state management with Zustand, and gained valuable hands-on experience solving complex logic problems in a team environment.
+In the CaloMate project, I successfully designed and built the automatic Mifflin-St Jeor nutrition calculator, developed the core shared UI Components system, created the intelligent Vietnamese food search algorithm (Vietnamese normalization, result ranking), and implemented the goal-streak synchronization system across the entire app. Recently, I also performed UI refinement and optimization on the homepage, updated the application's logo/favicon branding, and directly resolved complex merge conflicts at the root layout level. I also actively supported the team by resolving major merge conflicts, optimizing the Git workflow, and writing complete technical documentation. Through this project, I significantly improved my Next.js/React 19 programming skills, advanced state management with Zustand, and gained valuable hands-on experience solving complex logic problems in a team environment.
 
 **Estimated % contribution relative to the team:** *(To be updated later)*
 
